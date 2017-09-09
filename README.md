@@ -1,5 +1,5 @@
 # Nimrod
-Nimrod :copyght: :monkey: kwoolter 2017
+Nimrod :copyright: :monkey: kwoolter 2017
 
 # About
 Nimrod
