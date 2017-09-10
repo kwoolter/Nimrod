@@ -24,6 +24,13 @@ class Game():
 
         return self._state
 
+    @state.setter
+    def state(self, new_state):
+        self._old_state = self.state
+        self._state = new_state
+
+        self.events.add_event(Event("Game state change from {0} to {1}".format(self._old_state, self._state), Event.STATE))
+
     def print(self):
         print(self)
         self.events.print()
@@ -50,24 +57,26 @@ class Game():
 
 
     def initialise(self):
-        self._state = Game.READY
+        self.state = Game.READY
 
     def start(self):
-        self._state = Game.PLAYING
+        self.state = Game.PLAYING
+
 
     def pause(self, is_paused : bool = True):
 
-        if self._state == Game.PAUSED and is_paused is False:
+        if self.state == Game.PAUSED and is_paused is False:
 
-            self._state = Game.PLAYING
+            self.state = Game.PLAYING
 
         else:
-            self._state = Game.PAUSED
+            self.state = Game.PAUSED
 
 class Event():
 
     QUIT = "quit"
     DEFAULT = "default"
+    STATE = "state"
 
     def __init__(self, name : str, type : str = DEFAULT):
         self.name = name
