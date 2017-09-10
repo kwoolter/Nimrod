@@ -131,10 +131,16 @@ class MainFrame(View):
 
         super(MainFrame, self).__init__(width, height)
 
-        self.model = model
+        self.game = model
 
         self.title_bar = TitleBar(width, MainFrame.TITLE_HEIGHT)
         self.status_bar = StatusBar(width, MainFrame.STATUS_HEIGHT)
+
+        play_area_height = height - MainFrame.TITLE_HEIGHT - MainFrame.STATUS_HEIGHT
+
+        self.game_view = GameView(width, play_area_height )
+        self.game_ready = GameReadyView(width, play_area_height )
+        self.game_over = GameOverView(width, play_area_height)
 
     def initialise(self):
 
@@ -144,7 +150,7 @@ class MainFrame(View):
 
         os.environ["SDL_VIDEO_CENTERED"] = "1"
         pygame.init()
-        pygame.display.set_caption(self.model.name)
+        pygame.display.set_caption(self.game.name)
         filename = MainFrame.RESOURCES_DIR + "icon.png"
 
         try:
@@ -154,8 +160,11 @@ class MainFrame(View):
         except Exception as err:
             print(str(err))
 
-        self.title_bar.initialise(self.model)
-        self.status_bar.initialise(self.model)
+        self.title_bar.initialise(self.game)
+        self.status_bar.initialise(self.game)
+        self.game_ready.initialise(self.game)
+        self.game_view.initialise(self.game)
+        self.game_over.initialise(self.game)
 
     def draw(self):
 
@@ -176,6 +185,20 @@ class MainFrame(View):
         self.surface.blit(self.title_bar.surface, (x, y))
 
         y += MainFrame.TITLE_HEIGHT
+
+
+        if self.game.state == model.Game.READY:
+            self.game_ready.draw()
+            self.surface.blit(self.game_ready.surface, (x, y))
+        elif self.game.state == model.Game.PLAYING:
+            self.game_view.draw()
+            self.surface.blit(self.game_view.surface, (x, y))
+        elif self.game.state == model.Game.GAME_OVER:
+            self.game_over.draw()
+            self.surface.blit(self.game_over.surface, (x, y))
+
+
+
 
         x = 0
         y = pane_rect.bottom - MainFrame.STATUS_HEIGHT
@@ -397,7 +420,171 @@ class HighScoreTableView(View):
                           bg_colour=HighScoreTableView.BG_COLOUR)
                 rank += 1
 
+class GameReadyView(View):
 
+    FG_COLOUR = Colours.GOLD
+    BG_COLOUR = Colours.DARK_GREY
+
+    def __init__(self, width: int, height: int = 500):
+        super(GameReadyView, self).__init__()
+
+        self.game = None
+        self.hst = HighScoreTableView(width=width, height=300)
+
+        self.surface = pygame.Surface((width, height))
+
+    def initialise(self, game: model.Game):
+        self.game = game
+        self.hst.initialise(self.game.hst)
+
+
+    def draw(self):
+        if self.game is None:
+            raise ("No Game to view!")
+
+        self.surface.fill(GameReadyView.BG_COLOUR)
+
+        pane_rect = self.surface.get_rect()
+
+        x = pane_rect.centerx
+        y = 20
+
+        msg = "R E A D Y !"
+
+        draw_text(self.surface,
+                  msg=msg,
+                  x=x,
+                  y=y,
+                  size=40,
+                  fg_colour=GameReadyView.FG_COLOUR,
+                  bg_colour=GameReadyView.BG_COLOUR)
+
+        x = 0
+        y = pane_rect.bottom - self.hst.surface.get_height()
+        self.hst.draw()
+        self.surface.blit(self.hst.surface, (x, y))
+
+
+class GameOverView(View):
+
+    FG_COLOUR = Colours.WHITE
+    BG_COLOUR = Colours.DARK_GREY
+    SCORE_TEXT_SIZE = 22
+
+    def __init__(self, width: int, height: int = 500):
+
+        super(GameOverView, self).__init__()
+
+        self.game = None
+        self.hst = HighScoreTableView(width=width, height=300)
+
+        self.surface = pygame.Surface((width, height))
+
+    def initialise(self, game: model.Game):
+
+        self.game = game
+        self.hst.initialise(self.game.hst)
+
+    def draw(self):
+
+        self.surface.fill(GameOverView.BG_COLOUR)
+
+        if self.game is None:
+            raise ("No Game to view!")
+
+        pane_rect = self.surface.get_rect()
+
+        y = 20
+        x = pane_rect.centerx
+
+        text = "G A M E    O V E R"
+        fg_colour = GameOverView.FG_COLOUR
+
+        draw_text(self.surface,
+                  msg=text,
+                  x=x,
+                  y=y,
+                  size=30,
+                  fg_colour=fg_colour,
+                  bg_colour=GameOverView.BG_COLOUR)
+
+        y += 30
+
+        draw_text(self.surface,
+                  msg="Final Scores",
+                  x=x,
+                  y=y,
+                  size=GameOverView.SCORE_TEXT_SIZE,
+                  fg_colour=GameOverView.FG_COLOUR,
+                  bg_colour=GameOverView.BG_COLOUR)
+
+        y += GameOverView.SCORE_TEXT_SIZE
+
+        rank = 1
+        scores = self.game.get_scores()
+        for score in scores:
+            player, score = score
+
+            if self.game.is_high_score(score):
+                fg_colour = Colours.GOLD
+                text = "{0}. {1} : {2} ** High Score **".format(rank, player, score)
+            else:
+                fg_colour = GameOverView.FG_COLOUR
+                text = "{0}. {1} : {2}".format(rank, player, score)
+
+            draw_text(self.surface,
+                      x=x,
+                      y=y,
+                      msg=text,
+                      fg_colour=fg_colour,
+                      bg_colour=GameOverView.BG_COLOUR,
+                      size=GameOverView.SCORE_TEXT_SIZE
+                      )
+            y += GameOverView.SCORE_TEXT_SIZE
+            rank += 1
+
+        x = 0
+        y = pane_rect.bottom - self.hst.surface.get_height()
+
+        self.hst.draw()
+        self.surface.blit(self.hst.surface, (x, y))
+
+
+class GameView(View):
+
+    BG_COLOUR = Colours.GREEN
+    FG_COLOUR = Colours.WHITE
+    TILE_WIDTH = 32
+    TILE_HEIGHT = 32
+
+    def __init__(self, width: int, height: int):
+        super(GameView, self).__init__()
+
+        self.surface = pygame.Surface((width, height))
+
+        self.game = None
+
+    def initialise(self, game: model.Game):
+
+        super(GameView, self).initialise()
+
+        self.game = game
+
+
+    def tick(self):
+        super(GameView, self).tick()
+        self.rpg_view.tick()
+
+    def draw(self):
+
+        self.surface.fill(GameView.BG_COLOUR)
+
+        if self.game is None:
+            raise ("No Game to view!")
+
+    def end(self):
+
+        super(GameView, self).end()
 
 def draw_icon(surface, x, y, icon_name, count: int = None, tick: int = 0):
     image = View.image_manager.get_skin_image(tile_name=icon_name, skin_name="default", tick=tick)

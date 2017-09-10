@@ -9,17 +9,16 @@ import view
 
 
 class Controller:
-
     PLAYING = "Playing"
-
 
     KEY_PAUSE = K_ESCAPE
     KEY_START = K_SPACE
+    KEY_GAME_OVER = K_BACKSPACE
 
     def __init__(self):
 
         self.game = model.Game("Nimrod")
-        self.view = view.MainFrame(self.game)
+        self.view = view.MainFrame(self.game,700,700)
         self.audio = audio.AudioManager()
 
     def run(self):
@@ -53,7 +52,6 @@ class Controller:
 
                 event = self.game.get_next_event()
 
-
             # Loop to process pygame events
             for event in pygame.event.get():
 
@@ -73,19 +71,23 @@ class Controller:
                 # Key pressed events
                 elif event.type == KEYUP:
 
-                    # If we are in playing mode...
-                    if event.key == Controller.KEY_START:
+                    if self.game.state == model.Game.PLAYING:
+                        if event.key == Controller.KEY_PAUSE:
+                            self.game.pause()
+                        elif event.key == Controller.KEY_GAME_OVER:
+                            self.game.game_over()
 
-                        try:
-                            if self.game.state == model.Game.READY:
-                                self.game.start()
-                            elif self.game.state == model.Game.PLAYING:
-                                self.game.pause()
-                            elif self.game.state == model.Game.PAUSED:
-                                self.game.pause(False)
+                    elif self.game.state == model.Game.PAUSED:
+                        if event.key == Controller.KEY_PAUSE:
+                            self.game.pause(False)
 
-                        except Exception as err:
-                            print(str(err))
+                    elif self.game.state == model.Game.READY:
+                        if event.key == Controller.KEY_START:
+                            self.game.start()
+
+                    elif self.game.state == model.Game.GAME_OVER:
+                        if event.key == Controller.KEY_START:
+                            self.game.initialise()
 
             self.view.tick()
             self.view.draw()
@@ -93,5 +95,6 @@ class Controller:
 
             FPSCLOCK.tick(75)
 
+        self.game.end()
         self.view.end()
         self.audio.end()

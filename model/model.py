@@ -1,4 +1,6 @@
 import collections
+import utils
+import logging
 
 class Game():
 
@@ -16,6 +18,9 @@ class Game():
         self.events.add_event(Event("{0} model created!".format(self.name)))
         self._state = Game.LOADED
 
+        self.hst = utils.HighScoreTable(self.name)
+
+
     def __str__(self):
         return "{0}. Events({1}).".format(self.name, self.events.size())
 
@@ -26,6 +31,7 @@ class Game():
 
     @state.setter
     def state(self, new_state):
+
         self._old_state = self.state
         self._state = new_state
 
@@ -57,7 +63,10 @@ class Game():
 
 
     def initialise(self):
+
         self.state = Game.READY
+
+        self.hst.load()
 
     def start(self):
         self.state = Game.PLAYING
@@ -71,6 +80,31 @@ class Game():
 
         else:
             self.state = Game.PAUSED
+
+    def get_scores(self):
+
+        return [("Keith", 923)]
+
+    def is_high_score(self, score: int):
+        return self.hst.is_high_score(score)
+
+    def game_over(self):
+
+        if self._state != Game.GAME_OVER:
+
+            logging.info("Game Over {0}...".format(self.name))
+
+            self.hst.save()
+
+            self.state=Game.GAME_OVER
+
+    def end(self):
+
+        logging.info("Ending {0}...".format(self.name))
+
+        self.state=Game.END
+
+        self.hst.save()
 
 class Event():
 
