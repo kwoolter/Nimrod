@@ -8,7 +8,7 @@ import os
 class Controller:
     def __init__(self):
 
-        self.model = model.Model("Nimrod")
+        self.model = model.Game("Nimrod")
         self.view = view.MainFrame(self.model)
         self.audio = audio.AudioManager()
 
@@ -16,9 +16,6 @@ class Controller:
 
 
     def run(self):
-
-        print("Here we go....")
-        self.model.print()
 
         os.environ["SDL_VIDEO_CENTERED"] = "1"
 
