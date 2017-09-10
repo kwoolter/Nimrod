@@ -28,6 +28,7 @@ class Controller:
 
         self.game.initialise()
         self.view.initialise()
+        self.audio.initialise()
 
         new_player = model.Player("Player1")
         self.game.add_player(new_player)

@@ -96,7 +96,9 @@ class Game():
         self._old_state = self.state
         self._state = new_state
 
-        self.events.add_event(Event("Game state change from {0} to {1}".format(self._old_state, self._state), Event.STATE))
+        self.events.add_event(Event(self._state,
+                                    "Game state change from {0} to {1}".format(self._old_state, self._state),
+                                    Event.STATE))
 
     def print(self):
         print(self)
@@ -174,16 +176,21 @@ class Game():
 
 class Event():
 
+    # Event Types
     QUIT = "quit"
     DEFAULT = "default"
     STATE = "state"
 
-    def __init__(self, name : str, type : str = DEFAULT):
+    # Events
+
+
+    def __init__(self, name : str, description : str = None, type : str = DEFAULT):
         self.name = name
+        self.description = description
         self.type = type
 
     def __str__(self):
-        return "{0} ({1})".format(self.name, self.type)
+        return "{0}:{1} ({2})".format(self.name, self.description, self.type)
 
 
 class EventQueue():
