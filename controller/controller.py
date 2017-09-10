@@ -21,10 +21,22 @@ class Controller:
         self.view = view.MainFrame(self.game,700,700)
         self.audio = audio.AudioManager()
 
-    def run(self):
+        self.initialise()
+
+    def initialise(self):
+
 
         self.game.initialise()
         self.view.initialise()
+
+        new_player = model.Player("Player1")
+        self.game.add_player(new_player)
+
+        pygame.mixer.pre_init(44100, -16, 2, 2048)
+        pygame.mixer.init()
+
+
+    def run(self):
 
         os.environ["SDL_VIDEO_CENTERED"] = "1"
 
