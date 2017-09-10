@@ -1,11 +1,16 @@
-import model
-import view
-import audio
-import pygame
-from pygame.locals import *
 import os
 
+import pygame
+from pygame.locals import *
+
+import audio
+import model
+import view
+
+
 class Controller:
+
+    PLAYING = "Playing"
 
 
     KEY_PAUSE = K_ESCAPE
@@ -16,9 +21,6 @@ class Controller:
         self.game = model.Game("Nimrod")
         self.view = view.MainFrame(self.game)
         self.audio = audio.AudioManager()
-
-
-
 
     def run(self):
 
@@ -38,6 +40,7 @@ class Controller:
 
             self.game.tick()
 
+            # Loop to process game events
             event = self.game.get_next_event()
 
             while event is not None:
@@ -50,8 +53,11 @@ class Controller:
 
                 event = self.game.get_next_event()
 
+
+            # Loop to process pygame events
             for event in pygame.event.get():
 
+                # Timer events
                 if event.type == USEREVENT + 1:
                     try:
 
@@ -64,6 +70,7 @@ class Controller:
                 elif event.type == QUIT:
                     loop = False
 
+                # Key pressed events
                 elif event.type == KEYUP:
 
                     # If we are in playing mode...
@@ -85,7 +92,6 @@ class Controller:
             self.view.update()
 
             FPSCLOCK.tick(75)
-
 
         self.view.end()
         self.audio.end()

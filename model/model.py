@@ -30,6 +30,9 @@ class Game():
 
     def tick(self):
 
+        if self.state == Game.PAUSED:
+            return
+
         self.tick_count += 1
 
         # self.events.add_event(Event("tick"))
