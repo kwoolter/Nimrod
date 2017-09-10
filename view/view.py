@@ -312,36 +312,7 @@ class StatusBar(View):
 
         if self.game.state == model.Game.PLAYING:
 
-            player = self.game.get_current_player()
-
-            y = 8
-            x = 0
-
-            for equipped_item in player.equipment_slots:
-
-                count = self.game.items_in_inventory(equipped_item)
-                draw_icon(self.surface, x=x, y=y, icon_name=equipped_item, count = count)
-
-                if equipped_item in self.game.effects.keys():
-                    count = self.game.effects[equipped_item]
-                    draw_text(self.surface,msg="{0:^3}".format(count),x=x+4,y=y+4,size=18,
-                              bg_colour=Colours.GOLD, fg_colour=Colours.BLACK)
-
-                x += StatusBar.ICON_WIDTH
-
-            y = 8
-            x = int(pane_rect.width*3/4)
-
-            draw_icon(self.surface, x=x,y=y,icon_name=model.Tiles.HEART, count=player.HP)
-
-            x += StatusBar.ICON_WIDTH
-            draw_icon(self.surface, x=x, y=y, icon_name=model.Tiles.KEY, count=player.keys)
-
-            x += StatusBar.ICON_WIDTH
-            draw_icon(self.surface, x=x, y=y, icon_name=model.Tiles.TREASURE, count=player.treasure)
-
-            x += StatusBar.ICON_WIDTH
-            draw_icon(self.surface, x=x, y=y, icon_name=model.Tiles.RUNE, count=player.runes_collected(self.game.get_current_level().id))
+            pass
 
         elif self.game.state == model.Game.PAUSED:
             msg = "F8:Save   F9:Load   Esc:Resume"
@@ -355,7 +326,7 @@ class StatusBar(View):
                       centre=False)
 
         elif self.game.state == model.Game.READY:
-            msg = "P:Change Name   SPACE:Start"
+            msg = "SPACE:Start"
             draw_text(self.surface,
                       msg=msg,
                       x=10,

@@ -29,7 +29,9 @@ class Game():
         self.events.print()
 
     def tick(self):
+
         self.tick_count += 1
+
         # self.events.add_event(Event("tick"))
         #
         # if self.tick_count > 100:
@@ -43,6 +45,21 @@ class Game():
 
         return next_event
 
+
+    def initialise(self):
+        self._state = Game.READY
+
+    def start(self):
+        self._state = Game.PLAYING
+
+    def pause(self, is_paused : bool = True):
+
+        if self._state == Game.PAUSED and is_paused is False:
+
+            self._state = Game.PLAYING
+
+        else:
+            self._state = Game.PAUSED
 
 class Event():
 
