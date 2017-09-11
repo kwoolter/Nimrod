@@ -57,8 +57,12 @@ class Controller:
 
             while event is not None:
 
-                self.view.process_event(event)
-                self.audio.process_event(event)
+                try:
+
+                    self.view.process_event(event)
+                    self.audio.process_event(event)
+                except Exception as err:
+                    print(str(err))
 
                 if event.type == model.Event.QUIT:
                     loop = False

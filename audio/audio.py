@@ -48,7 +48,9 @@ class AudioManager:
         self.sound_on = True
 
     def process_event(self, new_event: model.Event):
-        pass
+        print("AudioManager event process:{0}".format(new_event))
+        sound = self.get_theme_sound(new_event.name, sound_theme=new_event.type)
+        sound.play()
 
     def initialise(self):
 
@@ -67,7 +69,9 @@ class AudioManager:
             return None
 
         if sound_theme not in self.sound_themes.keys():
-            raise Exception("Can't find sound theme {0}.")
+            sound_theme = AudioManager.DEFAULT_THEME
+            if sound_theme not in self.sound_themes.keys():
+                raise Exception("Can't find sound theme {0}.")
 
         theme = self.sound_themes[sound_theme]
 
@@ -97,24 +101,10 @@ class AudioManager:
 
         new_theme_name = AudioManager.DEFAULT_THEME
         new_theme = {
-            Sounds.UNLOCK: "door_lock.wav",
-            Sounds.SWITCH: "switch-11.wav",
-            Sounds.SHOP: "LTTP_Door.wav",
-            Sounds.OPEN_CHEST: "LTTP_Chest.wav",
-            Sounds.HP_DOWN: "LTTP_Link_Hurt.wav",
-            Sounds.EXPLODE: "Bomb+1.wav",
-            Sounds.FOUND_TREASURE: "LTTP_Rupee1.wav",
-            Sounds.FOUND_KEY: "LTTP_Get_Key.wav",
-            Sounds.FOUND_BOSS_KEY: "LA_TrendyGame_Win.wav",
-            Sounds.FOUND_RUNE: "OOT_Song_Correct.wav",
-            Sounds.FOUND_MAP: "LTTP_Map.wav",
-            Sounds.EFFECT_END: None,
-            Sounds.HP_UP: "LTTP_Get_HeartPiece.wav",
-            Sounds.SWAP_TILE: None,
-            Sounds.CHANGE_SELECTION: "LTTP_Menu_Cursor.wav",
-            Sounds.CHANGE_FLOOR: "LTTP_Stairs_Down.wav",
-            Sounds.CHANGE_LEVEL: "LTTP_Stairs_FloorDown.wav",
-            Sounds.ERROR: "LTTP_Error.wav"
+            model.Event.TICK: "LTTP_Menu_Cursor.wav",
+            model.Game.PLAYING: "LTTP_Rupee1.wav",
+            model.Game.PAUSED: "LTTP_Menu_Select.wav",
+            model.Game.GAME_OVER: "LTTP_Link_Hurt.wav",
         }
 
         self.sound_themes[new_theme_name] = new_theme

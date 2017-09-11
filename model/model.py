@@ -110,6 +110,8 @@ class Game():
             return
 
         self.tick_count += 1
+        if self.state == Game.PLAYING and self.tick_count % 100 == 0:
+            self.events.add_event(Event(Event.TICK, "Tick", Event.STATE))
 
     def get_next_event(self):
 
@@ -182,6 +184,8 @@ class Event():
     STATE = "state"
 
     # Events
+    TICK = "Tick"
+    PLAYING = "playing"
 
 
     def __init__(self, name : str, description : str = None, type : str = DEFAULT):
