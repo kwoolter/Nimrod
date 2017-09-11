@@ -106,11 +106,12 @@ class Game():
 
     def tick(self):
 
-        if self.state == Game.PAUSED:
+        if self.state != Game.PLAYING:
             return
 
         self.tick_count += 1
-        if self.state == Game.PLAYING and self.tick_count % 100 == 0:
+
+        if self.tick_count % 100 == 0:
             self.events.add_event(Event(Event.TICK, "Tick", Event.STATE))
 
     def get_next_event(self):
