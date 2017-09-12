@@ -125,7 +125,8 @@ class AudioManager:
 
             model.Game.GAME_OVER: "01-souls-of-fire.mp3",
             model.Game.READY: "Heroic_Age.mp3",
-            model.Game.PLAYING: "M02_Firelink Shrine.mp3",
+            model.Game.PLAYING: "Crossing the Chasm.mp3",
+            model.Game.PAUSED: "Tabuk.mp3",
         }
 
         self.music_themes[new_theme_name] = new_theme
