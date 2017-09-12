@@ -1,6 +1,7 @@
 import collections
 import utils
 import logging
+import pickle
 
 class Character():
 
@@ -79,6 +80,7 @@ class Game():
         self.events.add_event(Event("{0} model created!".format(self.name)))
         self._state = Game.LOADED
 
+        self._stats = utils.StatEngine(self.name)
         self.hst = utils.HighScoreTable(self.name)
 
 
@@ -112,7 +114,7 @@ class Game():
         self.tick_count += 1
 
         if self.tick_count % 100 == 0:
-            self.events.add_event(Event(Event.TICK, "Tick", Event.STATE))
+            self.events.add_event(Event(Event.TICK, "Tick", Event.GAME))
 
     def get_next_event(self):
 
@@ -168,6 +170,12 @@ class Game():
 
         self.hst.save()
 
+    def save(self):
+        pass
+
+    def load(self):
+        pass
+
     def add_player(self, new_player : Player):
 
         if self.state != Game.READY:
@@ -183,6 +191,7 @@ class Event():
     QUIT = "quit"
     DEFAULT = "default"
     STATE = "state"
+    GAME = "game"
 
     # Events
     TICK = "Tick"

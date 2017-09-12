@@ -52,6 +52,9 @@ class AudioManager:
         sound = self.get_theme_sound(new_event.name, sound_theme=new_event.type)
         sound.play()
 
+        if new_event.type == model.Event.STATE:
+            self.play_theme_music(new_event.name)
+
     def initialise(self):
 
         self.sound_themes = {}
@@ -60,6 +63,12 @@ class AudioManager:
 
         self.load_sound_themes()
         self.load_music_themes()
+
+        pygame.mixer.pre_init(44100, -16, 2, 2048)
+        pygame.mixer.init()
+
+
+
 
     def get_theme_sound(self, sound_name: str, sound_theme: str = DEFAULT_THEME, play=True):
 
@@ -105,6 +114,7 @@ class AudioManager:
             model.Game.PLAYING: "LTTP_Rupee1.wav",
             model.Game.PAUSED: "LTTP_Menu_Select.wav",
             model.Game.GAME_OVER: "LTTP_Link_Hurt.wav",
+            model.Game.READY: "LA_TrendyGame_Win.wav",
         }
 
         self.sound_themes[new_theme_name] = new_theme
@@ -112,45 +122,14 @@ class AudioManager:
     def load_music_themes(self):
         new_theme_name = AudioManager.DEFAULT_THEME
         new_theme = {
-            Sounds.LEVEL_MUSIC: "Rains Will Fall.mp3",
-            Sounds.GAME_OVER: "game_over.mp3",
-            Sounds.GAME_READY: "Heroic_Age.mp3",
-            Sounds.INVENTORY: "M02_Firelink Shrine.ogg",
-            Sounds.INVENTORY: "01-souls-of-fire.mp3",
-            Sounds.SHOP: "Heroic Age.mp3",
+
+            model.Game.GAME_OVER: "01-souls-of-fire.mp3",
+            model.Game.READY: "Heroic_Age.mp3",
+            model.Game.PLAYING: "M02_Firelink Shrine.mp3",
         }
 
         self.music_themes[new_theme_name] = new_theme
 
-        new_theme_name = "winter"
-        new_theme = {
-            Sounds.LEVEL_MUSIC: "M02_Firelink Shrine.ogg",
-            Sounds.SHOP: "07 Exploring The Ruins.mp3",
-        }
-
-        self.music_themes[new_theme_name] = new_theme
-
-        new_theme_name = "desert"
-        new_theme = {
-            Sounds.LEVEL_MUSIC: "Old Road.mp3",
-            Sounds.LEVEL_MUSIC: "Eastern Thought.mp3",
-        }
-
-        self.music_themes[new_theme_name] = new_theme
-
-        new_theme_name = "chaos"
-        new_theme = {
-            Sounds.LEVEL_MUSIC: "Old Road.mp3",
-        }
-
-        self.music_themes[new_theme_name] = new_theme
-
-        new_theme_name = "end"
-        new_theme = {
-            Sounds.LEVEL_MUSIC: "Heroic Age.mp3",
-        }
-
-        self.music_themes[new_theme_name] = new_theme
 
     def play_theme_music(self, music_name: str, music_theme: str = DEFAULT_THEME, repeat: int = 1):
 
@@ -172,6 +151,9 @@ class AudioManager:
         try:
             if pygame.mixer.music.get_busy():
                 pygame.mixer.music.stop()
+
+            self.stop_music()
+
             print("playing '{0}' as the {1} music for theme {2}".format(music_file_name, music_name, music_theme))
             pygame.mixer.music.load(AudioManager.RESOURCES_DIR_MUSIC + music_file_name)
             pygame.mixer.music.play(-1)
