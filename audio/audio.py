@@ -123,7 +123,7 @@ class AudioManager:
         new_theme_name = AudioManager.DEFAULT_THEME
         new_theme = {
 
-            model.Game.GAME_OVER: "01-souls-of-fire.mp3",
+            model.Game.GAME_OVER: "Rains Will Fall.mp3",
             model.Game.READY: "Heroic_Age.mp3",
             model.Game.PLAYING: "Crossing the Chasm.mp3",
             model.Game.PAUSED: "Tabuk.mp3",
