@@ -11,9 +11,6 @@ from utils import drawText
 import utils
 
 
-
-
-
 class ImageManager:
     DEFAULT_SKIN = "default"
     RESOURCES_DIR = os.path.dirname(__file__) + "\\resources\\"
@@ -51,7 +48,8 @@ class ImageManager:
         new_skin_name = ImageManager.DEFAULT_SKIN
         new_skin = (new_skin_name, {
 
-            model.Objects.PLAYER: "player.png",
+            model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
+            model.Objects.HEART: "heart.png",
 
         })
 
@@ -60,7 +58,7 @@ class ImageManager:
         new_skin_name = "forest"
         new_skin = (new_skin_name, {
 
-            model.Objects.PLAYER: "player.png",
+            model.Objects.PLAYER: ("player.png","player1.png","player.png","player2.png"),
         })
 
         ImageManager.skins[new_skin_name] = new_skin
@@ -197,9 +195,6 @@ class MainFrame(View):
             self.game_over.draw()
             self.surface.blit(self.game_over.surface, (x, y))
 
-
-
-
         x = 0
         y = pane_rect.bottom - MainFrame.STATUS_HEIGHT
 
@@ -207,6 +202,15 @@ class MainFrame(View):
 
     def process_event(self, new_event: model.Event):
         print("MainFrame event process:{0}".format(new_event))
+
+    def tick(self):
+
+        if self.game.state == model.Game.READY:
+            self.game_ready.tick()
+        elif self.game.state == model.Game.PLAYING:
+            self.game_view.tick()
+        elif self.game.state == model.Game.GAME_OVER:
+            self.game_over.tick()
 
     def update(self):
         pygame.display.update()
@@ -335,7 +339,10 @@ class StatusBar(View):
 
         if self.game.state == model.Game.PLAYING:
 
-            pass
+            y = 8
+            x = int(pane_rect.width*3/4)
+
+            draw_icon(self.surface, x=x,y=y,icon_name=model.Objects.HEART, count=1, tick=self.tick_count)
 
         elif self.game.state == model.Game.PAUSED:
             msg = "F8:Save   F9:Load   Esc:Resume"
@@ -358,6 +365,17 @@ class StatusBar(View):
                       bg_colour=StatusBar.BG_COLOUR,
                       size=StatusBar.STATUS_TEXT_FONT_SIZE,
                       centre=False)
+        elif self.game.state == model.Game.GAME_OVER:
+            msg = "SPACE:Continue"
+            draw_text(self.surface,
+                      msg=msg,
+                      x=10,
+                      y=int(pane_rect.height / 2),
+                      fg_colour=StatusBar.FG_COLOUR,
+                      bg_colour=StatusBar.BG_COLOUR,
+                      size=StatusBar.STATUS_TEXT_FONT_SIZE,
+                      centre=False)
+
 
 
 
@@ -458,6 +476,16 @@ class GameReadyView(View):
                   size=40,
                   fg_colour=GameReadyView.FG_COLOUR,
                   bg_colour=GameReadyView.BG_COLOUR)
+
+        image = View.image_manager.get_skin_image(model.Objects.PLAYER, tick=self.tick_count)
+
+        image_width = 200
+        image_height = 200
+
+        x = pane_rect.centerx - int(image_width/2)
+        y += 40
+        image = pygame.transform.scale(image, (image_width,image_height))
+        self.surface.blit(image,(x,y))
 
         x = 0
         y = pane_rect.bottom - self.hst.surface.get_height()
@@ -573,7 +601,7 @@ class GameView(View):
 
     def tick(self):
         super(GameView, self).tick()
-        self.rpg_view.tick()
+
 
     def draw(self):
 

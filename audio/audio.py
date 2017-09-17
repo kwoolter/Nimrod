@@ -158,6 +158,7 @@ class AudioManager:
             print("playing '{0}' as the {1} music for theme {2}".format(music_file_name, music_name, music_theme))
             pygame.mixer.music.load(AudioManager.RESOURCES_DIR_MUSIC + music_file_name)
             pygame.mixer.music.play(-1)
+
         except Exception as err:
             print(str(err))
 

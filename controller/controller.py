@@ -50,8 +50,6 @@ class Controller:
 
         while loop is True:
 
-            self.game.tick()
-
             # Loop to process game events
             event = self.game.get_next_event()
 
@@ -106,7 +104,6 @@ class Controller:
                         if event.key == Controller.KEY_START:
                             self.game.initialise()
 
-            self.view.tick()
             self.view.draw()
             self.view.update()
 

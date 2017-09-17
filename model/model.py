@@ -113,7 +113,7 @@ class Game():
 
         self.tick_count += 1
 
-        if self.tick_count % 100 == 0:
+        if self.tick_count % 4 == 0:
             self.events.add_event(Event(Event.TICK, "Tick", Event.GAME))
 
     def get_next_event(self):
@@ -235,4 +235,5 @@ class Objects:
     WEST = "west"
     UP = "up"
     DOWN = "down"
+    HEART = "heart"
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
