@@ -5,10 +5,10 @@ import pygame
 from pygame.locals import *
 
 import model
-from utils import Colours
-from utils import draw_text
-from utils import drawText
 import utils
+from utils import Colours
+from utils import drawText
+from utils import draw_text
 
 
 class ImageManager:
@@ -58,7 +58,7 @@ class ImageManager:
         new_skin_name = "forest"
         new_skin = (new_skin_name, {
 
-            model.Objects.PLAYER: ("player.png","player1.png","player.png","player2.png"),
+            model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
         })
 
         ImageManager.skins[new_skin_name] = new_skin
@@ -118,8 +118,8 @@ class View():
     def draw(self):
         pass
 
-class MainFrame(View):
 
+class MainFrame(View):
     RESOURCES_DIR = os.path.dirname(__file__) + "\\resources\\"
 
     TITLE_HEIGHT = 80
@@ -136,8 +136,8 @@ class MainFrame(View):
 
         play_area_height = height - MainFrame.TITLE_HEIGHT - MainFrame.STATUS_HEIGHT
 
-        self.game_view = GameView(width, play_area_height )
-        self.game_ready = GameReadyView(width, play_area_height )
+        self.game_view = GameView(width, play_area_height)
+        self.game_ready = GameReadyView(width, play_area_height)
         self.game_over = GameOverView(width, play_area_height)
 
     def initialise(self):
@@ -168,7 +168,6 @@ class MainFrame(View):
 
         self.surface.fill(Colours.DARK_GREY)
 
-
         self.title_bar.draw()
         self.status_bar.draw()
 
@@ -184,11 +183,10 @@ class MainFrame(View):
 
         y += MainFrame.TITLE_HEIGHT
 
-
         if self.game.state == model.Game.READY:
             self.game_ready.draw()
             self.surface.blit(self.game_ready.surface, (x, y))
-        elif self.game.state == model.Game.PLAYING:
+        elif self.game.state in (model.Game.PLAYING, model.Game.PAUSED):
             self.game_view.draw()
             self.surface.blit(self.game_view.surface, (x, y))
         elif self.game.state == model.Game.GAME_OVER:
@@ -219,9 +217,7 @@ class MainFrame(View):
         pygame.quit()
 
 
-
 class TitleBar(View):
-
     FILL_COLOUR = Colours.BLACK
     TEXT_FG_COLOUR = Colours.GOLD
     TEXT_BG_COLOUR = None
@@ -249,7 +245,6 @@ class TitleBar(View):
         except Exception as err:
             print(str(err))
 
-
     def draw(self):
 
         super(TitleBar, self).draw()
@@ -264,7 +259,6 @@ class TitleBar(View):
         elif self.title is not None:
             msg = self.title
 
-
         pane_rect = self.surface.get_rect()
         draw_text(self.surface,
                   msg=msg,
@@ -272,7 +266,8 @@ class TitleBar(View):
                   y=int(pane_rect.height / 2),
                   fg_colour=TitleBar.TEXT_FG_COLOUR,
                   bg_colour=TitleBar.TEXT_BG_COLOUR,
-                  size=int(pane_rect.height/2))
+                  size=int(pane_rect.height / 2))
+
 
 class StatusBar(View):
     FG_COLOUR = Colours.WHITE
@@ -287,7 +282,7 @@ class StatusBar(View):
         super(StatusBar, self).__init__()
 
         self.surface = pygame.Surface((width, height))
-        self.text_box = pygame.Surface((width/2, height-4))
+        self.text_box = pygame.Surface((width / 2, height - 4))
         self.status_messages = []
         self.game = None
 
@@ -298,7 +293,6 @@ class StatusBar(View):
         self.game = game
         self.title = game.name
         self.current_message_number = 0
-
 
     def tick(self):
 
@@ -314,7 +308,6 @@ class StatusBar(View):
 
     def draw(self):
 
-
         self.surface.fill(StatusBar.BG_COLOUR)
 
         if len(self.status_messages) == 0 or self.current_message_number >= len(self.status_messages):
@@ -324,25 +317,25 @@ class StatusBar(View):
 
         pane_rect = self.surface.get_rect()
 
-        text_rect = pygame.Rect(0,0,pane_rect.width/2-4,pane_rect.height-4)
+        text_rect = pygame.Rect(0, 0, pane_rect.width / 2 - 4, pane_rect.height - 4)
 
         self.text_box.fill(StatusBar.BG_COLOUR)
 
         drawText(surface=self.text_box,
                  text=msg,
                  color=StatusBar.FG_COLOUR,
-                 rect = text_rect,
+                 rect=text_rect,
                  font=pygame.font.SysFont(pygame.font.get_default_font(), StatusBar.STATUS_TEXT_FONT_SIZE),
                  bkg=StatusBar.BG_COLOUR)
 
-        self.surface.blit(self.text_box, (pane_rect.width/4,4))
+        self.surface.blit(self.text_box, (pane_rect.width / 4, 4))
 
         if self.game.state == model.Game.PLAYING:
 
             y = 8
-            x = int(pane_rect.width*3/4)
+            x = int(pane_rect.width * 3 / 4)
 
-            draw_icon(self.surface, x=x,y=y,icon_name=model.Objects.HEART, count=1, tick=self.tick_count)
+            draw_icon(self.surface, x=x, y=y, icon_name=model.Objects.HEART, count=1, tick=self.tick_count)
 
         elif self.game.state == model.Game.PAUSED:
             msg = "F8:Save   F9:Load   Esc:Resume"
@@ -377,10 +370,7 @@ class StatusBar(View):
                       centre=False)
 
 
-
-
 class HighScoreTableView(View):
-
     TITLE_HEIGHT = 26
     TITLE_TEXT_SIZE = 30
     SCORE_HEIGHT = 23
@@ -438,8 +428,8 @@ class HighScoreTableView(View):
                           bg_colour=HighScoreTableView.BG_COLOUR)
                 rank += 1
 
-class GameReadyView(View):
 
+class GameReadyView(View):
     FG_COLOUR = Colours.GOLD
     BG_COLOUR = Colours.DARK_GREY
 
@@ -454,7 +444,6 @@ class GameReadyView(View):
     def initialise(self, game: model.Game):
         self.game = game
         self.hst.initialise(self.game.hst)
-
 
     def draw(self):
         if self.game is None:
@@ -482,10 +471,10 @@ class GameReadyView(View):
         image_width = 200
         image_height = 200
 
-        x = pane_rect.centerx - int(image_width/2)
+        x = pane_rect.centerx - int(image_width / 2)
         y += 40
-        image = pygame.transform.scale(image, (image_width,image_height))
-        self.surface.blit(image,(x,y))
+        image = pygame.transform.scale(image, (image_width, image_height))
+        self.surface.blit(image, (x, y))
 
         x = 0
         y = pane_rect.bottom - self.hst.surface.get_height()
@@ -494,7 +483,6 @@ class GameReadyView(View):
 
 
 class GameOverView(View):
-
     FG_COLOUR = Colours.WHITE
     BG_COLOUR = Colours.DARK_GREY
     SCORE_TEXT_SIZE = 22
@@ -579,7 +567,6 @@ class GameOverView(View):
 
 
 class GameView(View):
-
     BG_COLOUR = Colours.GREEN
     FG_COLOUR = Colours.WHITE
     TILE_WIDTH = 32
@@ -593,26 +580,22 @@ class GameView(View):
         self.game = None
 
     def initialise(self, game: model.Game):
-
         super(GameView, self).initialise()
 
         self.game = game
 
-
     def tick(self):
         super(GameView, self).tick()
 
-
     def draw(self):
-
         self.surface.fill(GameView.BG_COLOUR)
 
         if self.game is None:
             raise ("No Game to view!")
 
     def end(self):
-
         super(GameView, self).end()
+
 
 def draw_icon(surface, x, y, icon_name, count: int = None, tick: int = 0):
     image = View.image_manager.get_skin_image(tile_name=icon_name, skin_name="default", tick=tick)
