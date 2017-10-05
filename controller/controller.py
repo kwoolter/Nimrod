@@ -18,13 +18,12 @@ class Controller:
     def __init__(self):
 
         self.game = model.Game("Nimrod")
-        self.view = view.MainFrame(self.game,700,700)
+        self.view = view.MainFrame(self.game, 700, 700)
         self.audio = audio.AudioManager()
 
         self.initialise()
 
     def initialise(self):
-
 
         self.game.initialise()
         self.view.initialise()
@@ -35,7 +34,6 @@ class Controller:
 
         pygame.mixer.pre_init(44100, -16, 2, 2048)
         pygame.mixer.init()
-
 
     def run(self):
 

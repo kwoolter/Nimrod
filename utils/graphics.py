@@ -16,9 +16,8 @@ class Colours:
     TRANSPARENT = (255, 1, 1)
 
 
-
-def draw_text(surface, msg, x, y, size=32, fg_colour=Colours.WHITE, bg_colour=Colours.BLACK, alpha : int = 255, centre : bool = True):
-
+def draw_text(surface, msg, x, y, size=32, fg_colour=Colours.WHITE, bg_colour=Colours.BLACK, alpha: int = 255,
+              centre: bool = True):
     font = pygame.font.Font(None, size)
     if bg_colour is not None:
         text = font.render(msg, 1, fg_colour, bg_colour)
@@ -34,6 +33,7 @@ def draw_text(surface, msg, x, y, size=32, fg_colour=Colours.WHITE, bg_colour=Co
     textpos.centery = y
     surface.blit(text, textpos)
     surface.set_alpha(alpha)
+
 
 # draw some text into an area of a surface
 # automatically wraps words

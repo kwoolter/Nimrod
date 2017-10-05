@@ -1,11 +1,11 @@
 import collections
-import utils
 import logging
-import pickle
+
+import utils
+
 
 class Character():
-
-    def __init__(self, name : str, x : int = 1, y : int = 1, width : int = 1, height : int = 1, HP : int = 20):
+    def __init__(self, name: str, x: int = 1, y: int = 1, width: int = 1, height: int = 1, HP: int = 20):
         self.name = name
         self._HP = HP
         self._x = x
@@ -45,8 +45,9 @@ class Character():
         self._x = self.old_x
         self._y = self.old_y
 
+
 class Player(Character):
-    def __init__(self, name : str, x : int = 1, y : int = 1, HP : int = 10):
+    def __init__(self, name: str, x: int = 1, y: int = 1, HP: int = 10):
         super(Player, self).__init__(name=name, x=x, y=y, HP=HP)
         self.initialise()
 
@@ -59,11 +60,10 @@ class Player(Character):
 
     @property
     def score(self):
-
         return self.kills + self.treasure
 
-class Game():
 
+class Game():
     LOADED = "LOADED"
     READY = "READY"
     PLAYING = "PLAYING"
@@ -71,7 +71,7 @@ class Game():
     GAME_OVER = "GAME OVER"
     END = "END"
 
-    def __init__(self, name : str):
+    def __init__(self, name: str):
 
         self.name = name
         self.tick_count = 0
@@ -82,7 +82,6 @@ class Game():
 
         self._stats = utils.StatEngine(self.name)
         self.hst = utils.HighScoreTable(self.name)
-
 
     def __str__(self):
         return "{0}. Events({1}).".format(self.name, self.events.size())
@@ -124,7 +123,6 @@ class Game():
 
         return next_event
 
-
     def initialise(self):
 
         self.state = Game.READY
@@ -135,8 +133,7 @@ class Game():
 
         self.state = Game.PLAYING
 
-
-    def pause(self, is_paused : bool = True):
+    def pause(self, is_paused: bool = True):
 
         if self.state == Game.PAUSED and is_paused is False:
 
@@ -155,18 +152,17 @@ class Game():
     def game_over(self):
 
         if self._state != Game.GAME_OVER:
-
             logging.info("Game Over {0}...".format(self.name))
 
             self.hst.save()
 
-            self.state=Game.GAME_OVER
+            self.state = Game.GAME_OVER
 
     def end(self):
 
         logging.info("Ending {0}...".format(self.name))
 
-        self.state=Game.END
+        self.state = Game.END
 
         self.hst.save()
 
@@ -176,7 +172,7 @@ class Game():
     def load(self):
         pass
 
-    def add_player(self, new_player : Player):
+    def add_player(self, new_player: Player):
 
         if self.state != Game.READY:
             raise Exception("Game is in state {0} so can't add new players!".format(self.state))
@@ -185,8 +181,8 @@ class Game():
 
         self.player = new_player
 
-class Event():
 
+class Event():
     # Event Types
     QUIT = "quit"
     DEFAULT = "default"
@@ -197,8 +193,7 @@ class Event():
     TICK = "Tick"
     PLAYING = "playing"
 
-
-    def __init__(self, name : str, description : str = None, type : str = DEFAULT):
+    def __init__(self, name: str, description: str = None, type: str = DEFAULT):
         self.name = name
         self.description = description
         self.type = type
@@ -211,7 +206,7 @@ class EventQueue():
     def __init__(self):
         self.events = collections.deque()
 
-    def add_event(self, new_event : Event):
+    def add_event(self, new_event: Event):
         self.events.append(new_event)
 
     def pop_event(self):
@@ -221,12 +216,11 @@ class EventQueue():
         return len(self.events)
 
     def print(self):
-
         for event in self.events:
             print(event)
 
-class Objects:
 
+class Objects:
     TREE = "tree"
     PLAYER = "player"
     NORTH = "north"
