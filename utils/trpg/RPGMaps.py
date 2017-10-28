@@ -129,7 +129,7 @@ class MapLink:
         return self.direction in MapLink.valid_directions
 
     # Check if the link is locked
-    def is_locked(self, character: Character = None):
+    def is_locked(self, character: RPGCharacter = None):
         # If this link is not lockable then locked is always false
         if self.is_lockable == False:
             locked = False
@@ -159,7 +159,7 @@ class MapLink:
         return locked
 
     # lock/unlock a link
-    def lock(self, is_locked, character: Character = None):
+    def lock(self, is_locked, character: RPGCharacter = None):
 
         if character is None:
             self.locked = is_locked
@@ -178,7 +178,7 @@ class MapLink:
             character.add_stat(new_stat)
 
     # Check if the link is hidden
-    def is_hidden(self, character: Character = None):
+    def is_hidden(self, character: RPGCharacter = None):
         # If no game stat provide then use local state value
         if character is None:
             hidden = self.is_hidden
@@ -204,7 +204,7 @@ class MapLink:
         return hidden
 
     # hide/unhide a link
-    def hide(self, is_hidden, character: Character = None):
+    def hide(self, is_hidden, character: RPGCharacter = None):
 
         if character is None:
             self.hidden = is_hidden
@@ -331,11 +331,11 @@ class LevelMap:
                 "Lock(" + str(is_locked) + "): No link found " + direction + " from location " + str(location_id))
 
     # Print a specified location
-    def print_location(self, location_id: int, character: Character = None):
+    def print_location(self, location_id: int, character: RPGCharacter = None):
         print(self.location_to_string(location_id, character))
 
     # Convert a specified Location to string describing the location in detail
-    def location_to_string(self, location_id: int, character: Character = None):
+    def location_to_string(self, location_id: int, character: RPGCharacter = None):
 
         # For the current location ID get the full details of the location from the LocationFactory and print...
         location = self._locations.get_location(location_id)

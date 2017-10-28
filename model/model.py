@@ -1,11 +1,14 @@
 import collections
 import logging
-
 import utils
+import utils.trpg as trpg
+import os
 
 
-class Character():
+class Character(trpg.RPGCharacter):
     def __init__(self, name: str, x: int = 1, y: int = 1, width: int = 1, height: int = 1, HP: int = 20):
+        #super(trpg.RPGCharacter, self).__init__(name, race, rpg_class)
+
         self.name = name
         self._HP = HP
         self._x = x
@@ -17,6 +20,7 @@ class Character():
         self.initialise()
 
     def initialise(self):
+
         self.HP = self._HP
 
     @property
@@ -71,6 +75,9 @@ class Game():
     GAME_OVER = "GAME OVER"
     END = "END"
 
+    SAVE_GAME_DIR = os.path.dirname(__file__) + "\\saves\\"
+    GAME_DATA_DIR = os.path.dirname(__file__) + "\\data\\"
+
     def __init__(self, name: str):
 
         self.name = name
@@ -79,9 +86,16 @@ class Game():
         self.events = EventQueue()
         self.events.add_event(Event("{0} model created!".format(self.name)))
         self._state = Game.LOADED
+        self._locations = None
+        self._items = None
+        self._maps = None
+        self._locations = None
+        self._npcs = None
 
         self._stats = utils.StatEngine(self.name)
         self.hst = utils.HighScoreTable(self.name)
+
+
 
     def __str__(self):
         return "{0}. Events({1}).".format(self.name, self.events.size())
@@ -127,7 +141,45 @@ class Game():
 
         self.state = Game.READY
 
+        self.load_characters("characters.csv")
+        self.load_map("locations.csv", "maplinks.csv")
+        self.load_items("items.csv")
+
+        self._stats.print()
+
         self.hst.load()
+
+    def load_map(self, location_file_name : str, map_links_file_name : str):
+
+        # Load in locations
+        self._locations = trpg.LocationFactory(Game.GAME_DATA_DIR + location_file_name)
+        self._locations.load()
+
+        # Load in level maps
+        self._maps = trpg.MapFactory(self._locations)
+        self._maps.load("Level1",1,Game.GAME_DATA_DIR + map_links_file_name)
+
+    def load_characters(self, character_file_name : str):
+        self._npcs = trpg.RPGCharacterFactory(Game.GAME_DATA_DIR + character_file_name, self._stats)
+        self._npcs.load()
+        self._npcs.print()
+
+        rpg_classes = trpg.RPGCSVFactory("Classes", Game.GAME_DATA_DIR + "classes.csv")
+        rpg_classes.load()
+
+        rpg_races = trpg.RPGCSVFactory("Races", Game.GAME_DATA_DIR + "races.csv")
+        rpg_races.load()
+
+        character_names = self._npcs.get_character_names()
+
+        for character_name in character_names:
+            character = self._npcs.get_character_by_name(character_name)
+            character.load_stats(rpg_classes.get_stats_by_name(character.rpg_class))
+            character.load_stats(rpg_races.get_stats_by_name(character.race))
+
+    def load_items(self, item_file_name : str):
+        self._items = trpg.ItemFactory(Game.GAME_DATA_DIR + item_file_name, self._stats)
+        self._items.load()
 
     def start(self):
 

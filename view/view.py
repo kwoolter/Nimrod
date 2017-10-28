@@ -196,7 +196,7 @@ class MainFrame(View):
         x = 0
         y = pane_rect.bottom - MainFrame.STATUS_HEIGHT
 
-        self.surface.blit(self.status_bar.surface, (x, y))
+        #self.surface.blit(self.status_bar.surface, (x, y))
 
     def process_event(self, new_event: model.Event):
         print("MainFrame event process:{0}".format(new_event))

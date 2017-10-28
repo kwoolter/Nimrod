@@ -57,7 +57,7 @@ class RPGCheck(object):
         self._checks.append(new_check)
 
     # See if the check is available based on a character's current stats
-    def is_available(self, character :  Character):
+    def is_available(self, character :  RPGCharacter):
 
         available = True
 
@@ -97,7 +97,7 @@ class RPGCheck(object):
         return available
 
     # Check if a check has been completed based on the current player stats
-    def is_completed(self, character : Character):
+    def is_completed(self, character : RPGCharacter):
 
         completed = True
 
@@ -113,7 +113,7 @@ class RPGCheck(object):
         return completed
 
     #  Attempt a check
-    def attempt(self, character :  Character):
+    def attempt(self, character :  RPGCharacter):
 
         # Assume we are going to succeed
         succeed = True

@@ -7,11 +7,11 @@ from operator import attrgetter
 from .RPGObject import *
 
 
-class Character(RPGObject):
+class RPGCharacter(RPGObject):
     CHARACTER_TYPES = {0: "PC", 1: "NPC", 2: "Vendor", 3: "Enemy", 4: "Thief", 5: "Trainer", 6: "Banker"}
     CHARACTERS = 0
     INVENTORY_ID = -1000
-    # PLAYER_CHARACTER_INVENTORY_ID = ItemFactory.INVENTORY
+    #PLAYER_CHARACTER_INVENTORY_ID = ItemFactory.INVENTORY
     NPC_TYPE = "NPCType"
     TYPE_PC = 0
     TYPE_NPC = 1
@@ -21,7 +21,7 @@ class Character(RPGObject):
     TYPE_TRAINER = 5
     TYPE_BANKER = 6
 
-    # CORE_STAT_NAMES = ("Dexterity", "Intelligence", "Strength", "Wisdom", "Charisma", "Constitution")
+    CORE_STAT_NAMES = ("Dexterity", "Intelligence", "Strength", "Wisdom", "Charisma", "Constitution")
     CORE_STAT_STANDARD_ARRAY = (15, 14, 13, 12, 10, 8)
 
     '''
@@ -30,7 +30,7 @@ class Character(RPGObject):
 
     def __init__(self, name: str, race: str, rpg_class: str, is_player_character: bool = False):
 
-        super(Character, self).__init__(name + " the " + race + " " + rpg_class, "Character")
+        super(RPGCharacter, self).__init__(name + " the " + race + " " + rpg_class, "Character")
 
         self.name = name
         self.race = race
@@ -38,8 +38,8 @@ class Character(RPGObject):
         self.create_time = datetime.datetime.now()
         self.is_player_character = is_player_character
 
-        Character.CHARACTERS += 1
-        self.id = Character.CHARACTERS
+        RPGCharacter.CHARACTERS += 1
+        self.id = RPGCharacter.CHARACTERS
 
         # Create an empty dictionary to store non-numeric attributes
         self._attributes = {}
@@ -47,19 +47,19 @@ class Character(RPGObject):
     @property
     def inventory_id(self):
         if self.is_player_character:
-            return Character.PLAYER_CHARACTER_INVENTORY_ID
+            return RPGCharacter.PLAYER_CHARACTER_INVENTORY_ID
         else:
             stat = self.get_stat("InventoryID")
             if stat is None:
-                return Character.INVENTORY_ID - self.id
+                return RPGCharacter.INVENTORY_ID - self.id
             else:
                 return stat.value
 
     @property
     def type(self):
-        stat = self.get_stat(Character.NPC_TYPE)
+        stat = self.get_stat(RPGCharacter.NPC_TYPE)
         if stat is None:
-            return Character.TYPE_NPC
+            return RPGCharacter.TYPE_NPC
         else:
             return stat.value
 
@@ -70,8 +70,8 @@ class Character(RPGObject):
         '''
 
         # Load in some core stats using the standard array to randomly assign scores
-        core_stat_values = set(Character.CORE_STAT_STANDARD_ARRAY)
-        for core_stat in Character.CORE_STAT_NAMES:
+        core_stat_values = set(RPGCharacter.CORE_STAT_STANDARD_ARRAY)
+        for core_stat in RPGCharacter.CORE_STAT_NAMES:
             self.add_stat(CoreStat(core_stat, "Abilities", core_stat_values.pop()))
 
             # self.add_derived_stats()
@@ -88,9 +88,9 @@ class Character(RPGObject):
         type = self.get_stat("NPCType")
 
         if type is not None:
-            text += " type=" + Character.CHARACTER_TYPES[type.value]
+            text += " type=" + RPGCharacter.CHARACTER_TYPES[type.value]
         else:
-            text += " type=" + Character.CHARACTER_TYPES[0]
+            text += " type=" + RPGCharacter.CHARACTER_TYPES[0]
 
         print(text)
 
@@ -101,9 +101,9 @@ class Character(RPGObject):
         text += " inventory id=%i" % self.inventory_id
         type = self.get_stat("NPCType")
         if type is not None:
-            text += " type=" + Character.CHARACTER_TYPES[type.value]
+            text += " type=" + RPGCharacter.CHARACTER_TYPES[type.value]
         else:
-            text += " type=" + Character.CHARACTER_TYPES[0]
+            text += " type=" + RPGCharacter.CHARACTER_TYPES[0]
 
         # Build list of all attributes in the private and public stats
         categories = list(self._private_data.get_category_names())
@@ -201,7 +201,7 @@ class Character(RPGObject):
                              __class__, self.name, route_position)
 
 
-class Player(object):
+class RPGPlayer(object):
     '''
     Class to capture the basic details of a player and which characters they own
     '''
@@ -226,7 +226,7 @@ class Player(object):
         return text
 
     # Register a character as belonging to this player
-    def add_character(self, new_character: Character):
+    def add_character(self, new_character: RPGCharacter):
         self._characters.add(new_character)
 
     # Get all of the characters owned by this player
@@ -350,7 +350,7 @@ class RPGCSVFactory(object):
         return sorted(matches)
 
 
-class CharacterFactory(object):
+class RPGCharacterFactory(object):
     '''
     Load in some characters from a character CSV file
     '''
@@ -378,9 +378,9 @@ class CharacterFactory(object):
 
             # For each row in the file....
             for row in reader:
-                new_character = Character(row.get("Name"), \
-                                          row.get("Race"), \
-                                          row.get("Class"))
+                new_character = RPGCharacter(row.get("Name"), \
+                                             row.get("Race"), \
+                                             row.get("Class"))
 
                 new_character.public_data = self.public_data
                 self._characters[new_character.name] = new_character
@@ -406,7 +406,7 @@ class CharacterFactory(object):
                     elif stat_value is not "":
                         new_character._attributes[stat_name] = stat_value
 
-                new_character.load_stats(new_stat_list, global_stat=False)
+                new_character.load_stats(new_stat_list)
 
                 logging.info("%s.load(): Now getting stats %s...", __class__, str(other_header_names))
 

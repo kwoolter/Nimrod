@@ -1,0 +1,12 @@
+Name,Category,Description,Location,Weight,Value
+a stone key,Item,a large key made of stone,-106,5,1
+a lock pick,Item,a thin piece of metal used for picking locks,52,1,1
+a potion bottle,Item,a small purple glass bottle half filled with liquid,0,2,10
+a feather,Item,a brightly coloured feather of some exotic bird,5,1,20
+some bread,Item,a small loaf of bread,-103,1,1
+some water,Item,a flask of water,-100,1,1
+an axe,Item,a dragon tail axe,-105,20,100
+an old treasure chest,Item,an old treasure chest,1,10000,0
+a shield,Item,a hero's shield,-103,10,25
+a sword,Item,a hero's sword,-103,20,25
+a bow,Item,a hero's bow,-103,20,25
