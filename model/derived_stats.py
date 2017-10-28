@@ -1,9 +1,10 @@
 __author__ = 'user'
 
-from gameofstats.trpg_local.RPGCharacter import Character
-from gameofstats.trpg_local.RPGCharacter import RPGObject
-from gameofstats.trpg_local.StatEngine import CoreStat
-from gameofstats.trpg_local.StatEngine import DerivedStat
+from utils.trpg import RPGObject
+from utils.trpg import RPGCharacter
+from utils.trpg import CoreStat
+from utils.trpg import DerivedStat
+
 
 
 class RPGDerivedStat(DerivedStat):
@@ -345,7 +346,7 @@ class Score(RPGDerivedStat):
         return kills + treasure + (trophies * 50)
 
 
-def add_core_stats(character: Character):
+def add_core_stats(character: RPGCharacter):
     character.add_stat(CoreStat("Damage", "Attributes", 0, owner=character))
     character.add_stat(CoreStat("Level", "Attributes", 1, owner=character))
     character.add_stat(CoreStat("ItemWeight", "Attributes", 0, owner=character))
@@ -361,7 +362,7 @@ def add_core_stats(character: Character):
     return
 
 
-def add_derived_stats(character: Character):
+def add_derived_stats(character: RPGCharacter):
     character.add_stat(XPToLevel(character))
     character.add_stat(physical_attack_chop(character))
     character.add_stat(physical_attack_regular(character))

@@ -3,6 +3,7 @@ import logging
 import utils
 import utils.trpg as trpg
 import os
+from .derived_stats import *
 
 
 class Character(trpg.RPGCharacter):
@@ -176,6 +177,8 @@ class Game():
             character = self._npcs.get_character_by_name(character_name)
             character.load_stats(rpg_classes.get_stats_by_name(character.rpg_class))
             character.load_stats(rpg_races.get_stats_by_name(character.race))
+            add_core_stats(character)
+            add_derived_stats(character)
 
     def load_items(self, item_file_name : str):
         self._items = trpg.ItemFactory(Game.GAME_DATA_DIR + item_file_name, self._stats)
