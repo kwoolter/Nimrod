@@ -77,7 +77,7 @@ class Game():
     END = "END"
 
     SAVE_GAME_DIR = os.path.dirname(__file__) + "\\saves\\"
-    GAME_DATA_DIR = os.path.dirname(__file__) + "\\data\\"
+    GAME_DATA_DIR = os.path.dirname(__file__) + "\\Squoids_data\\"
 
     def __init__(self, name: str):
 
@@ -176,7 +176,7 @@ class Game():
         for character_name in character_names:
             character = self._npcs.get_character_by_name(character_name)
             character.load_stats(rpg_classes.get_stats_by_name(character.rpg_class))
-            character.load_stats(rpg_races.get_stats_by_name(character.race))
+            character.load_stats(rpg_races.get_stats_by_name(character.race),overwrite=False)
             add_core_stats(character)
             add_derived_stats(character)
 
