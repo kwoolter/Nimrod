@@ -385,11 +385,13 @@ class RPGCharacterFactory(object):
                 new_character.public_data = self.public_data
                 self._characters[new_character.name] = new_character
 
-                logging.info("%s.load(): Character %s the %s %s loaded.", __class__, \
+                logging.info("%s.load(): Character %s the %s %s created.", __class__, \
                              new_character.name, new_character.race, new_character.rpg_class)
 
                 other_header_names = set(header) - set(["Name", "Race", "Class"])
                 new_stat_list = []
+
+                logging.info("%s.load(): Now getting stats %s...", __class__, str(other_header_names))
 
                 # For each column header name
                 for stat_name in other_header_names:
@@ -408,7 +410,10 @@ class RPGCharacterFactory(object):
 
                 new_character.load_stats(new_stat_list)
 
-                logging.info("%s.load(): Now getting stats %s...", __class__, str(other_header_names))
+                logging.info("%s.load(): Character %s the %s %s loaded.", __class__,
+                             new_character.name,
+                             new_character.race,
+                             new_character.rpg_class)
 
             rpg_character_file.close()
 
