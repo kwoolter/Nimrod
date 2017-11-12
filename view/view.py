@@ -51,7 +51,7 @@ class ImageManager:
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.HEART: "heart.png",
             model.Objects.BLOCK: "Block32x32.png",
-            model.Objects.BLOCK_TOP: "Block32x32Top.png",
+            model.Objects.BLOCK_TOP: "Block32x32Top2.png",
             model.Objects.BLOCK_BOTTOM: "Block32x32Bottom.png",
             model.Objects.BLOCK_RIGHT: "Block32x32Right.png",
             model.Objects.BLOCK_LEFT: "Block32x32Left.png",
@@ -573,7 +573,7 @@ class GameOverView(View):
 
 
 class GameView(View):
-    BG_COLOUR = Colours.GREEN
+    BG_COLOUR = Colours.BLACK
     FG_COLOUR = Colours.WHITE
     TILE_WIDTH = 32
     TILE_HEIGHT = 32
