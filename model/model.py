@@ -22,7 +22,10 @@ class Objects:
     DOWN = "down"
     HEART = "heart"
     BLOCK = "block"
-    BLOCK_HALF = "block_half"
+    BLOCK_TOP = "block_top"
+    BLOCK_BOTTOM = "block_bottom"
+    BLOCK_RIGHT = "block_right"
+    BLOCK_LEFT = "block_left"
     BLUE = "blue"
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
 

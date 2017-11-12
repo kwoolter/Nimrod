@@ -1,4 +1,8 @@
 Code,Name,width,depth,height,solid,visible,interactable
 #,block,32,32,32,True,True,False
-^,block_half,32,32,32,True,True,False
+^,block_top,32,32,32,True,True,False
+v,block_bottom,32,32,32,True,True,False
+^,block_top,32,32,32,True,True,False
+>,block_left,32,32,32,True,True,False
+<,block_right,32,32,32,True,True,False
 ~,blue,32,32,32,True,True,False

@@ -51,7 +51,10 @@ class ImageManager:
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.HEART: "heart.png",
             model.Objects.BLOCK: "Block32x32.png",
-            model.Objects.BLOCK_HALF: "Block32x32Half.png",
+            model.Objects.BLOCK_TOP: "Block32x32Top.png",
+            model.Objects.BLOCK_BOTTOM: "Block32x32Bottom.png",
+            model.Objects.BLOCK_RIGHT: "Block32x32Right.png",
+            model.Objects.BLOCK_LEFT: "Block32x32Left.png",
             model.Objects.BLUE: "Block32x32Blue.png"
 
         })
