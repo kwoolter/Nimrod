@@ -1,0 +1,295 @@
+ID,Name,Skin,Layer,Layout
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,0,FFFFFFFFFFFFFFFFFFFF
+99,FloorTest,default,1,####################
+99,FloorTest,default,1,#     $  ##        #
+99,FloorTest,default,1,#         #     $  #
+99,FloorTest,default,1,#         #        #
+99,FloorTest,default,1,#   T     D        #
+99,FloorTest,default,1,#         ###d######
+99,FloorTest,default,1,#     T   #        #
+99,FloorTest,default,1,#  $      ###      #
+99,FloorTest,default,1,####        #   K  #
+99,FloorTest,default,1,#     ^     d      #
+99,FloorTest,default,1,#           #    $##
+99,FloorTest,default,1,#########S##########
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,0,FFFFFFFFFFFFFFFFFFFF
+1,Floor1,default,1,{ = = = N   = =n =} 
+1,Floor1,default,1,                    
+1,Floor1,default,1,|                 1 
+1,Floor1,default,1,   c            c   
+1,Floor1,default,1,|      ^          1 
+1,Floor1,default,1,             $      
+1,Floor1,default,1,|                 1 
+1,Floor1,default,1,                    
+1,Floor1,default,1,W  $              E 
+1,Floor1,default,1,       K    K       
+1,Floor1,default,1,                    
+1,Floor1,default,1,                    
+1,Floor1,default,1,|                 1 
+1,Floor1,default,1,              ^     
+1,Floor1,default,1,|        k        1 
+1,Floor1,default,1,                    
+1,Floor1,default,1,|  c            c 1 
+1,Floor1,default,1,                    
+1,Floor1,default,1,[ - - - S   - - - ] 
+2,Floor2,default,0,                    
+2,Floor2,default,0,                    
+2,Floor2,default,0,* * * * * * * * * * 
+2,Floor2,default,0,                    
+2,Floor2,default,0,* * * * * * * * * * 
+2,Floor2,default,0,                    
+2,Floor2,default,0,* * * * * * * * * * 
+2,Floor2,default,0,                    
+2,Floor2,default,0,* * * * * * * * * * 
+2,Floor2,default,0,                    
+2,Floor2,default,0,* * * * * * * * * * 
+2,Floor2,default,0,                    
+2,Floor2,default,0,* * * * * * * * * * 
+2,Floor2,default,0,                    
+2,Floor2,default,0,* * * * * * * * * * 
+2,Floor2,default,0,                    
+2,Floor2,default,0,* * * * * * * * * * 
+2,Floor2,default,0,                    
+2,Floor2,default,0,* * * * * * * * * * 
+2,Floor2,default,1,{ = = = N   = = = } 
+2,Floor2,default,1,                    
+2,Floor2,default,1,|                 1 
+2,Floor2,default,1,                    
+2,Floor2,default,1,|       / - \     1 
+2,Floor2,default,1,        1 + |       
+2,Floor2,default,1,|                 1 
+2,Floor2,default,1,W   / - ] + [ -\  E 
+2,Floor2,default,1,                    
+2,Floor2,default,1,    1 + + + + +|    
+2,Floor2,default,1,                    
+2,Floor2,default,1,|   ( = } + { =)  1 
+2,Floor2,default,1,                    
+2,Floor2,default,1,|       1 + |     1 
+2,Floor2,default,1,        ( = )       
+2,Floor2,default,1,|                 1 
+2,Floor2,default,1,                    
+2,Floor2,default,1,|                 1 
+2,Floor2,default,1,[ - - - S   - - - ] 
+3,Floor3,default,1,{ = = = N   = = = } 
+3,Floor3,default,1,                    
+3,Floor3,default,1,|                 1 
+3,Floor3,default,1,                    
+3,Floor3,default,1,|                 1 
+3,Floor3,default,1,        / \         
+3,Floor3,default,1,|                 1 
+3,Floor3,default,1,W     / ] [ \     E 
+3,Floor3,default,1,                    
+3,Floor3,default,1,      ( } { )       
+3,Floor3,default,1,                    
+3,Floor3,default,1,|       ( )       1 
+3,Floor3,default,1,                    
+3,Floor3,default,1,|                 1 
+3,Floor3,default,1,                    
+3,Floor3,default,1,|                 1 
+3,Floor3,default,1,                    
+3,Floor3,default,1,|                 1 
+3,Floor3,default,1,[ - - - S   - - - ] 
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,0,FFFFFFFFFFFFFFFFFFFF
+4,Floor4,default,1,+ + + { N   } + + + 
+4,Floor4,default,1,                    
+4,Floor4,default,1,+ + + |     1 + + + 
+4,Floor4,default,1,                    
+4,Floor4,default,1,+ + + |     1 + + + 
+4,Floor4,default,1,                    
+4,Floor4,default,1,{ = = )     ( = = } 
+4,Floor4,default,1,                    
+4,Floor4,default,1,W                 E 
+4,Floor4,default,1,                    
+4,Floor4,default,1,                    
+4,Floor4,default,1,                    
+4,Floor4,default,1,[ - - \     / - - ] 
+4,Floor4,default,1,                    
+4,Floor4,default,1,+ + + |     1 + + + 
+4,Floor4,default,1,                    
+4,Floor4,default,1,+ + + |     1 + + + 
+4,Floor4,default,1,                    
+4,Floor4,default,1,+ + + [ S   ] + + + 
+5,Floor5,default,1,{ = = = N   = = = } 
+5,Floor5,default,1,                    
+5,Floor5,default,1,|                 1 
+5,Floor5,default,1,                    
+5,Floor5,default,1,|   / \     / \   1 
+5,Floor5,default,1,                    
+5,Floor5,default,1,|   ( )     ( )   1 
+5,Floor5,default,1,W                 E 
+5,Floor5,default,1,                    
+5,Floor5,default,1,                    
+5,Floor5,default,1,                    
+5,Floor5,default,1,|                 1 
+5,Floor5,default,1,        / \         
+5,Floor5,default,1,|                 1 
+5,Floor5,default,1,        ( )         
+5,Floor5,default,1,|                 1 
+5,Floor5,default,1,[ \             / ] 
+5,Floor5,default,1,                    
+5,Floor5,default,1,+ [ - - S   - - ] + 
+6,Floor6,default,1,{ = = = N   = = = } 
+6,Floor6,default,1,                    
+6,Floor6,default,1,|                 1 
+6,Floor6,default,1,                    
+6,Floor6,default,1,|                 1 
+6,Floor6,default,1,                    
+6,Floor6,default,1,|                 1 
+6,Floor6,default,1,W                 E 
+6,Floor6,default,1,                    
+6,Floor6,default,1,                    
+6,Floor6,default,1,                    
+6,Floor6,default,1,|                 1 
+6,Floor6,default,1,                    
+6,Floor6,default,1,|                 1 
+6,Floor6,default,1,                    
+6,Floor6,default,1,|                 1 
+6,Floor6,default,1,                    
+6,Floor6,default,1,|                 1 
+6,Floor6,default,1,[ - - - S   - - - ] 
+7,Floor7,default,1,+ + + { = = = N   } 
+7,Floor7,default,1,                    
+7,Floor7,default,1,{ = } |           1 
+7,Floor7,default,1,                    
+7,Floor7,default,1,|   1 |   / - - - ] 
+7,Floor7,default,1,                    
+7,Floor7,default,1,|   1 |   ( = = = } 
+7,Floor7,default,1,W                   
+7,Floor7,default,1,    1 |           1 
+7,Floor7,default,1,                    
+7,Floor7,default,1,    1 |           1 
+7,Floor7,default,1,|                   
+7,Floor7,default,1,    1 [ - - - \   1 
+7,Floor7,default,1,|                   
+7,Floor7,default,1,    ( = = = = )   1 
+7,Floor7,default,1,|                   
+7,Floor7,default,1,_                 1 
+7,Floor7,default,1,|                   
+7,Floor7,default,1,[ - - - - - - - - ] 
+8,Floor8,default,1,!!!!!( =N   =) !!!!!
+8,Floor8,default,1,!                  !
+8,Floor8,default,1,!                  !
+8,Floor8,default,1,!                  !
+8,Floor8,default,1,!                  !
+8,Floor8,default,1,\                 / 
+8,Floor8,default,1,                    
+8,Floor8,default,1,|                 1 
+8,Floor8,default,1,W                 E 
+8,Floor8,default,1,                    
+8,Floor8,default,1,                    
+8,Floor8,default,1,                    
+8,Floor8,default,1,|                 1 
+8,Floor8,default,1,)                 ( 
+8,Floor8,default,1,                    
+8,Floor8,default,1,!                  !
+8,Floor8,default,1,!                  !
+8,Floor8,default,1,!                  !
+8,Floor8,default,1,!    / -S   -\     !
+8,Floor8,default,1,!!!!!          !!!!!
+8,Floor8,default,0,* * * * * * * * * * 
+8,Floor8,default,0,                    
+8,Floor8,default,0,* * * * * * * * * * 
+8,Floor8,default,0,                    
+8,Floor8,default,0,* * * * * * * * * * 
+8,Floor8,default,0,                    
+8,Floor8,default,0,* * * * * * * * * * 
+8,Floor8,default,0,                    
+8,Floor8,default,0,* * * * * * * * * * 
+8,Floor8,default,0,                    
+8,Floor8,default,0,* * * * * * * * * * 
+8,Floor8,default,0,                    
+8,Floor8,default,0,* * * * * * * * * * 
+8,Floor8,default,0,                    
+8,Floor8,default,0,* * * * * * * * * * 
+8,Floor8,default,0,                    
+8,Floor8,default,0,* * * * * * * * * * 
+8,Floor8,default,0,                    
+8,Floor8,default,0,* * * * * * * * * * 
+9,Floor9,default,1,      ( N   )    
+9,Floor9,default,1,                    
+9,Floor9,default,1,                    
+9,Floor9,default,1,                    
+9,Floor9,default,1,            T      
+9,Floor9,default,1,                   
+9,Floor9,default,1,\                 / 
+9,Floor9,default,1,    t               
+9,Floor9,default,1,W                 E 
+9,Floor9,default,1,           T        
+9,Floor9,default,1,                    
+9,Floor9,default,1,                    
+9,Floor9,default,1,)                 ( 
+9,Floor9,default,1,                    
+9,Floor9,default,1,      t             
+9,Floor9,default,1,                    
+9,Floor9,default,1,                    
+9,Floor9,default,1,                    
+9,Floor9,default,1,    T / S   \ T     
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,                    
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,                    
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,                    
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,                    
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,                    
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,                    
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,                    
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,                    
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,                    
+9,Floor9,default,0,g g g g g g g g g g 
+9,Floor9,default,0,

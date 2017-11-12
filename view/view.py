@@ -50,6 +50,9 @@ class ImageManager:
 
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.HEART: "heart.png",
+            model.Objects.BLOCK: "Block32x32.png",
+            model.Objects.BLOCK_HALF: "Block32x32Half.png",
+            model.Objects.BLUE: "Block32x32Blue.png"
 
         })
 
@@ -571,6 +574,7 @@ class GameView(View):
     FG_COLOUR = Colours.WHITE
     TILE_WIDTH = 32
     TILE_HEIGHT = 32
+    TRANSPARENT = Colours.TRANSPARENT
 
     def __init__(self, width: int, height: int):
         super(GameView, self).__init__()
@@ -587,14 +591,79 @@ class GameView(View):
     def tick(self):
         super(GameView, self).tick()
 
+    def draw_layer(self, surface, layer_id):
+
+        self.floor=self.game.current_floor
+
+        if self.floor is None:
+            raise ("No Floor to view!")
+
+        skin_name = self.floor.skin_name
+
+        # print("drawing layer for floor {0}".format(layer_id))
+
+        #surface.fill(GameView.TRANSPARENT)
+
+        view_objects = []
+
+        layer = self.floor.layers[layer_id]
+        if layer_id == 1:
+            player_layer = list(self.floor.players.values()) + layer + self.floor.monsters
+            view_objects += sorted(player_layer, key=lambda obj: obj.rect.y, reverse=False)
+        else:
+            view_objects += layer
+
+        for view_object in view_objects:
+            if view_object.is_visible is True:
+
+                if isinstance(view_object, model.Player):
+
+                    image = View.image_manager.get_skin_image(model.Objects.PLAYER,
+                                                              tick=self.tick_count,
+                                                              width=view_object.rect.width,
+                                                              height=view_object.height)
+                    if image is None:
+                        pygame.draw.rect(surface, Colours.WHITE, self.model_to_view_rect(view_object))
+                        pygame.draw.rect(surface, Colours.RED, self.model_to_view_rect(view_object), 1)
+                    else:
+                        surface.blit(image, self.model_to_view_rect(view_object))
+
+                elif isinstance(view_object, model.FloorObject):
+                    image = View.image_manager.get_skin_image(view_object.name,
+                                                              tick=self.tick_count,
+                                                              width=view_object.rect.width,
+                                                              height=view_object.height,
+                                                              skin_name=skin_name)
+                    if image is  not None:
+                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                elif isinstance(view_object, model.Monster):
+                    pygame.draw.rect(surface, Colours.RED, self.model_to_view_rect(view_object))
+                    pygame.draw.rect(surface, Colours.GOLD, self.model_to_view_rect(view_object), 1)
+
+        return surface
+
     def draw(self):
         self.surface.fill(GameView.BG_COLOUR)
 
         if self.game is None:
             raise ("No Game to view!")
 
+        current_floor = self.game.current_floor
+
+        for layer_id in current_floor.layers.keys():
+            self.draw_layer(self.surface, layer_id)
+
+
     def end(self):
         super(GameView, self).end()
+
+    def model_to_view(self,x,y, layer_id):
+        origin_x = self.surface.get_rect().width/2
+        origin_y = 128
+        view_x = int(origin_x + (GameView.TILE_WIDTH * x/2) - (GameView.TILE_WIDTH * y/2))
+        view_y = int(origin_y + (GameView.TILE_HEIGHT * x/4) + (GameView.TILE_HEIGHT * y/4) - (layer_id * GameView.TILE_HEIGHT/2))
+        return view_x, view_y
 
 
 def draw_icon(surface, x, y, icon_name, count: int = None, tick: int = 0):
