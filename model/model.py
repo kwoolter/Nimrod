@@ -25,8 +25,15 @@ class Objects:
     BLOCK_TOP = "block_top"
     BLOCK_BOTTOM = "block_bottom"
     BLOCK_RIGHT = "block_right"
+    BLOCK_RIGHT_SLOPE = "block_right_slope"
+    BLOCK_RIGHT_BACK_SLOPE = "block_right_back_slope"
     BLOCK_LEFT = "block_left"
+    BLOCK_LEFT_SLOPE = "block_left_slope"
+    BLOCK_LEFT_BACK_SLOPE = "block_left_back_slope"
     BLUE = "blue"
+    PYRAMID1 = "pyramid1"
+    PYRAMID2 = "pyramid2"
+    SPHERE = "sphere"
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
 
 class FloorObject(object):

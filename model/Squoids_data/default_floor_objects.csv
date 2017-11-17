@@ -5,4 +5,11 @@ v,block_bottom,32,32,32,True,True,False
 ^,block_top,32,32,32,True,True,False
 >,block_left,32,32,32,True,True,False
 <,block_right,32,32,32,True,True,False
+/,block_left_slope,32,32,32,True,True,False
+\,block_right_slope,32,32,32,True,True,False
+(,block_left_back_slope,32,32,32,True,True,False
+),block_right_back_slope,32,32,32,True,True,False
+P,pyramid1,32,32,32,True,True,False
+p,pyramid2,32,32,32,True,True,False
 ~,blue,32,32,32,True,True,False
+O,sphere,32,32,32,True,True,False

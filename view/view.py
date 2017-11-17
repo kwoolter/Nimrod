@@ -55,7 +55,14 @@ class ImageManager:
             model.Objects.BLOCK_BOTTOM: "Block32x32Bottom.png",
             model.Objects.BLOCK_RIGHT: "Block32x32Right.png",
             model.Objects.BLOCK_LEFT: "Block32x32Left.png",
-            model.Objects.BLUE: "Block32x32Blue.png"
+            model.Objects.BLOCK_LEFT_SLOPE: "Block32x32LSlope.png",
+            model.Objects.BLOCK_RIGHT_SLOPE: "Block32x32RSlope.png",
+            model.Objects.BLOCK_LEFT_BACK_SLOPE: "Block32x32LBSlope.png",
+            model.Objects.BLOCK_RIGHT_BACK_SLOPE: "Block32x32RBSlope.png",
+            model.Objects.BLUE: "Block32x32Blue.png",
+            model.Objects.PYRAMID1: "Block32x32Pyramid3.png",
+            model.Objects.PYRAMID2: "Block32x32Pyramid2.png",
+            model.Objects.SPHERE: "Sphere.png",
 
         })
 
