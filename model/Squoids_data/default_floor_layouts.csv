@@ -36,8 +36,8 @@ ID,Name,Skin,Layer,Layout
 1,Floor1,default,1,#        #     )    
 1,Floor1,default,1,#        #    (#\   
 1,Floor1,default,1,#      v###>   /   
-1,Floor1,default,1,#>     #   #        
-1,Floor1,default,1,##     #   #        
+1,Floor1,default,1,#>     #OOO#        
+1,Floor1,default,1,##     #OOO#        
 1,Floor1,default,1,#^     <###^        
 1,Floor1,default,2,######\   (########>
 1,Floor1,default,2,#          O      <#
@@ -59,3 +59,23 @@ ID,Name,Skin,Layer,Layout
 1,Floor1,default,2,                    
 1,Floor1,default,2,>                   
 1,Floor1,default,2,^                   
+1,Floor1,default,3,######     ########>
+1,Floor1,default,3,#                 <#
+1,Floor1,default,3,^                  ^
+1,Floor1,default,3,                    
+1,Floor1,default,3,                    
+1,Floor1,default,3,>                   
+1,Floor1,default,3,#                   
+1,Floor1,default,3,#                  #
+1,Floor1,default,3,#                  #
+1,Floor1,default,3,######             #
+1,Floor1,default,3,#    ^             ^
+1,Floor1,default,3,#                   
+1,Floor1,default,3,#                   
+1,Floor1,default,3,#                   
+1,Floor1,default,3,^                   
+1,Floor1,default,3,                    
+1,Floor1,default,3,                    
+1,Floor1,default,3,                    
+1,Floor1,default,3,>                   
+1,Floor1,default,3,^                   

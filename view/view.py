@@ -34,7 +34,8 @@ class ImageManager:
             try:
                 logging.info("Loading image {0}...".format(filename))
                 original_image = pygame.image.load(filename).convert_alpha()
-                image = pygame.transform.scale(original_image, (width, height))
+                image = pygame.transform.scale(original_image, (width, height)).convert_alpha()
+                #image = image.convert_aplha()
                 ImageManager.image_cache[image_file_name] = image
                 logging.info("Image {0} loaded and cached.".format(filename))
                 print("loading img")
@@ -55,14 +56,14 @@ class ImageManager:
             model.Objects.BLOCK_BOTTOM: "Block32x32Bottom.png",
             model.Objects.BLOCK_RIGHT: "Block32x32Right.png",
             model.Objects.BLOCK_LEFT: "Block32x32Left.png",
-            model.Objects.BLOCK_LEFT_SLOPE: "Block32x32LSlope.png",
+            model.Objects.BLOCK_LEFT_SLOPE: "Block32x32LSlope2.png",
             model.Objects.BLOCK_RIGHT_SLOPE: "Block32x32RSlope.png",
             model.Objects.BLOCK_LEFT_BACK_SLOPE: "Block32x32LBSlope.png",
             model.Objects.BLOCK_RIGHT_BACK_SLOPE: "Block32x32RBSlope.png",
             model.Objects.BLUE: "Block32x32Blue.png",
-            model.Objects.PYRAMID1: "Block32x32Pyramid3.png",
+            model.Objects.PYRAMID1: "Block32x32Pyramid4.png",
             model.Objects.PYRAMID2: "Block32x32Pyramid2.png",
-            model.Objects.SPHERE: "Sphere.png",
+            model.Objects.SPHERE: "Sphere2.png",
 
         })
 
@@ -614,14 +615,7 @@ class GameView(View):
 
         #surface.fill(GameView.TRANSPARENT)
 
-        view_objects = []
-
-        layer = self.floor.layers[layer_id]
-        if layer_id == 1:
-            player_layer = list(self.floor.players.values()) + layer + self.floor.monsters
-            view_objects += sorted(player_layer, key=lambda obj: obj.rect.y, reverse=False)
-        else:
-            view_objects += layer
+        view_objects = self.floor.layers[layer_id]
 
         for view_object in view_objects:
             if view_object.is_visible is True:
@@ -636,6 +630,7 @@ class GameView(View):
                         pygame.draw.rect(surface, Colours.WHITE, self.model_to_view_rect(view_object))
                         pygame.draw.rect(surface, Colours.RED, self.model_to_view_rect(view_object), 1)
                     else:
+
                         surface.blit(image, self.model_to_view_rect(view_object))
 
                 elif isinstance(view_object, model.FloorObject):
@@ -645,6 +640,7 @@ class GameView(View):
                                                               height=view_object.height,
                                                               skin_name=skin_name)
                     if image is  not None:
+                        image.set_alpha(7)
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
                 elif isinstance(view_object, model.Monster):
