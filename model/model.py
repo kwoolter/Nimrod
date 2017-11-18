@@ -34,6 +34,7 @@ class Objects:
     PYRAMID1 = "pyramid1"
     PYRAMID2 = "pyramid2"
     SPHERE = "sphere"
+    SQUOID = "squoid"
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
 
 class FloorObject(object):

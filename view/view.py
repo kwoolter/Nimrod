@@ -64,6 +64,7 @@ class ImageManager:
             model.Objects.PYRAMID1: "Block32x32Pyramid4.png",
             model.Objects.PYRAMID2: "Block32x32Pyramid2.png",
             model.Objects.SPHERE: "Sphere2.png",
+            model.Objects.SQUOID: "Squoid1.png",
 
         })
 

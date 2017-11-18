@@ -13,3 +13,4 @@ P,pyramid1,32,32,32,True,True,False
 p,pyramid2,32,32,32,True,True,False
 ~,blue,32,32,32,True,True,False
 O,sphere,32,32,32,True,True,False
+S,squoid,32,32,32,True,True,False
