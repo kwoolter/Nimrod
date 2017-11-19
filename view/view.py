@@ -38,7 +38,7 @@ class ImageManager:
                 #image = image.convert_aplha()
                 ImageManager.image_cache[image_file_name] = image
                 logging.info("Image {0} loaded and cached.".format(filename))
-                print("loading img")
+
             except Exception as err:
                 print(str(err))
 
@@ -620,23 +620,19 @@ class GameView(View):
 
         #surface.fill(GameView.TRANSPARENT)
 
-        view_objects = self.floor.layers[layer_id]
+        view_objects = self.floor.get_layer(layer_id)
 
         for view_object in view_objects:
             if view_object.is_visible is True:
 
                 if isinstance(view_object, model.Player):
 
-                    image = View.image_manager.get_skin_image(model.Objects.PLAYER,
+                    image = View.image_manager.get_skin_image(model.Objects.SQUOID,
                                                               tick=self.tick_count,
                                                               width=view_object.rect.width,
                                                               height=view_object.height)
-                    if image is None:
-                        pygame.draw.rect(surface, Colours.WHITE, self.model_to_view_rect(view_object))
-                        pygame.draw.rect(surface, Colours.RED, self.model_to_view_rect(view_object), 1)
-                    else:
-
-                        surface.blit(image, self.model_to_view_rect(view_object))
+                    if image is not None:
+                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
                 elif isinstance(view_object, model.FloorObject):
                     image = View.image_manager.get_skin_image(view_object.name,
@@ -645,7 +641,7 @@ class GameView(View):
                                                               height=view_object.height,
                                                               skin_name=skin_name)
                     if image is  not None:
-                        image.set_alpha(7)
+                        #image.set_alpha(7)
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
                 elif isinstance(view_object, model.Monster):

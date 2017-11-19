@@ -12,6 +12,7 @@ from .derived_stats import *
 
 
 class Objects:
+    EMPTY = "empty"
     TREE = "tree"
     PLAYER = "player"
     NORTH = "north"
@@ -174,26 +175,10 @@ class Floor:
 
         self.players[new_player.name] = new_player
 
-        if position in self.exits.keys():
-            exit_rect = self.exits[position].rect
-            player_rect = new_player.rect
-            x = exit_rect.centerx - int(player_rect.width / 2)
-            y = exit_rect.centery - int(player_rect.height / 2)
+        self.add_object(new_player)
 
-            if position == Floor.EXIT_NORTH:
-                y = exit_rect.bottom + FloorObject.TOUCH_FIELD_Y + 1
-            elif position == Floor.EXIT_SOUTH:
-                y = exit_rect.top - new_player.rect.height - FloorObject.TOUCH_FIELD_Y - 1
-            elif position == Floor.EXIT_WEST:
-                x = exit_rect.right + FloorObject.TOUCH_FIELD_X + 1
-            elif position == Floor.EXIT_EAST:
-                x = exit_rect.left - new_player.rect.width - FloorObject.TOUCH_FIELD_X - 1
-        else:
-            x = (self.rect.width / 2)
-            y = (self.rect.height / 2)
+        print("Adding player at {0},{1}".format(new_player.rect.x, new_player.rect.y))
 
-        print("Adding player at {0},{1}".format(x, y))
-        new_player.set_pos(x, y)
 
     def add_object(self, new_object: FloorObject):
 
@@ -204,7 +189,7 @@ class Floor:
         objects.append(new_object)
         self.rect.union_ip(new_object.rect)
 
-        self.layers[new_object.layer] = sorted(objects, key=lambda obj: obj.layer * 1000 + obj.rect.y, reverse=False)
+        #self.layers[new_object.layer] = sorted(objects, key=lambda obj: obj.layer * 1000 + obj.rect.y, reverse=False)
 
         if new_object.name in Objects.DIRECTIONS:
             self.exits[Floor.OBJECT_TO_DIRECTION[new_object.name]] = new_object
@@ -267,6 +252,16 @@ class Floor:
 
         return touching
 
+    def get_layer(self, layer_id):
+
+        if layer_id not in self.layers.keys():
+            raise Exception("Layer {0} not found in Floor {0}".format(layer_id, self.name))
+
+        layer = self.layers[layer_id]
+
+        return layer
+
+
     def move_player(self, name: str, dx: int = 0, dy: int = 0):
 
         if name not in self.players.keys():
@@ -277,24 +272,6 @@ class Floor:
         objects = self.layers[selected_player.layer]
 
         selected_player.move(dx, dy)
-
-        if self.rect.contains(selected_player.rect) == False:
-            selected_player.back()
-        else:
-            for object in objects:
-                if object.is_colliding(selected_player):
-                    selected_player.back()
-                    break
-                    # if dy != 0:
-                    #     selected_player.move(0, dy)
-                    #
-                    #     if self.rect.contains(selected_player.rect) == False:
-                    #         selected_player.back()
-                    #     else:
-                    #         for object in objects:
-                    #             if object.is_colliding(selected_player):
-                    #                 selected_player.back()
-                    #                 break
 
 
 class FloorBuilder():
@@ -580,6 +557,12 @@ class Game():
 
         self.hst.load()
 
+        new_player = Player(name="Keith", rect=(5,5,0,0))
+
+        self.add_player(new_player)
+
+
+
     def load_map(self, location_file_name: str, map_links_file_name: str):
 
         # Load in locations
@@ -665,6 +648,14 @@ class Game():
         logging.info("Adding new player {0} to game {1}...".format(new_player.name, self.name))
 
         self.player = new_player
+        self.current_floor.add_player(new_player)
+
+    def move_player(self, dx : int, dy : int):
+        print("move")
+
+        self.current_floor.move_player(self.player.name, dx, dy)
+
+
 
 
 class Event():

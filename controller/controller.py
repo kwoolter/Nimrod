@@ -14,6 +14,10 @@ class Controller:
     KEY_PAUSE = K_ESCAPE
     KEY_START = K_SPACE
     KEY_GAME_OVER = K_BACKSPACE
+    KEY_UP = K_QUOTE
+    KEY_DOWN = K_SLASH
+    KEY_LEFT = K_a
+    KEY_RIGHT = K_z
 
     def __init__(self):
 
@@ -85,7 +89,15 @@ class Controller:
                 elif event.type == KEYUP:
 
                     if self.game.state == model.Game.PLAYING:
-                        if event.key == Controller.KEY_PAUSE:
+                        if event.key == Controller.KEY_LEFT:
+                            self.game.move_player(-1,0)
+                        elif event.key == Controller.KEY_RIGHT:
+                            self.game.move_player(1, 0)
+                        elif event.key == Controller.KEY_UP:
+                            self.game.move_player(0, -1)
+                        elif event.key == Controller.KEY_DOWN:
+                            self.game.move_player(0, 1)
+                        elif event.key == Controller.KEY_PAUSE:
                             self.game.pause()
                         elif event.key == Controller.KEY_GAME_OVER:
                             self.game.game_over()
