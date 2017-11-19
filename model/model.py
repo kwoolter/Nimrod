@@ -158,6 +158,7 @@ class Floor:
         self.objects = []
         self.monsters = []
         self.layers = {}
+        self.floor_plans = {}
         self.exits = {}
 
     def __str__(self):
@@ -195,6 +196,17 @@ class Floor:
             self.exits[Floor.OBJECT_TO_DIRECTION[new_object.name]] = new_object
 
         logging.info("Added {0} at location ({1},{2})".format(new_object.name, new_object.rect.x, new_object.rect.y))
+
+
+    def build_floor_plan(self):
+
+        for layer in self.layers.values():
+            if layer.id not in self.floor_plans.keys():
+                new_plan = [[Objects.EMPTY for x in range(self.rect.height)] for x in range(self.rec.twidth)]
+                self.floor_plans[layer.id] = new_plan
+            floor_plan = self.floor_plans[layer.id]
+            for floor_object in layer:
+                floor_plan[floor_object.rect.x][floor_object.rect.y] = floor_object
 
     def remove_object(self, object: FloorObject):
         objects = self.layers[object.layer]
@@ -334,6 +346,7 @@ class FloorLayoutLoader():
                 floor_skin_name = row.get("Skin")
 
                 if floor_id != current_floor_id:
+
                     FloorLayoutLoader.floor_layouts[floor_id] = Floor(floor_id, floor_layout_name, (0, 0, 0, 0),
                                                                       skin_name=floor_skin_name)
                     current_floor_id = floor_id
@@ -358,6 +371,9 @@ class FloorLayoutLoader():
                     x += FloorLayoutLoader.DEFAULT_OBJECT_WIDTH
 
                 y += FloorLayoutLoader.DEFAULT_OBJECT_DEPTH
+
+        for floor in self.floor_layouts.values():
+            floor.build_floor_plan()
 
 
 class FloorObjectLoader():
