@@ -299,8 +299,15 @@ class Floor:
             selected_player.back()
         elif y >= self.rect.height or y < 0:
             selected_player.back()
-        elif self.get_floor_tile(selected_player.rect.x, selected_player.rect.y, selected_player.layer, is_raw=True) is not None:
-            selected_player.back()
+        else:
+            tile = self.get_floor_tile(x, y, selected_player.layer, is_raw=True)
+            if tile is not None:
+                if tile.name in (Objects.BLOCK_LEFT_SLOPE, Objects.BLOCK_RIGHT_SLOPE):
+                    selected_player.layer += 1
+                else:
+                    print("You hit a {0}".format(tile.name))
+                    selected_player.back()
+
 
 
 
@@ -685,7 +692,6 @@ class Game():
         self.current_floor.add_player(new_player)
 
     def move_player(self, dx : int, dy : int):
-        print("move")
 
         self.current_floor.move_player(self.player.name, dx, dy)
 
