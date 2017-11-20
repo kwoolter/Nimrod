@@ -176,7 +176,7 @@ class Floor:
 
         self.players[new_player.name] = new_player
 
-        self.add_object(new_player)
+        #self.add_object(new_player)
 
         print("Adding player at {0},{1}".format(new_player.rect.x, new_player.rect.y))
 
@@ -188,10 +188,8 @@ class Floor:
 
         objects = self.layers[new_object.layer]
         objects.append(new_object)
-        self.rect.width = max(new_object.rect.x, self.rect.width)
-        self.rect.height = max(new_object.rect.y, self.rect.height)
-
-        #self.layers[new_object.layer] = sorted(objects, key=lambda obj: obj.layer * 1000 + obj.rect.y, reverse=False)
+        self.rect.width = max(new_object.rect.x + 1, self.rect.width)
+        self.rect.height = max(new_object.rect.y + 1, self.rect.height)
 
         if new_object.name in Objects.DIRECTIONS:
             self.exits[Floor.OBJECT_TO_DIRECTION[new_object.name]] = new_object
@@ -203,7 +201,7 @@ class Floor:
 
         for layer_id in self.layers.keys():
             if layer_id not in self.floor_plans.keys():
-                new_plan = [[Objects.EMPTY for x in range(self.rect.height + 1)] for x in range(self.rect.width + 1)]
+                new_plan = [[None for x in range(self.rect.height)] for x in range(self.rect.width)]
                 self.floor_plans[layer_id] = new_plan
             floor_plan = self.floor_plans[layer_id]
             for floor_object in self.layers[layer_id]:
@@ -274,6 +272,18 @@ class Floor:
 
         return layer
 
+    def get_floor_tile(self, x : int, y: int, layer_id : int, is_raw : bool = False):
+
+        layer = self.floor_plans[layer_id]
+        floor_object = layer[x][y]
+        if is_raw is False and floor_object is None:
+            for player in self.players.values():
+                if (x,y,layer_id) == (player.rect.x, player.rect.y, player.layer):
+                    floor_object = player
+                    break
+
+        return floor_object
+
 
     def move_player(self, name: str, dx: int = 0, dy: int = 0):
 
@@ -282,9 +292,16 @@ class Floor:
 
         selected_player = self.players[name]
 
-        objects = self.layers[selected_player.layer]
-
         selected_player.move(dx, dy)
+        x,y = selected_player.rect.x, selected_player.rect.y
+
+        if x >= self.rect.width or x < 0:
+            selected_player.back()
+        elif y >= self.rect.height or y < 0:
+            selected_player.back()
+        elif self.get_floor_tile(selected_player.rect.x, selected_player.rect.y, selected_player.layer, is_raw=True) is not None:
+            selected_player.back()
+
 
 
 class FloorBuilder():
@@ -574,7 +591,7 @@ class Game():
 
         self.hst.load()
 
-        new_player = Player(name="Keith", rect=(5,5,0,0))
+        new_player = Player(name=Objects.SQUOID, rect=(19,19,0,0))
 
         self.add_player(new_player)
 
