@@ -188,7 +188,8 @@ class Floor:
 
         objects = self.layers[new_object.layer]
         objects.append(new_object)
-        self.rect.union_ip(new_object.rect)
+        self.rect.width = max(new_object.rect.x, self.rect.width)
+        self.rect.height = max(new_object.rect.y, self.rect.height)
 
         #self.layers[new_object.layer] = sorted(objects, key=lambda obj: obj.layer * 1000 + obj.rect.y, reverse=False)
 
@@ -200,12 +201,12 @@ class Floor:
 
     def build_floor_plan(self):
 
-        for layer in self.layers.values():
-            if layer.id not in self.floor_plans.keys():
-                new_plan = [[Objects.EMPTY for x in range(self.rect.height)] for x in range(self.rec.twidth)]
-                self.floor_plans[layer.id] = new_plan
-            floor_plan = self.floor_plans[layer.id]
-            for floor_object in layer:
+        for layer_id in self.layers.keys():
+            if layer_id not in self.floor_plans.keys():
+                new_plan = [[Objects.EMPTY for x in range(self.rect.height + 1)] for x in range(self.rect.width + 1)]
+                self.floor_plans[layer_id] = new_plan
+            floor_plan = self.floor_plans[layer_id]
+            for floor_object in self.layers[layer_id]:
                 floor_plan[floor_object.rect.x][floor_object.rect.y] = floor_object
 
     def remove_object(self, object: FloorObject):
