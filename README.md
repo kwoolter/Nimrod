@@ -13,10 +13,10 @@ Nimrod
 <table>
 <tr>
 <td>
-<img height=300 width=200 src="https://github.com/kwoolter/Nimrod/blob/master/screenshots/Capture1.PNG" alt="game1">
+<img height=300 width=300 src="https://github.com/kwoolter/Nimrod/blob/master/screenshots/Capture1.PNG" alt="game1">
 </td>
 <td>
-<img height=300 width=200 src="https://github.com/kwoolter/Nimrod/blob/master/screenshots/Capture1.PNG" alt="game1">
+<img height=300 width=300 src="https://github.com/kwoolter/Nimrod/blob/master/screenshots/Capture1.PNG" alt="game1">
 </td>
 </tr>
 </table>
