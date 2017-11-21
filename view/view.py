@@ -68,7 +68,10 @@ class ImageManager:
             model.Objects.PYRAMID1: "Block32x32Pyramid4.png",
             model.Objects.PYRAMID2: "Block32x32Pyramid2.png",
             model.Objects.SPHERE: "Sphere2.png",
+            model.Objects.SPHERE_GREEN: "SphereGreen.png",
+            model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid2.png",
+            model.Objects.KEY: "key2.png"
 
         })
 
@@ -215,7 +218,7 @@ class MainFrame(View):
         x = 0
         y = pane_rect.bottom - MainFrame.STATUS_HEIGHT
 
-        #self.surface.blit(self.status_bar.surface, (x, y))
+        self.surface.blit(self.status_bar.surface, (x, y))
 
     def process_event(self, new_event: model.Event):
         print("MainFrame event process:{0}".format(new_event))
@@ -354,7 +357,7 @@ class StatusBar(View):
             y = 8
             x = int(pane_rect.width * 3 / 4)
 
-            draw_icon(self.surface, x=x, y=y, icon_name=model.Objects.HEART, count=1, tick=self.tick_count)
+            draw_icon(self.surface, x=x, y=y, icon_name=model.Objects.HEART, count=self.game.player.HP, tick=self.tick_count)
 
         elif self.game.state == model.Game.PAUSED:
             msg = "F8:Save   F9:Load   Esc:Resume"

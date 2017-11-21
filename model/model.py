@@ -39,7 +39,11 @@ class Objects:
     PYRAMID1 = "pyramid1"
     PYRAMID2 = "pyramid2"
     SPHERE = "sphere"
+    SPHERE_GREEN = "sphere_green"
+    SPHERE_BLUE = "sphere_blue"
     SQUOID = "squoid"
+    KEY = "key1"
+
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
 
 
@@ -252,6 +256,12 @@ class Floor:
 
         return floor_object
 
+    def set_floor_tile(self, x: int, y: int, layer_id: int, new_object : FloorObject = None):
+
+        layer = self.floor_plans[layer_id]
+        layer[x][y] = new_object
+
+
     def move_player(self, name: str, dx: int = 0, dy: int = 0):
 
         if name not in self.players.keys():
@@ -262,19 +272,31 @@ class Floor:
         selected_player.move(dx, dy)
         x, y = selected_player.rect.x, selected_player.rect.y
 
-        if x >= self.rect.width or x < 0:
+        if x >= self.rect.width or x < 0 or y >= self.rect.height or y < 0:
             selected_player.back()
-        elif y >= self.rect.height or y < 0:
-            selected_player.back()
+            Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED, description="You hit an edge!"))
         else:
             tile = self.get_floor_tile(x, y, selected_player.layer, is_raw=True)
             if tile is not None:
                 if tile.name in (Objects.BLOCK_LEFT_SLOPE, Objects.BLOCK_RIGHT_SLOPE):
                     selected_player.layer += 1
-                else:
-                    print("You hit a {0}".format(tile.name))
-                    selected_player.back()
+                elif tile.name in (Objects.SQUOID):
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
+                elif tile.name == Objects.SPHERE_GREEN:
+                    selected_player.treasure += 1
+                    self.set_floor_tile(x,y,selected_player.layer, None)
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.TREASURE, description="You found a {0}".format(tile.name)))
+                elif tile.name == Objects.SPHERE_BLUE:
+                    selected_player.HP += 1
+                    self.set_floor_tile(x,y,selected_player.layer, None)
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.HEALTH, description="You found a {0}".format(tile.name)))
+                elif tile.name == Objects.KEY:
+                    selected_player.keys += 1
+                    self.set_floor_tile(x,y,selected_player.layer, None)
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.KEY, description="You found a {0}".format(tile.name)))
+                else:
+                    selected_player.back()
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED, description="You are blocked by a {0}".format(tile.name)))
 
 
 class FloorBuilder():
@@ -675,6 +697,10 @@ class Event():
     TICK = "Tick"
     PLAYING = "playing"
     COLLIDE = "collide"
+    BLOCKED = "blocked"
+    TREASURE = "treasure"
+    KEY = "key"
+    HEALTH = "health"
 
 
     def __init__(self, name: str, description: str = None, type: str = DEFAULT):
