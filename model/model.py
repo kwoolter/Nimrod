@@ -42,6 +42,7 @@ class Objects:
     SQUOID = "squoid"
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
 
+
 class FloorObject(object):
     TOUCH_FIELD_X = 3
     TOUCH_FIELD_Y = 3
@@ -107,6 +108,7 @@ class FloorObject(object):
     def get_pos(self):
         return self._rect.x, self._rect.y
 
+
 class Player(FloorObject):
     def __init__(self, name: str,
                  rect: pygame.Rect,
@@ -128,12 +130,15 @@ class Monster(FloorObject):
 
 
 class Floor:
+
     EXIT_NORTH = "NORTH"
     EXIT_SOUTH = "SOUTH"
     EXIT_EAST = "EAST"
     EXIT_WEST = "WEST"
     EXIT_UP = "UP"
     EXIT_DOWN = "DOWN"
+
+    EVENTS = None
 
     OBJECT_TO_DIRECTION = {Objects.WEST: EXIT_WEST,
                            Objects.EAST: EXIT_EAST,
@@ -150,6 +155,7 @@ class Floor:
                          EXIT_DOWN: EXIT_UP}
 
     def __init__(self, id: int, name: str, rect: pygame.Rect, skin_name: str = "default"):
+
         self.id = id
         self.name = name
         self.skin_name = skin_name
@@ -160,6 +166,7 @@ class Floor:
         self.layers = {}
         self.floor_plans = {}
         self.exits = {}
+
 
     def __str__(self):
         return "Floor {0}: rect={1}, objects={2}, monsters={3}".format(self.name, self.rect, self.object_count,
@@ -176,10 +183,9 @@ class Floor:
 
         self.players[new_player.name] = new_player
 
-        #self.add_object(new_player)
+        # self.add_object(new_player)
 
         print("Adding player at {0},{1}".format(new_player.rect.x, new_player.rect.y))
-
 
     def add_object(self, new_object: FloorObject):
 
@@ -195,7 +201,6 @@ class Floor:
             self.exits[Floor.OBJECT_TO_DIRECTION[new_object.name]] = new_object
 
         logging.info("Added {0} at location ({1},{2})".format(new_object.name, new_object.rect.x, new_object.rect.y))
-
 
     def build_floor_plan(self):
 
@@ -226,43 +231,6 @@ class Floor:
 
         self.monsters.append(new_object)
 
-    def is_player_collide(self, target: FloorObject):
-
-        collide = False
-
-        for player in self.players.values():
-            if target.is_colliding(player):
-                collide = True
-                break
-
-        return collide
-
-    def colliding_objects(self, target: FloorObject):
-
-        objects = self.layers[target.layer]
-
-        # print("colliding check {0} objects".format(len(objects)))
-
-        colliding = []
-
-        for object in objects:
-            if object.is_colliding(target):
-                colliding.append(object)
-
-        return colliding
-
-    def touching_objects(self, target: FloorObject):
-
-        objects = self.layers[target.layer]
-
-        touching = []
-
-        for object in objects:
-            if object.is_touching(target):
-                touching.append(object)
-
-        return touching
-
     def get_layer(self, layer_id):
 
         if layer_id not in self.layers.keys():
@@ -272,18 +240,17 @@ class Floor:
 
         return layer
 
-    def get_floor_tile(self, x : int, y: int, layer_id : int, is_raw : bool = False):
+    def get_floor_tile(self, x: int, y: int, layer_id: int, is_raw: bool = False):
 
         layer = self.floor_plans[layer_id]
         floor_object = layer[x][y]
         if is_raw is False and floor_object is None:
             for player in self.players.values():
-                if (x,y,layer_id) == (player.rect.x, player.rect.y, player.layer):
+                if (x, y, layer_id) == (player.rect.x, player.rect.y, player.layer):
                     floor_object = player
                     break
 
         return floor_object
-
 
     def move_player(self, name: str, dx: int = 0, dy: int = 0):
 
@@ -293,7 +260,7 @@ class Floor:
         selected_player = self.players[name]
 
         selected_player.move(dx, dy)
-        x,y = selected_player.rect.x, selected_player.rect.y
+        x, y = selected_player.rect.x, selected_player.rect.y
 
         if x >= self.rect.width or x < 0:
             selected_player.back()
@@ -307,11 +274,11 @@ class Floor:
                 else:
                     print("You hit a {0}".format(tile.name))
                     selected_player.back()
-
-
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
 
 
 class FloorBuilder():
+
     FLOOR_LAYOUT_FILE_NAME = "_floor_layouts.csv"
     FLOOR_OBJECT_FILE_NAME = "_floor_objects.csv"
 
@@ -371,7 +338,6 @@ class FloorLayoutLoader():
                 floor_skin_name = row.get("Skin")
 
                 if floor_id != current_floor_id:
-
                     FloorLayoutLoader.floor_layouts[floor_id] = Floor(floor_id, floor_layout_name, (0, 0, 0, 0),
                                                                       skin_name=floor_skin_name)
                     current_floor_id = floor_id
@@ -509,6 +475,7 @@ class Character(trpg.RPGCharacter):
 
 
 class Game():
+
     LOADED = "LOADED"
     READY = "READY"
     PLAYING = "PLAYING"
@@ -596,13 +563,13 @@ class Game():
         self.floor_factory.initialise()
         self.floor_factory.load_floors()
 
+        Floor.EVENTS = self.events
+
         self.hst.load()
 
-        new_player = Player(name=Objects.SQUOID, rect=(19,19,0,0))
+        new_player = Player(name=Objects.SQUOID, rect=(19, 19, 0, 0))
 
         self.add_player(new_player)
-
-
 
     def load_map(self, location_file_name: str, map_links_file_name: str):
 
@@ -691,11 +658,9 @@ class Game():
         self.player = new_player
         self.current_floor.add_player(new_player)
 
-    def move_player(self, dx : int, dy : int):
+    def move_player(self, dx: int, dy: int):
 
         self.current_floor.move_player(self.player.name, dx, dy)
-
-
 
 
 class Event():
@@ -704,10 +669,13 @@ class Event():
     DEFAULT = "default"
     STATE = "state"
     GAME = "game"
+    FLOOR = "floor"
 
     # Events
     TICK = "Tick"
     PLAYING = "playing"
+    COLLIDE = "collide"
+
 
     def __init__(self, name: str, description: str = None, type: str = DEFAULT):
         self.name = name
@@ -734,6 +702,3 @@ class EventQueue():
     def print(self):
         for event in self.events:
             print(event)
-
-
-
