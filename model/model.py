@@ -302,8 +302,15 @@ class Floor:
                                                  description="You are blocked by a {0}".format(tile.name)))
 
         # Check what the player is standing on...
-        base_tile = self.get_floor_tile(x, y, selected_player.layer - 1)
-        if base_tile.name == Objects.LAVA:
+        base_tile = self.get_floor_tile(selected_player.rect.x, selected_player.rect.y, selected_player.layer - 1)
+        # If standing on nothing move back
+        if base_tile is None:
+            selected_player.back()
+            Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED,
+                                     description="You can't go that way"))
+
+        # If standing on lava lose health
+        elif base_tile.name == Objects.LAVA:
             selected_player.HP -= 1
             Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                          name=Event.LOSE_HEALTH,

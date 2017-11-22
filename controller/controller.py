@@ -61,6 +61,8 @@ class Controller:
 
                     self.view.process_event(event)
                     self.audio.process_event(event)
+                    print(str(event))
+
                 except Exception as err:
                     print(str(err))
 
