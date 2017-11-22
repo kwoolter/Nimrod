@@ -52,6 +52,7 @@ class ImageManager:
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.HEART: "heart.png",
             model.Objects.BLOCK: "Block32x32.png",
+            model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
             model.Objects.BLOCK_TOP: "Block32x32Top2.png",
             model.Objects.BLOCK_BOTTOM: "Block32x32Bottom.png",
             model.Objects.BLOCK_RIGHT: "Block32x32Right.png",
@@ -72,7 +73,7 @@ class ImageManager:
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid2.png",
             model.Objects.KEY: "key2.png",
-            model.Objects.LAVA: ("lava_1.png","lava_0.png"),
+            model.Objects.LAVA: ("lava_0.png","lava_1.png","lava_2.png"),
 
 
 

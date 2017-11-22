@@ -23,6 +23,7 @@ class Objects:
     DOWN = "down"
     HEART = "heart"
     BLOCK = "block"
+    BLOCK_ORNATE = "block_ornate"
     BLOCK_TOP = "block_top"
     BLOCK_BOTTOM = "block_bottom"
     BLOCK_RIGHT = "block_right"

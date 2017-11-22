@@ -10,14 +10,14 @@ ID,Name,Skin,Layer,Layout
 1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
 1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
 1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,ll~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~llll~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~l~ll~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~l~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
+1,Floor1,default,0,~~~~~~~~~~~~~~~ll~~~
+1,Floor1,default,0,ll~~~~~~~~~~~~~lll~~
+1,Floor1,default,0,~llll~~~~~~~~~~~lll~
+1,Floor1,default,0,~~l~ll~~~~~~~~~~~~l~
+1,Floor1,default,0,~~~~~l~~~~~~~~~~~~ll
+1,Floor1,default,0,~~~~~~~~~~~~~~~~~~ll
+1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~l
+1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~l
 1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
 1,Floor1,default,1,##############   ###
 1,Floor1,default,1,#^   # [   #      <#
@@ -32,16 +32,16 @@ ID,Name,Skin,Layer,Layout
 1,Floor1,default,1,#^  #^      /      ^
 1,Floor1,default,1,#  S/          S    
 1,Floor1,default,1,         )          
-1,Floor1,default,1,#       (#\        {
+1,Floor1,default,1,#       (#\        +
 1,Floor1,default,1,#        #     )    
 1,Floor1,default,1,#]  S    #    (#\   
 1,Floor1,default,1,#      v###>   /   
-1,Floor1,default,1,#>     #OOO       S 
-1,Floor1,default,1,##  S  #OOO         
+1,Floor1,default,1,#>     #OOO+      S 
+1,Floor1,default,1,##  S  #OOO+        
 1,Floor1,default,1,#^     <###^   }S   
 1,Floor1,default,2,######\   (###   ##>
 1,Floor1,default,2,#          0      <#
-1,Floor1,default,2,^                  ^
+1,Floor1,default,2,^    +             ^
 1,Floor1,default,2,                    
 1,Floor1,default,2,                    
 1,Floor1,default,2,>                   
@@ -59,14 +59,14 @@ ID,Name,Skin,Layer,Layout
 1,Floor1,default,2,                    
 1,Floor1,default,2,>              }    
 1,Floor1,default,2,^              /    
-1,Floor1,default,3,######     ########>
+1,Floor1,default,3,#####+     +#######>
 1,Floor1,default,3,#                 <#
 1,Floor1,default,3,^                  ^
 1,Floor1,default,3,                    
 1,Floor1,default,3,                    
 1,Floor1,default,3,>                   
 1,Floor1,default,3,#                   
-1,Floor1,default,3,#                  #
+1,Floor1,default,3,#                  +
 1,Floor1,default,3,#                  #
 1,Floor1,default,3,######             #
 1,Floor1,default,3,#    ^             ^
