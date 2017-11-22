@@ -3,13 +3,13 @@ ID,Name,Skin,Layer,Layout
 1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
 1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
 1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
-1,Floor1,default,0,~~~~~~~~~~~~~~~~~~~~
+1,Floor1,default,0,~~~~~~~~~~~~~~~~l~~~
+1,Floor1,default,0,~~~~~~~~~~~~~~~~ll~~
+1,Floor1,default,0,~~~~~~~~~~~~~~~~~l~~
+1,Floor1,default,0,~~~~~~~~~~~~~~~~~l~~
+1,Floor1,default,0,~~~~~~~~~~~~~~~~ll~~
+1,Floor1,default,0,~~~~~~~~~~~~~~~~l~~~
+1,Floor1,default,0,~~~~~~~~~~~~~~~ll~~~
 1,Floor1,default,0,~~~~~~~~~~~~~~~ll~~~
 1,Floor1,default,0,ll~~~~~~~~~~~~~lll~~
 1,Floor1,default,0,~llll~~~~~~~~~~~lll~
@@ -32,7 +32,7 @@ ID,Name,Skin,Layer,Layout
 1,Floor1,default,1,#^  #^      /      ^
 1,Floor1,default,1,#  S/          S    
 1,Floor1,default,1,         )          
-1,Floor1,default,1,#       (#\        +
+1,Floor1,default,1,#       (#\    +   +
 1,Floor1,default,1,#        #     )    
 1,Floor1,default,1,#]  S    #    (#\   
 1,Floor1,default,1,#      v###>   /   
@@ -52,7 +52,7 @@ ID,Name,Skin,Layer,Layout
 1,Floor1,default,2,#    ^             ^
 1,Floor1,default,2,#                   
 1,Floor1,default,2,                    
-1,Floor1,default,2,#        o        {\
+1,Floor1,default,2,#        o     (] {\
 1,Floor1,default,2,^                   
 1,Floor1,default,2, (]            P    
 1,Floor1,default,2,                    
@@ -72,7 +72,7 @@ ID,Name,Skin,Layer,Layout
 1,Floor1,default,3,#    ^             ^
 1,Floor1,default,3,#                   
 1,Floor1,default,3,#                   
-1,Floor1,default,3,#                   
+1,Floor1,default,3,#               (+\ 
 1,Floor1,default,3,^                   
 1,Floor1,default,3,                    
 1,Floor1,default,3,                    
