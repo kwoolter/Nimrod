@@ -43,6 +43,7 @@ class Objects:
     SPHERE_BLUE = "sphere_blue"
     SQUOID = "squoid"
     KEY = "key1"
+    LAVA = "lava"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
 
@@ -134,7 +135,6 @@ class Monster(FloorObject):
 
 
 class Floor:
-
     EXIT_NORTH = "NORTH"
     EXIT_SOUTH = "SOUTH"
     EXIT_EAST = "EAST"
@@ -170,7 +170,6 @@ class Floor:
         self.layers = {}
         self.floor_plans = {}
         self.exits = {}
-
 
     def __str__(self):
         return "Floor {0}: rect={1}, objects={2}, monsters={3}".format(self.name, self.rect, self.object_count,
@@ -256,11 +255,10 @@ class Floor:
 
         return floor_object
 
-    def set_floor_tile(self, x: int, y: int, layer_id: int, new_object : FloorObject = None):
+    def set_floor_tile(self, x: int, y: int, layer_id: int, new_object: FloorObject = None):
 
         layer = self.floor_plans[layer_id]
         layer[x][y] = new_object
-
 
     def move_player(self, name: str, dx: int = 0, dy: int = 0):
 
@@ -281,26 +279,54 @@ class Floor:
                 if tile.name in (Objects.BLOCK_LEFT_SLOPE, Objects.BLOCK_RIGHT_SLOPE):
                     selected_player.layer += 1
                 elif tile.name in (Objects.SQUOID):
-                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
+                    Floor.EVENTS.add_event(
+                        Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
                 elif tile.name == Objects.SPHERE_GREEN:
                     selected_player.treasure += 1
-                    self.set_floor_tile(x,y,selected_player.layer, None)
-                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.TREASURE, description="You found a {0}".format(tile.name)))
+                    self.set_floor_tile(x, y, selected_player.layer, None)
+                    Floor.EVENTS.add_event(
+                        Event(type=Event.FLOOR, name=Event.TREASURE, description="You found a {0}".format(tile.name)))
                 elif tile.name == Objects.SPHERE_BLUE:
                     selected_player.HP += 1
-                    self.set_floor_tile(x,y,selected_player.layer, None)
-                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.HEALTH, description="You found a {0}".format(tile.name)))
+                    self.set_floor_tile(x, y, selected_player.layer, None)
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
+                                                 description="You found a {0}".format(tile.name)))
                 elif tile.name == Objects.KEY:
                     selected_player.keys += 1
-                    self.set_floor_tile(x,y,selected_player.layer, None)
-                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.KEY, description="You found a {0}".format(tile.name)))
+                    self.set_floor_tile(x, y, selected_player.layer, None)
+                    Floor.EVENTS.add_event(
+                        Event(type=Event.FLOOR, name=Event.KEY, description="You found a {0}".format(tile.name)))
                 else:
                     selected_player.back()
-                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED, description="You are blocked by a {0}".format(tile.name)))
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED,
+                                                 description="You are blocked by a {0}".format(tile.name)))
+
+        # Check what the player is standing on...
+        base_tile = self.get_floor_tile(x, y, selected_player.layer - 1)
+        if base_tile.name == Objects.LAVA:
+            selected_player.HP -= 1
+            Floor.EVENTS.add_event(Event(type=Event.FLOOR,
+                                         name=Event.LOSE_HEALTH,
+                                         description="{0} stood on {1}".format(selected_player.name, base_tile.name)))
+
+    def tick(self):
+
+        # For each player...
+        for selected_player in self.players.values():
+
+            x, y, layer = selected_player.rect.x, selected_player.rect.y, selected_player.layer
+
+            # Check what the player is standing on...
+            base_tile = self.get_floor_tile(x, y, layer - 1)
+            if base_tile.name == Objects.LAVA:
+                selected_player.HP -= 1
+                Floor.EVENTS.add_event(Event(type=Event.FLOOR,
+                                             name=Event.LOSE_HEALTH,
+                                             description="{0} stood on {1}".format(selected_player.name,
+                                                                                   base_tile.name)))
 
 
 class FloorBuilder():
-
     FLOOR_LAYOUT_FILE_NAME = "_floor_layouts.csv"
     FLOOR_OBJECT_FILE_NAME = "_floor_objects.csv"
 
@@ -497,7 +523,6 @@ class Character(trpg.RPGCharacter):
 
 
 class Game():
-
     LOADED = "LOADED"
     READY = "READY"
     PLAYING = "PLAYING"
@@ -561,6 +586,7 @@ class Game():
 
         if self.tick_count % 4 == 0:
             self.events.add_event(Event(Event.TICK, "Tick", Event.GAME))
+            self.current_floor.tick()
 
     def get_next_event(self):
 
@@ -700,8 +726,8 @@ class Event():
     BLOCKED = "blocked"
     TREASURE = "treasure"
     KEY = "key"
-    HEALTH = "health"
-
+    GAIN_HEALTH = "gain health"
+    LOSE_HEALTH = "lose health"
 
     def __init__(self, name: str, description: str = None, type: str = DEFAULT):
         self.name = name

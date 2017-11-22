@@ -21,7 +21,7 @@ class Controller:
 
     def __init__(self):
 
-        self.game = model.Game("Nimrod")
+        self.game = model.Game("SQUOIDS")
         self.view = view.MainFrame(self.game, 700, 700)
         self.audio = audio.AudioManager()
 

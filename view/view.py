@@ -71,7 +71,10 @@ class ImageManager:
             model.Objects.SPHERE_GREEN: "SphereGreen.png",
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid2.png",
-            model.Objects.KEY: "key2.png"
+            model.Objects.KEY: "key2.png",
+            model.Objects.LAVA: ("lava_1.png","lava_0.png"),
+
+
 
         })
 
@@ -241,7 +244,7 @@ class MainFrame(View):
 
 class TitleBar(View):
     FILL_COLOUR = Colours.BLACK
-    TEXT_FG_COLOUR = Colours.GOLD
+    TEXT_FG_COLOUR = Colours.WHITE
     TEXT_BG_COLOUR = None
 
     def __init__(self, width: int, height: int):
@@ -261,7 +264,7 @@ class TitleBar(View):
         self.title = game.name
 
         try:
-            filename = MainFrame.RESOURCES_DIR + "title.png"
+            filename = MainFrame.RESOURCES_DIR + "jellyfish_banner.jpg"
             image = pygame.image.load(filename)
             self.title_image = pygame.transform.scale(image, (self.surface.get_width(), self.surface.get_height()))
         except Exception as err:
@@ -288,7 +291,7 @@ class TitleBar(View):
                   y=int(pane_rect.height / 2),
                   fg_colour=TitleBar.TEXT_FG_COLOUR,
                   bg_colour=TitleBar.TEXT_BG_COLOUR,
-                  size=int(pane_rect.height / 2))
+                  size=int(pane_rect.height * 0.75))
 
 
 class StatusBar(View):
@@ -488,7 +491,7 @@ class GameReadyView(View):
                   fg_colour=GameReadyView.FG_COLOUR,
                   bg_colour=GameReadyView.BG_COLOUR)
 
-        image = View.image_manager.get_skin_image(model.Objects.PLAYER, tick=self.tick_count)
+        image = View.image_manager.get_skin_image(model.Objects.SQUOID, tick=self.tick_count)
 
         image_width = 200
         image_height = 200
