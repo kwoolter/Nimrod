@@ -24,6 +24,7 @@ class Objects:
     HEART = "heart"
     BLOCK = "block"
     BLOCK_ORNATE = "block_ornate"
+    BLOCK_HEXAGON = "block_hexagon"
     BLOCK_TOP = "block_top"
     BLOCK_BOTTOM = "block_bottom"
     BLOCK_RIGHT = "block_right"
@@ -43,6 +44,7 @@ class Objects:
     SPHERE_GREEN = "sphere_green"
     SPHERE_BLUE = "sphere_blue"
     SQUOID = "squoid"
+    SQUOID2 = "squoid2"
     KEY = "key1"
     LAVA = "lava"
 

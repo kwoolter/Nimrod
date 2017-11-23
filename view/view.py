@@ -53,6 +53,7 @@ class ImageManager:
             model.Objects.HEART: "heart.png",
             model.Objects.BLOCK: "Block32x32.png",
             model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
+            model.Objects.BLOCK_HEXAGON: "Hexagon.png",
             model.Objects.BLOCK_TOP: "Block32x32Top2.png",
             model.Objects.BLOCK_BOTTOM: "Block32x32Bottom.png",
             model.Objects.BLOCK_RIGHT: "Block32x32Right.png",
@@ -65,15 +66,16 @@ class ImageManager:
             model.Objects.BLOCK_ARCH_NW: "Block32x32ArchNW.png",
             model.Objects.BLOCK_ARCH_SE: "Block32x32ArchSE.png",
             model.Objects.BLOCK_ARCH_SW: "Block32x32ArchSW.png",
-            model.Objects.BLUE: "Block32x32Blue.png",
+            model.Objects.BLUE: "Block32x32Blue2.png",
             model.Objects.PYRAMID1: "Block32x32Pyramid4.png",
             model.Objects.PYRAMID2: "Block32x32Pyramid2.png",
             model.Objects.SPHERE: "Sphere2.png",
             model.Objects.SPHERE_GREEN: "SphereGreen.png",
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid2.png",
+            model.Objects.SQUOID2: "SquoidBasic.png",
             model.Objects.KEY: "key2.png",
-            model.Objects.LAVA: ("lava_0.png","lava_1.png","lava_2.png"),
+            model.Objects.LAVA: ("lava_0.png","lava_1.png","lava_2.png", "lava_1.png"),
 
 
 
