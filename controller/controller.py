@@ -33,9 +33,6 @@ class Controller:
         self.view.initialise()
         self.audio.initialise()
 
-        # new_player = model.Player("Player1", (5,5,1,1),1)
-        # self.game.add_player(new_player)
-
         pygame.mixer.pre_init(44100, -16, 2, 2048)
         pygame.mixer.init()
 

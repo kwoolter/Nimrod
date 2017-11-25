@@ -3,6 +3,7 @@ import copy
 import csv
 import logging
 import os
+import random
 
 import pygame
 
@@ -135,6 +136,18 @@ class Monster(FloorObject):
                  rect: pygame.Rect,
                  height: int = 30):
         super(Monster, self).__init__(name=name, rect=rect, height=height)
+
+
+class Team:
+    def __init__(self, name: str):
+        self.name = name
+        self.players = []
+
+    def add_player(self, new_player: Player):
+        self.players.append(new_player)
+
+    def __str__(self):
+        return "Team {0}: {1} player(s)".format(self.name, len(self.players))
 
 
 class Floor:
@@ -310,7 +323,7 @@ class Floor:
         if base_tile is None:
             selected_player.back()
             Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED,
-                                     description="You can't go that way"))
+                                         description="You can't go that way"))
 
         # If standing on lava lose health
         elif base_tile.name == Objects.LAVA:
@@ -488,9 +501,36 @@ class FloorObjectLoader():
         return FloorObjectLoader.get_object_copy_by_code(object_code)
 
 
+
+class Battle:
+
+    READY = "ready"
+    PLAYING = "playing"
+    END = "end"
+
+    def __init__(self, team1: Team, team2: Team, battle_floor : Floor = None):
+        self.teams = [team1, team2]
+        self.turns = 0
+        self._state = Battle.READY
+        self.next_team = None
+        self.battle_floor = battle_floor
+
+    def __str__(self):
+        return "Battle between team {0} and team {1} ({5})\nRound {2}: {6}'s turn.\n{3}\n{4}".format(self.teams[0].name,
+                                                                         self.teams[1].name,
+                                                                         self.turns,
+                                                                         self.teams[0],
+                                                                         self.teams[1],
+                                                                         self._state,
+                                                                         self.next_team.name)
+    def start(self):
+        self._state = Battle.PLAYING
+        self.next_team = random.choice(self.teams)
+
 class Character(trpg.RPGCharacter):
-    def __init__(self, name: str, x: int = 1, y: int = 1, width: int = 1, height: int = 1, HP: int = 20):
-        # super(trpg.RPGCharacter, self).__init__(name, race, rpg_class)
+    def __init__(self, name: str, rpg_race: str, rpg_class: str,
+                 x: int = 1, y: int = 1, width: int = 1, height: int = 1, HP: int = 20):
+        super(trpg.RPGCharacter, self).__init__(name, rpg_race, rpg_class)
 
         self.name = name
         self._HP = HP
@@ -628,6 +668,17 @@ class Game():
         new_player = Player(name=Objects.SQUOID, rect=(19, 19, 0, 0))
 
         self.add_player(new_player)
+
+        team1 = Team("Blue")
+        team2 = Team("Red")
+        for i in range(0, 5):
+            team1.add_player(Player(name=Objects.SQUOID, rect=(0, 0, 0, 0)))
+            team2.add_player(Player(name=Objects.SQUOID, rect=(0, 0, 0, 0)))
+
+        new_battle = Battle(team1, team2)
+        new_battle.start()
+
+        print(str(new_battle))
 
     def load_map(self, location_file_name: str, map_links_file_name: str):
 
