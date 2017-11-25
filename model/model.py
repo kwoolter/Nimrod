@@ -527,6 +527,10 @@ class Battle:
         self._state = Battle.PLAYING
         self.next_team = random.choice(self.teams)
 
+
+    def do_turn(self):
+        pass
+
 class Character(trpg.RPGCharacter):
     def __init__(self, name: str, rpg_race: str, rpg_class: str,
                  x: int = 1, y: int = 1, width: int = 1, height: int = 1, HP: int = 20):
