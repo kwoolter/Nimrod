@@ -81,8 +81,8 @@ class ImageManager:
             model.Objects.BLUE: "Block32x32Blue2.png",
             model.Objects.PYRAMID1: "Block32x32Pyramid4.png",
             model.Objects.PYRAMID2: "Block32x32Pyramid2.png",
-            model.Objects.SPHERE: "Sphere2.png",
-            model.Objects.SPHERE_GREEN: "SphereGreen.png",
+            model.Objects.SPHERE: ("Sphere0.png","Sphere1.png","Sphere2.png","Sphere3.png","Sphere2.png","Sphere1.png"),
+            model.Objects.SPHERE_GREEN: ("SphereGreen0.png","SphereGreen1.png","SphereGreen2.png","SphereGreen3.png","SphereGreen2.png","SphereGreen1.png"),
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid2.png",
             model.Objects.SQUOID2: "SquoidBasic.png",
@@ -135,7 +135,7 @@ class ImageManager:
 
     def load_sprite_sheets(self):
 
-        sheet_file_name = "blocks_sheet_brown.png"
+        sheet_file_name = "blocks_sheet_blue.png"
 
         self.sprite_sheets["Block32x32Pyramid2.png"] = (sheet_file_name, (128,0, 32, 32))
         self.sprite_sheets["Block32x32Pyramid4.png"] = (sheet_file_name, (160,0, 32, 32))
@@ -173,6 +173,17 @@ class ImageManager:
         self.sprite_sheets["key1.png"] = (sheet_file_name, (32, 0, 32, 32))
         self.sprite_sheets["key2.png"] = (sheet_file_name, (64, 0, 32, 32))
 
+        sheet_file_name = "Sphere_sheet.png"
+        self.sprite_sheets["Sphere0.png"] = (sheet_file_name, (0, 0, 32, 32))
+        self.sprite_sheets["Sphere1.png"] = (sheet_file_name, (32, 0, 32, 32))
+        self.sprite_sheets["Sphere2.png"] = (sheet_file_name, (64, 0, 32, 32))
+        self.sprite_sheets["Sphere3.png"] = (sheet_file_name, (96, 0, 32, 32))
+
+        sheet_file_name = "Sphere_sheet_green.png"
+        self.sprite_sheets["SphereGreen0.png"] = (sheet_file_name, (0, 0, 32, 32))
+        self.sprite_sheets["SphereGreen1.png"] = (sheet_file_name, (32, 0, 32, 32))
+        self.sprite_sheets["SphereGreen2.png"] = (sheet_file_name, (64, 0, 32, 32))
+        self.sprite_sheets["SphereGreen3.png"] = (sheet_file_name, (96, 0, 32, 32))
 
 
 class View():
@@ -319,7 +330,7 @@ class TitleBar(View):
         self.title = game.name
 
         try:
-            filename = MainFrame.RESOURCES_DIR + "jellyfish_banner.jpg"
+            filename = MainFrame.RESOURCES_DIR + "banner.jpg"
             image = pygame.image.load(filename)
             self.title_image = pygame.transform.scale(image, (self.surface.get_width(), self.surface.get_height()))
         except Exception as err:

@@ -84,7 +84,7 @@ class spritesheet(object):
     def __init__(self, filename):
         try:
             self.sheet = pygame.image.load(filename)
-        except pygame.Exception as err:
+        except Exception as err:
             print('Unable to load spritesheet image:', filename)
             raise err
 
