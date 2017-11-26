@@ -86,7 +86,7 @@ class ImageManager:
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid2.png",
             model.Objects.SQUOID2: "SquoidBasic.png",
-            model.Objects.KEY: "key2.png",
+            model.Objects.KEY: ("key0.png","key1.png","key2.png","key1.png"),
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.LAVA: ("lava_0.png","lava_1.png","lava_2.png", "lava_1.png"),
 
@@ -167,6 +167,11 @@ class ImageManager:
 
         sheet_file_name = "blocks_sheet_green.png"
         self.sprite_sheets["SphereGreen.png"] = (sheet_file_name, (96,0, 32, 32))
+
+        sheet_file_name = "Keys.png"
+        self.sprite_sheets["key0.png"] = (sheet_file_name, (0, 0, 32, 32))
+        self.sprite_sheets["key1.png"] = (sheet_file_name, (32, 0, 32, 32))
+        self.sprite_sheets["key2.png"] = (sheet_file_name, (64, 0, 32, 32))
 
 
 
