@@ -48,6 +48,7 @@ class Objects:
     SQUOID2 = "squoid2"
     KEY = "key1"
     LAVA = "lava"
+    CYLINDER = "cylinder"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
 

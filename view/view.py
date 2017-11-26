@@ -14,9 +14,11 @@ from utils import draw_text
 class ImageManager:
     DEFAULT_SKIN = "default"
     RESOURCES_DIR = os.path.dirname(__file__) + "\\resources\\"
+    TRANSPARENT=(1,2,3)
 
     image_cache = {}
     skins = {}
+    sprite_sheets = {}
     initialised = False
 
     def __init__(self):
@@ -25,17 +27,27 @@ class ImageManager:
     def initialise(self):
         if ImageManager.initialised is False:
             self.load_skins()
+            self.load_sprite_sheets()
 
     def get_image(self, image_file_name: str, width: int = 32, height: int = 32):
 
         if image_file_name not in ImageManager.image_cache.keys():
 
-            filename = ImageManager.RESOURCES_DIR + image_file_name
+            if image_file_name in self.sprite_sheets.keys():
+                file_name, rect = self.sprite_sheets[image_file_name]
+                filename = ImageManager.RESOURCES_DIR + file_name
+            else:
+                filename = ImageManager.RESOURCES_DIR + image_file_name
+                rect = (0,0,width,height)
+
             try:
-                logging.info("Loading image {0}...".format(filename))
-                original_image = pygame.image.load(filename).convert_alpha()
-                image = pygame.transform.scale(original_image, (width, height)).convert_alpha()
-                #image = image.convert_aplha()
+                logging.info("Loading image {0} from {1} at {2}...".format(image_file_name, filename, rect))
+
+                image_sheet = utils.spritesheet(filename)
+                original_image = image_sheet.image_at(rect)
+
+                image = pygame.transform.scale(original_image, (width, height))
+
                 ImageManager.image_cache[image_file_name] = image
                 logging.info("Image {0} loaded and cached.".format(filename))
 
@@ -75,9 +87,8 @@ class ImageManager:
             model.Objects.SQUOID: "Squoid2.png",
             model.Objects.SQUOID2: "SquoidBasic.png",
             model.Objects.KEY: "key2.png",
+            model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.LAVA: ("lava_0.png","lava_1.png","lava_2.png", "lava_1.png"),
-
-
 
         })
 
@@ -121,6 +132,16 @@ class ImageManager:
             image = self.get_image(tile_file_names, width=width, height=height)
 
         return image
+
+    def load_sprite_sheets(self):
+
+        self.sprite_sheets["Block32x32Pyramid2.png"] = ("blocks_sheet_brown.png", (128,0, 32, 32))
+        self.sprite_sheets["Block32x32Pyramid4.png"] = ("blocks_sheet_brown.png", (160,0, 32, 32))
+        self.sprite_sheets["Cylinder.png"] = ("blocks_sheet_brown.png", (0, 0, 32, 32))
+        self.sprite_sheets["Sphere2.png"] = ("blocks_sheet_brown.png", (96,0, 32, 32))
+        self.sprite_sheets["Hexagon.png"] = ("blocks_sheet_brown.png", (64,0, 32, 32))
+        self.sprite_sheets["Block32x32Ornate.png"] = ("blocks_sheet_brown.png", (32,0, 32, 32))
+
 
 
 class View():
@@ -625,9 +646,7 @@ class GameView(View):
 
         skin_name = self.floor.skin_name
 
-        # print("drawing layer for floor {0}".format(layer_id))
-
-        #surface.fill(GameView.TRANSPARENT)
+        #print("drawing layer for floor {0}".format(layer_id))
 
         for x in range(0, self.floor.rect.width):
             for y in range(0, self.floor.rect.height):
@@ -636,40 +655,16 @@ class GameView(View):
                     image = View.image_manager.get_skin_image(view_object.name,
                                                               tick=self.tick_count,
                                                               width=view_object.rect.width,
-                                                              height=view_object.height,
+                                                              height=view_object.rect.height,
                                                               skin_name=skin_name)
                     if image is not None:
 
+                        if layer_id > 1:
+                            image.set_alpha(255-(layer_id*10))
+                        else:
+                            image.set_alpha(255)
+
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
-
-        # view_objects = self.floor.get_layer(layer_id)
-        #
-        # for view_object in view_objects:
-        #     if view_object.is_visible is True:
-        #
-        #         if isinstance(view_object, model.Player):
-        #
-        #             image = View.image_manager.get_skin_image(model.Objects.SQUOID,
-        #                                                       tick=self.tick_count,
-        #                                                       width=view_object.rect.width,
-        #                                                       height=view_object.height)
-        #             if image is not None:
-        #                 surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
-        #
-        #         elif isinstance(view_object, model.FloorObject):
-        #             image = View.image_manager.get_skin_image(view_object.name,
-        #                                                       tick=self.tick_count,
-        #                                                       width=view_object.rect.width,
-        #                                                       height=view_object.height,
-        #                                                       skin_name=skin_name)
-        #             if image is  not None:
-        #                 #image.set_alpha(7)
-        #                 surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
-        #
-        #         elif isinstance(view_object, model.Monster):
-        #             pygame.draw.rect(surface, Colours.RED, self.model_to_view_rect(view_object))
-        #             pygame.draw.rect(surface, Colours.GOLD, self.model_to_view_rect(view_object), 1)
-
 
 
         return surface
