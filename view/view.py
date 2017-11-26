@@ -66,18 +66,18 @@ class ImageManager:
             model.Objects.BLOCK: "Block32x32.png",
             model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
             model.Objects.BLOCK_HEXAGON: "Hexagon.png",
-            model.Objects.BLOCK_TOP: "Block32x32Top2.png",
-            model.Objects.BLOCK_BOTTOM: "Block32x32Bottom.png",
-            model.Objects.BLOCK_RIGHT: "Block32x32Right.png",
-            model.Objects.BLOCK_LEFT: "Block32x32Left.png",
-            model.Objects.BLOCK_LEFT_SLOPE: "Block32x32LSlope2.png",
-            model.Objects.BLOCK_RIGHT_SLOPE: "Block32x32RSlope.png",
-            model.Objects.BLOCK_LEFT_BACK_SLOPE: "Block32x32LBSlope.png",
-            model.Objects.BLOCK_RIGHT_BACK_SLOPE: "Block32x32RBSlope.png",
-            model.Objects.BLOCK_ARCH_NE: "Block32x32ArchNE.png",
-            model.Objects.BLOCK_ARCH_NW: "Block32x32ArchNW.png",
-            model.Objects.BLOCK_ARCH_SE: "Block32x32ArchSE.png",
-            model.Objects.BLOCK_ARCH_SW: "Block32x32ArchSW.png",
+            model.Objects.BLOCK_TOP: "BlockFront.png",
+            model.Objects.BLOCK_BOTTOM: "BlockBack.png",
+            model.Objects.BLOCK_RIGHT: "BlockRight.png",
+            model.Objects.BLOCK_LEFT: "BlockLeft.png",
+            model.Objects.BLOCK_LEFT_SLOPE: "BlockSlopeSW.png",
+            model.Objects.BLOCK_RIGHT_SLOPE: "BlockSlopeSE.png",
+            model.Objects.BLOCK_LEFT_BACK_SLOPE: "BlockSlopeNW.png",
+            model.Objects.BLOCK_RIGHT_BACK_SLOPE: "BlockSlopeNE.png",
+            model.Objects.BLOCK_ARCH_NE: "BlockArchNE.png",
+            model.Objects.BLOCK_ARCH_NW: "BlockArchNW.png",
+            model.Objects.BLOCK_ARCH_SE: "BlockArchSE.png",
+            model.Objects.BLOCK_ARCH_SW: "BlockArchSW.png",
             model.Objects.BLUE: "Block32x32Blue2.png",
             model.Objects.PYRAMID1: "Block32x32Pyramid4.png",
             model.Objects.PYRAMID2: "Block32x32Pyramid2.png",
@@ -135,12 +135,31 @@ class ImageManager:
 
     def load_sprite_sheets(self):
 
-        self.sprite_sheets["Block32x32Pyramid2.png"] = ("blocks_sheet_brown.png", (128,0, 32, 32))
-        self.sprite_sheets["Block32x32Pyramid4.png"] = ("blocks_sheet_brown.png", (160,0, 32, 32))
-        self.sprite_sheets["Cylinder.png"] = ("blocks_sheet_brown.png", (0, 0, 32, 32))
-        self.sprite_sheets["Sphere2.png"] = ("blocks_sheet_brown.png", (96,0, 32, 32))
-        self.sprite_sheets["Hexagon.png"] = ("blocks_sheet_brown.png", (64,0, 32, 32))
-        self.sprite_sheets["Block32x32Ornate.png"] = ("blocks_sheet_brown.png", (32,0, 32, 32))
+        sheet_file_name = "blocks_sheet_blue.png"
+
+        self.sprite_sheets["Block32x32Pyramid2.png"] = (sheet_file_name, (128,0, 32, 32))
+        self.sprite_sheets["Block32x32Pyramid4.png"] = (sheet_file_name, (160,0, 32, 32))
+        self.sprite_sheets["Cylinder.png"] = (sheet_file_name, (0, 0, 32, 32))
+        self.sprite_sheets["Sphere2.png"] = (sheet_file_name, (96,0, 32, 32))
+        self.sprite_sheets["Hexagon.png"] = (sheet_file_name, (64,0, 32, 32))
+        self.sprite_sheets["Block32x32Ornate.png"] = (sheet_file_name, (32,0, 32, 32))
+
+        self.sprite_sheets["Block32x32.png"] = (sheet_file_name, (0,32, 32, 32))
+        self.sprite_sheets["BlockFront.png"] = (sheet_file_name, (32, 32, 32, 32))
+        self.sprite_sheets["BlockRight.png"] = (sheet_file_name, (64, 32, 32, 32))
+        self.sprite_sheets["BlockBack.png"] = (sheet_file_name, (96, 32, 32, 32))
+        self.sprite_sheets["BlockLeft.png"] = (sheet_file_name, (128, 32, 32, 32))
+        self.sprite_sheets["BlockArchNE.png"] = (sheet_file_name, (192, 0, 32, 32))
+        self.sprite_sheets["BlockArchSE.png"] = (sheet_file_name, (224, 0, 32, 32))
+        self.sprite_sheets["BlockArchSW.png"] = (sheet_file_name, (256, 0, 32, 32))
+        self.sprite_sheets["BlockArchNW.png"] = (sheet_file_name, (288, 0, 32, 32))
+
+        self.sprite_sheets["BlockSlopeSW.png"] = (sheet_file_name, (160, 32, 32, 32))
+        self.sprite_sheets["BlockSlopeNW.png"] = (sheet_file_name, (192, 32, 32, 32))
+        self.sprite_sheets["BlockSlopeNE.png"] = (sheet_file_name, (224, 32, 32, 32))
+        self.sprite_sheets["BlockSlopeSE.png"] = (sheet_file_name, (256, 32, 32, 32))
+
+
 
 
 
