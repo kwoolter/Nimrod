@@ -135,7 +135,7 @@ class ImageManager:
 
     def load_sprite_sheets(self):
 
-        sheet_file_name = "blocks_sheet_blue.png"
+        sheet_file_name = "blocks_sheet_brown.png"
 
         self.sprite_sheets["Block32x32Pyramid2.png"] = (sheet_file_name, (128,0, 32, 32))
         self.sprite_sheets["Block32x32Pyramid4.png"] = (sheet_file_name, (160,0, 32, 32))
@@ -160,6 +160,13 @@ class ImageManager:
         self.sprite_sheets["BlockSlopeSE.png"] = (sheet_file_name, (256, 32, 32, 32))
 
 
+        sheet_file_name = "blocks_sheet_blue.png"
+
+        self.sprite_sheets["SphereBlue.png"] = (sheet_file_name, (96,0, 32, 32))
+        #self.sprite_sheets["Block32x32Blue2.png"] = (sheet_file_name, (0,32, 32, 32))
+
+        sheet_file_name = "blocks_sheet_green.png"
+        self.sprite_sheets["SphereGreen.png"] = (sheet_file_name, (96,0, 32, 32))
 
 
 
