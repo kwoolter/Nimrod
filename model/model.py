@@ -137,6 +137,9 @@ class Player(FloorObject):
     def __str__(self):
         return("Player {0}: HP={1}, AP={2}".format(self.name, self.HP,self.AP))
 
+    def is_dead(self):
+        return self.HP<=0
+
 
 class Monster(FloorObject):
     def __init__(self, name: str,
@@ -169,14 +172,19 @@ class Team:
 
         print("Choosing player based on {0}".format(tactic))
 
+        available_players = []
+        for player in self.players:
+            if player.is_dead() is False:
+                available_players.append(player)
+
         if tactic == Team.TACTIC_RANDOM:
-            chosen_player = random.choice(self.players)
+            chosen_player = random.choice(available_players)
 
         elif tactic == Team.TACTIC_WEAKEST:
-            chosen_player = sorted(self.players, key=attrgetter("HP"), reverse=False)[0]
+            chosen_player = sorted(available_players, key=attrgetter("HP"), reverse=False)[0]
 
         elif tactic == Team.TACTIC_STRONGEST:
-            chosen_player = sorted(self.players, key=attrgetter("HP"), reverse=True)[0]
+            chosen_player = sorted(available_players, key=attrgetter("HP"), reverse=True)[0]
 
         return chosen_player
 
@@ -582,14 +590,14 @@ class Battle:
 
     def get_current_player(self):
         current_player = self.order_of_play[0]
+
         if current_player.AP <= 0:
-            print("out of AP!")
             old_player = self.order_of_play.pop(0)
             old_player.AP=1
             current_player = self.order_of_play[0]
             self.order_of_play.append(old_player)
-
             self.turns += 1
+
         return current_player
 
     def get_opposite_team(self, selected_team : Team):
@@ -616,12 +624,16 @@ class Battle:
         print("Player {0}'s turn from the {1} team".format(current_player.name, current_team.name))
 
         opponent_team = self.get_opposite_team(current_team)
-        opponent = opponent_team.choose_player(tactic=random.choice((Team.TACTIC_WEAKEST, Team.TACTIC_STRONGEST, Team.TACTIC_RANDOM)))
+        #opponent = opponent_team.choose_player(tactic=random.choice((Team.TACTIC_WEAKEST, Team.TACTIC_STRONGEST, Team.TACTIC_RANDOM)))
+        opponent = opponent_team.choose_player(tactic=Team.TACTIC_WEAKEST)
 
         print("Player {0} attacks Player {1} from the {2} team".format(current_player.name,
                                                                        opponent.name,
                                                                        opponent_team.name))
         opponent.HP -= random.randint(1,3)
+        if opponent.is_dead() is True:
+            print("Player {0} killed Player {1}".format(current_player.name, opponent.name))
+            self.order_of_play.remove(opponent)
 
         current_player.AP -= 1
 
@@ -777,7 +789,7 @@ class Game():
         new_battle = Battle(team1, team2)
         new_battle.start()
 
-        for i in range(1,10):
+        for i in range(1,20):
             new_battle.do_turn()
 
         print(str(new_battle))
