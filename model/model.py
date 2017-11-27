@@ -10,6 +10,8 @@ import pygame
 import utils
 import utils.trpg as trpg
 from .derived_stats import *
+from operator import itemgetter
+from operator import attrgetter
 
 
 class Objects:
@@ -130,6 +132,10 @@ class Player(FloorObject):
         self.boss_keys = 0
         self.HP = 10
         self.layer = 1
+        self.AP = 1
+
+    def __str__(self):
+        return("Player {0}: HP={1}, AP={2}".format(self.name, self.HP,self.AP))
 
 
 class Monster(FloorObject):
@@ -140,6 +146,11 @@ class Monster(FloorObject):
 
 
 class Team:
+
+    TACTIC_RANDOM = "random"
+    TACTIC_WEAKEST = "weakest"
+    TACTIC_STRONGEST = "strongest"
+
     def __init__(self, name: str):
         self.name = name
         self.players = []
@@ -147,9 +158,35 @@ class Team:
     def add_player(self, new_player: Player):
         self.players.append(new_player)
 
+    def is_player_in_team(self, selected_player : Player):
+
+        if selected_player in self.players:
+            return True
+        else:
+            return False
+
+    def choose_player(self, tactic : int = TACTIC_RANDOM):
+
+        print("Choosing player based on {0}".format(tactic))
+
+        if tactic == Team.TACTIC_RANDOM:
+            chosen_player = random.choice(self.players)
+
+        elif tactic == Team.TACTIC_WEAKEST:
+            chosen_player = sorted(self.players, key=attrgetter("HP"), reverse=False)[0]
+
+        elif tactic == Team.TACTIC_STRONGEST:
+            chosen_player = sorted(self.players, key=attrgetter("HP"), reverse=True)[0]
+
+        return chosen_player
+
     def __str__(self):
         return "Team {0}: {1} player(s)".format(self.name, len(self.players))
 
+    def print(self):
+        print("Team {0} has {1} members:".format(self.name, len(self.players)))
+        for player in self.players:
+            print(player)
 
 class Floor:
     EXIT_NORTH = "NORTH"
@@ -502,35 +539,92 @@ class FloorObjectLoader():
         return FloorObjectLoader.get_object_copy_by_code(object_code)
 
 
-
 class Battle:
-
     READY = "ready"
     PLAYING = "playing"
     END = "end"
 
-    def __init__(self, team1: Team, team2: Team, battle_floor : Floor = None):
+    def __init__(self, team1: Team, team2: Team, battle_floor: Floor = None):
         self.teams = [team1, team2]
         self.turns = 0
         self._state = Battle.READY
         self.next_team = None
         self.battle_floor = battle_floor
+        self.order_of_play = []
 
     def __str__(self):
-        return "Battle between team {0} and team {1} ({5})\nRound {2}: {6}'s turn.\n{3}\n{4}".format(self.teams[0].name,
-                                                                         self.teams[1].name,
-                                                                         self.turns,
-                                                                         self.teams[0],
-                                                                         self.teams[1],
-                                                                         self._state,
-                                                                         self.next_team.name)
+        return "Battle between team {0} and team {1} ({5})\nRound {2}\n{3}\n{4}".format(self.teams[0].name,
+                                                                                                     self.teams[1].name,
+                                                                                                     self.turns,
+                                                                                                     self.teams[0],
+                                                                                                     self.teams[1],
+                                                                                                     self._state)
+    def print(self):
+        for team in self.teams:
+            team.print()
+
+
     def start(self):
         self._state = Battle.PLAYING
-        self.next_team = random.choice(self.teams)
+        t1 = copy.copy(self.teams[0].players)
+        t2 = copy.copy(self.teams[1].players)
+        loop = True
+        while loop is True:
+
+            if len(t1) > 0:
+                self.order_of_play.append(t1.pop())
+
+            if len(t2) > 0:
+                self.order_of_play.append(t2.pop())
+
+            if len(t1) + len(t2) == 0:
+                loop = False
+
+    def get_current_player(self):
+        current_player = self.order_of_play[0]
+        if current_player.AP <= 0:
+            print("out of AP!")
+            old_player = self.order_of_play.pop(0)
+            old_player.AP=1
+            current_player = self.order_of_play[0]
+            self.order_of_play.append(old_player)
+
+            self.turns += 1
+        return current_player
+
+    def get_opposite_team(self, selected_team : Team):
+        if selected_team == self.teams[0]:
+            return self.teams[1]
+        elif selected_team == self.teams[1]:
+            return self.teams[0]
+        else:
+            return None
+
+    def get_player_team(self, selected_player : Player):
+        if self.teams[0].is_player_in_team(selected_player):
+            return self.teams[0]
+        elif self.teams[1].is_player_in_team(selected_player):
+            return self.teams[1]
+        else:
+            return None
 
 
     def do_turn(self):
-        pass
+        current_player = self.get_current_player()
+        current_team = self.get_player_team(current_player)
+
+        print("Player {0}'s turn from the {1} team".format(current_player.name, current_team.name))
+
+        opponent_team = self.get_opposite_team(current_team)
+        opponent = opponent_team.choose_player(tactic=random.choice((Team.TACTIC_WEAKEST, Team.TACTIC_STRONGEST, Team.TACTIC_RANDOM)))
+
+        print("Player {0} attacks Player {1} from the {2} team".format(current_player.name,
+                                                                       opponent.name,
+                                                                       opponent_team.name))
+        opponent.HP -= random.randint(1,3)
+
+        current_player.AP -= 1
+
 
 class Character(trpg.RPGCharacter):
     def __init__(self, name: str, rpg_race: str, rpg_class: str,
@@ -678,12 +772,16 @@ class Game():
         team2 = Team("Red")
         for i in range(0, 5):
             team1.add_player(Player(name=Objects.SQUOID, rect=(0, 0, 0, 0)))
-            team2.add_player(Player(name=Objects.SQUOID, rect=(0, 0, 0, 0)))
+            team2.add_player(Player(name=Objects.SPHERE, rect=(0, 0, 0, 0)))
 
         new_battle = Battle(team1, team2)
         new_battle.start()
 
+        for i in range(1,10):
+            new_battle.do_turn()
+
         print(str(new_battle))
+        new_battle.print()
 
     def load_map(self, location_file_name: str, map_links_file_name: str):
 

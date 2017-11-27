@@ -14,7 +14,7 @@ from utils import draw_text
 class ImageManager:
     DEFAULT_SKIN = "default"
     RESOURCES_DIR = os.path.dirname(__file__) + "\\resources\\"
-    TRANSPARENT=(1,2,3)
+    TRANSPARENT = (1, 2, 3)
 
     image_cache = {}
     skins = {}
@@ -38,7 +38,7 @@ class ImageManager:
                 filename = ImageManager.RESOURCES_DIR + file_name
             else:
                 filename = ImageManager.RESOURCES_DIR + image_file_name
-                rect = (0,0,width,height)
+                rect = (0, 0, width, height)
 
             try:
                 logging.info("Loading image {0} from {1} at {2}...".format(image_file_name, filename, rect))
@@ -81,14 +81,17 @@ class ImageManager:
             model.Objects.BLUE: "Block32x32Blue2.png",
             model.Objects.PYRAMID1: "Block32x32Pyramid4.png",
             model.Objects.PYRAMID2: "Block32x32Pyramid2.png",
-            model.Objects.SPHERE: ("Sphere0.png","Sphere1.png","Sphere2.png","Sphere3.png","Sphere2.png","Sphere1.png"),
-            model.Objects.SPHERE_GREEN: ("SphereGreen0.png","SphereGreen1.png","SphereGreen2.png","SphereGreen3.png","SphereGreen2.png","SphereGreen1.png"),
+            model.Objects.SPHERE: (
+            "Sphere0.png", "Sphere1.png", "Sphere2.png", "Sphere3.png", "Sphere2.png", "Sphere1.png"),
+            model.Objects.SPHERE_GREEN: (
+            "SphereGreen0.png", "SphereGreen1.png", "SphereGreen2.png", "SphereGreen3.png", "SphereGreen2.png",
+            "SphereGreen1.png"),
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid2.png",
             model.Objects.SQUOID2: "SquoidBasic.png",
-            model.Objects.KEY: ("key0.png","key1.png","key2.png","key1.png"),
+            model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CYLINDER: "Cylinder.png",
-            model.Objects.LAVA: ("lava_0.png","lava_1.png","lava_2.png", "lava_1.png"),
+            model.Objects.LAVA: ("lava_0.png", "lava_1.png", "lava_2.png", "lava_1.png"),
 
         })
 
@@ -137,14 +140,14 @@ class ImageManager:
 
         sheet_file_name = "blocks_sheet_blue.png"
 
-        self.sprite_sheets["Block32x32Pyramid2.png"] = (sheet_file_name, (128,0, 32, 32))
-        self.sprite_sheets["Block32x32Pyramid4.png"] = (sheet_file_name, (160,0, 32, 32))
+        self.sprite_sheets["Block32x32Pyramid2.png"] = (sheet_file_name, (128, 0, 32, 32))
+        self.sprite_sheets["Block32x32Pyramid4.png"] = (sheet_file_name, (160, 0, 32, 32))
         self.sprite_sheets["Cylinder.png"] = (sheet_file_name, (0, 0, 32, 32))
-        self.sprite_sheets["Sphere2.png"] = (sheet_file_name, (96,0, 32, 32))
-        self.sprite_sheets["Hexagon.png"] = (sheet_file_name, (64,0, 32, 32))
-        self.sprite_sheets["Block32x32Ornate.png"] = (sheet_file_name, (32,0, 32, 32))
+        self.sprite_sheets["Sphere2.png"] = (sheet_file_name, (96, 0, 32, 32))
+        self.sprite_sheets["Hexagon.png"] = (sheet_file_name, (64, 0, 32, 32))
+        self.sprite_sheets["Block32x32Ornate.png"] = (sheet_file_name, (32, 0, 32, 32))
 
-        self.sprite_sheets["Block32x32.png"] = (sheet_file_name, (0,32, 32, 32))
+        self.sprite_sheets["Block32x32.png"] = (sheet_file_name, (0, 32, 32, 32))
         self.sprite_sheets["BlockFront.png"] = (sheet_file_name, (32, 32, 32, 32))
         self.sprite_sheets["BlockRight.png"] = (sheet_file_name, (64, 32, 32, 32))
         self.sprite_sheets["BlockBack.png"] = (sheet_file_name, (96, 32, 32, 32))
@@ -159,14 +162,13 @@ class ImageManager:
         self.sprite_sheets["BlockSlopeNE.png"] = (sheet_file_name, (224, 32, 32, 32))
         self.sprite_sheets["BlockSlopeSE.png"] = (sheet_file_name, (256, 32, 32, 32))
 
-
         sheet_file_name = "blocks_sheet_blue.png"
 
-        self.sprite_sheets["SphereBlue.png"] = (sheet_file_name, (96,0, 32, 32))
-        #self.sprite_sheets["Block32x32Blue2.png"] = (sheet_file_name, (0,32, 32, 32))
+        self.sprite_sheets["SphereBlue.png"] = (sheet_file_name, (96, 0, 32, 32))
+        # self.sprite_sheets["Block32x32Blue2.png"] = (sheet_file_name, (0,32, 32, 32))
 
         sheet_file_name = "blocks_sheet_green.png"
-        self.sprite_sheets["SphereGreen.png"] = (sheet_file_name, (96,0, 32, 32))
+        self.sprite_sheets["SphereGreen.png"] = (sheet_file_name, (96, 0, 32, 32))
 
         sheet_file_name = "Keys.png"
         self.sprite_sheets["key0.png"] = (sheet_file_name, (0, 0, 32, 32))
@@ -426,7 +428,8 @@ class StatusBar(View):
             y = 8
             x = int(pane_rect.width * 3 / 4)
 
-            draw_icon(self.surface, x=x, y=y, icon_name=model.Objects.HEART, count=self.game.player.HP, tick=self.tick_count)
+            draw_icon(self.surface, x=x, y=y, icon_name=model.Objects.HEART, count=self.game.player.HP,
+                      tick=self.tick_count)
 
         elif self.game.state == model.Game.PAUSED:
             msg = "F8:Save   F9:Load   Esc:Resume"
@@ -681,18 +684,18 @@ class GameView(View):
 
     def draw_layer(self, surface, layer_id):
 
-        self.floor=self.game.current_floor
+        self.floor = self.game.current_floor
 
         if self.floor is None:
             raise ("No Floor to view!")
 
         skin_name = self.floor.skin_name
 
-        #print("drawing layer for floor {0}".format(layer_id))
+        # print("drawing layer for floor {0}".format(layer_id))
 
         for x in range(0, self.floor.rect.width):
             for y in range(0, self.floor.rect.height):
-                view_object = self.floor.get_floor_tile(x,y,layer_id)
+                view_object = self.floor.get_floor_tile(x, y, layer_id)
                 if view_object is not None:
                     image = View.image_manager.get_skin_image(view_object.name,
                                                               tick=self.tick_count,
@@ -702,12 +705,11 @@ class GameView(View):
                     if image is not None:
 
                         if layer_id > 1:
-                            image.set_alpha(255-(layer_id*10))
+                            image.set_alpha(255 - (layer_id * 10))
                         else:
                             image.set_alpha(255)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
-
 
         return surface
 
@@ -722,15 +724,15 @@ class GameView(View):
         for layer_id in current_floor.layers.keys():
             self.draw_layer(self.surface, layer_id)
 
-
     def end(self):
         super(GameView, self).end()
 
-    def model_to_view(self,x,y, layer_id):
-        origin_x = self.surface.get_rect().width/2
+    def model_to_view(self, x, y, layer_id):
+        origin_x = self.surface.get_rect().width / 2
         origin_y = 128
-        view_x = int(origin_x + (GameView.TILE_WIDTH * x/2) - (GameView.TILE_WIDTH * y/2))
-        view_y = int(origin_y + (GameView.TILE_HEIGHT * x/4) + (GameView.TILE_HEIGHT * y/4) - (layer_id * GameView.TILE_HEIGHT/2))
+        view_x = int(origin_x + (GameView.TILE_WIDTH * x / 2) - (GameView.TILE_WIDTH * y / 2))
+        view_y = int(origin_y + (GameView.TILE_HEIGHT * x / 4) + (GameView.TILE_HEIGHT * y / 4) - (
+        layer_id * GameView.TILE_HEIGHT / 2))
         return view_x, view_y
 
 
