@@ -18,6 +18,7 @@ class Controller:
     KEY_DOWN = K_SLASH
     KEY_LEFT = K_a
     KEY_RIGHT = K_z
+    KEY_BATTLE = K_b
 
     def __init__(self):
 
@@ -100,6 +101,8 @@ class Controller:
                             self.game.pause()
                         elif event.key == Controller.KEY_GAME_OVER:
                             self.game.game_over()
+                        elif event.key == Controller.KEY_BATTLE:
+                            self.game.start_battle()
 
                     elif self.game.state == model.Game.PAUSED:
                         if event.key == Controller.KEY_PAUSE:

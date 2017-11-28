@@ -229,6 +229,7 @@ class MainFrame(View):
 
         play_area_height = height - MainFrame.TITLE_HEIGHT - MainFrame.STATUS_HEIGHT
 
+        self.battle_view = BattleView(width, play_area_height)
         self.game_view = GameView(width, play_area_height)
         self.game_ready = GameReadyView(width, play_area_height)
         self.game_over = GameOverView(width, play_area_height)
@@ -255,6 +256,8 @@ class MainFrame(View):
         self.status_bar.initialise(self.game)
         self.game_ready.initialise(self.game)
         self.game_view.initialise(self.game)
+        self.battle_view.initialise(self.game)
+
         self.game_over.initialise(self.game)
 
     def draw(self):
@@ -282,6 +285,9 @@ class MainFrame(View):
         elif self.game.state in (model.Game.PLAYING, model.Game.PAUSED):
             self.game_view.draw()
             self.surface.blit(self.game_view.surface, (x, y))
+        elif self.game.state == model.Game.BATTLE:
+            self.battle_view.draw()
+            self.surface.blit(self.battle_view.surface, (x, y))
         elif self.game.state == model.Game.GAME_OVER:
             self.game_over.draw()
             self.surface.blit(self.game_over.surface, (x, y))
@@ -733,6 +739,78 @@ class GameView(View):
         view_x = int(origin_x + (GameView.TILE_WIDTH * x / 2) - (GameView.TILE_WIDTH * y / 2))
         view_y = int(origin_y + (GameView.TILE_HEIGHT * x / 4) + (GameView.TILE_HEIGHT * y / 4) - (
         layer_id * GameView.TILE_HEIGHT / 2))
+        return view_x, view_y
+
+
+class BattleView(View):
+    BG_COLOUR = Colours.BLACK
+    FG_COLOUR = Colours.WHITE
+    TILE_WIDTH = 32
+    TILE_HEIGHT = 32
+    TRANSPARENT = Colours.TRANSPARENT
+
+    def __init__(self, width: int, height: int):
+        super(BattleView, self).__init__()
+
+        self.surface = pygame.Surface((width, height))
+
+        self.game = None
+
+    def initialise(self, game: model.Game):
+        super(BattleView, self).initialise()
+
+        self.game = game
+
+    def tick(self):
+        super(BattleView, self).tick()
+
+    def draw_layer(self, surface, layer_id):
+
+        if self.game.battle.battle_floor is None:
+            raise ("No Floor to view!")
+
+        floor = self.game.battle.battle_floor
+
+        skin_name = floor.skin_name
+
+        for x in range(0, floor.rect.width):
+            for y in range(0, floor.rect.height):
+                view_object = floor.get_floor_tile(x, y, layer_id)
+                if view_object is not None:
+                    image = View.image_manager.get_skin_image(view_object.name,
+                                                              tick=self.tick_count,
+                                                              width=view_object.rect.width,
+                                                              height=view_object.rect.height,
+                                                              skin_name=skin_name)
+                    if image is not None:
+
+                        if layer_id > 1:
+                            image.set_alpha(255 - (layer_id * 10))
+                        else:
+                            image.set_alpha(255)
+
+                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+        return surface
+
+    def draw(self):
+        self.surface.fill(BattleView.BG_COLOUR)
+
+        if self.game.battle is None:
+            raise Exception("No Battle to view!")
+
+        for layer_id in self.game.battle.battle_floor.layers.keys():
+            self.draw_layer(self.surface, layer_id)
+
+    def end(self):
+        super(BattleView, self).end()
+
+    def model_to_view(self, x, y, layer_id):
+        origin_x = self.surface.get_rect().width / 2
+        origin_y = 128
+        view_x = int(origin_x + (BattleView.TILE_WIDTH * x / 2) - (BattleView.TILE_WIDTH * y / 2))
+        view_y = int(origin_y + (BattleView.TILE_HEIGHT * x / 4) + (BattleView.TILE_HEIGHT * y / 4) - (
+        layer_id * BattleView.TILE_HEIGHT / 2))
         return view_x, view_y
 
 

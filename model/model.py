@@ -2,16 +2,16 @@ import collections
 import copy
 import csv
 import logging
+import math
 import os
 import random
+from operator import attrgetter
 
 import pygame
 
 import utils
 import utils.trpg as trpg
 from .derived_stats import *
-from operator import itemgetter
-from operator import attrgetter
 
 
 class Objects:
@@ -135,10 +135,12 @@ class Player(FloorObject):
         self.AP = 1
 
     def __str__(self):
-        return("Player {0}: HP={1}, AP={2}".format(self.name, self.HP,self.AP))
+        return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
+                                                                             self.rect.x, self.rect.y, self.layer,
+                                                                             self.is_dead()))
 
     def is_dead(self):
-        return self.HP<=0
+        return self.HP <= 0
 
 
 class Monster(FloorObject):
@@ -153,6 +155,8 @@ class Team:
     TACTIC_RANDOM = "random"
     TACTIC_WEAKEST = "weakest"
     TACTIC_STRONGEST = "strongest"
+    TACTIC_NEAREST = "nearest"
+    TACTIC_FURTHEST = "furthest"
 
     def __init__(self, name: str):
         self.name = name
@@ -161,21 +165,30 @@ class Team:
     def add_player(self, new_player: Player):
         self.players.append(new_player)
 
-    def is_player_in_team(self, selected_player : Player):
+    def is_player_in_team(self, selected_player: Player):
 
         if selected_player in self.players:
             return True
         else:
             return False
 
-    def choose_player(self, tactic : int = TACTIC_RANDOM):
+    def choose_player(self, tactic: int = TACTIC_RANDOM, other_player: Player = None):
 
         print("Choosing player based on {0}".format(tactic))
 
         available_players = []
         for player in self.players:
             if player.is_dead() is False:
+                if other_player is not None:
+                    player.distance = math.sqrt((player.rect.x - other_player.rect.x) ** 2 +
+                                                (player.rect.x - other_player.rect.y) ** 2 +
+                                                (player.layer - other_player.layer) ** 2)
+                else:
+                    player.distance = 0
                 available_players.append(player)
+
+        # for player in available_players:
+        #     print(player, player.distance)
 
         if tactic == Team.TACTIC_RANDOM:
             chosen_player = random.choice(available_players)
@@ -186,6 +199,19 @@ class Team:
         elif tactic == Team.TACTIC_STRONGEST:
             chosen_player = sorted(available_players, key=attrgetter("HP"), reverse=True)[0]
 
+        elif tactic == Team.TACTIC_NEAREST:
+            if other_player is not None:
+                chosen_player = sorted(available_players, key=attrgetter("distance"), reverse=False)[0]
+            else:
+                chosen_player = random.choice(available_players)
+
+        elif tactic == Team.TACTIC_FURTHEST:
+            if other_player is not None:
+                chosen_player = sorted(available_players, key=attrgetter("distance"), reverse=True)[0]
+            else:
+                chosen_player = random.choice(available_players)
+
+
         return chosen_player
 
     def __str__(self):
@@ -195,6 +221,7 @@ class Team:
         print("Team {0} has {1} members:".format(self.name, len(self.players)))
         for player in self.players:
             print(player)
+
 
 class Floor:
     EXIT_NORTH = "NORTH"
@@ -226,7 +253,7 @@ class Floor:
         self.name = name
         self.skin_name = skin_name
         self.rect = pygame.Rect(rect)
-        self.players = {}
+        self.players = []
         self.objects = []
         self.monsters = []
         self.layers = {}
@@ -234,8 +261,8 @@ class Floor:
         self.exits = {}
 
     def __str__(self):
-        return "Floor {0}: rect={1}, objects={2}, monsters={3}".format(self.name, self.rect, self.object_count,
-                                                                       len(self.monsters))
+        return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}".format(self.name, self.rect, self.object_count,
+                                                                       len(self.monsters), len(self.floor_plans.keys()))
 
     @property
     def object_count(self):
@@ -246,11 +273,11 @@ class Floor:
 
     def add_player(self, new_player: Player, position: str = None):
 
-        self.players[new_player.name] = new_player
+        self.players.append(new_player)
 
         # self.add_object(new_player)
 
-        print("Adding player at {0},{1}".format(new_player.rect.x, new_player.rect.y))
+        print("Adding player at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
 
     def add_object(self, new_object: FloorObject):
 
@@ -310,7 +337,7 @@ class Floor:
         layer = self.floor_plans[layer_id]
         floor_object = layer[x][y]
         if is_raw is False and floor_object is None:
-            for player in self.players.values():
+            for player in self.players:
                 if (x, y, layer_id) == (player.rect.x, player.rect.y, player.layer):
                     floor_object = player
                     break
@@ -562,15 +589,15 @@ class Battle:
 
     def __str__(self):
         return "Battle between team {0} and team {1} ({5})\nRound {2}\n{3}\n{4}".format(self.teams[0].name,
-                                                                                                     self.teams[1].name,
-                                                                                                     self.turns,
-                                                                                                     self.teams[0],
-                                                                                                     self.teams[1],
-                                                                                                     self._state)
+                                                                                        self.teams[1].name,
+                                                                                        self.turns,
+                                                                                        self.teams[0],
+                                                                                        self.teams[1],
+                                                                                        self._state)
+
     def print(self):
         for team in self.teams:
             team.print()
-
 
     def start(self):
         self._state = Battle.PLAYING
@@ -580,10 +607,15 @@ class Battle:
         while loop is True:
 
             if len(t1) > 0:
-                self.order_of_play.append(t1.pop())
+                new_player = t1.pop(0)
+                self.order_of_play.append(new_player)
+                self.battle_floor.add_player(new_player)
+
 
             if len(t2) > 0:
-                self.order_of_play.append(t2.pop())
+                new_player = t2.pop(0)
+                self.order_of_play.append(new_player)
+                self.battle_floor.add_player(new_player)
 
             if len(t1) + len(t2) == 0:
                 loop = False
@@ -593,14 +625,14 @@ class Battle:
 
         if current_player.AP <= 0:
             old_player = self.order_of_play.pop(0)
-            old_player.AP=1
+            old_player.AP = 1
             current_player = self.order_of_play[0]
             self.order_of_play.append(old_player)
             self.turns += 1
 
         return current_player
 
-    def get_opposite_team(self, selected_team : Team):
+    def get_opposite_team(self, selected_team: Team):
         if selected_team == self.teams[0]:
             return self.teams[1]
         elif selected_team == self.teams[1]:
@@ -608,14 +640,13 @@ class Battle:
         else:
             return None
 
-    def get_player_team(self, selected_player : Player):
+    def get_player_team(self, selected_player: Player):
         if self.teams[0].is_player_in_team(selected_player):
             return self.teams[0]
         elif self.teams[1].is_player_in_team(selected_player):
             return self.teams[1]
         else:
             return None
-
 
     def do_turn(self):
         current_player = self.get_current_player()
@@ -624,13 +655,15 @@ class Battle:
         print("Player {0}'s turn from the {1} team".format(current_player.name, current_team.name))
 
         opponent_team = self.get_opposite_team(current_team)
-        #opponent = opponent_team.choose_player(tactic=random.choice((Team.TACTIC_WEAKEST, Team.TACTIC_STRONGEST, Team.TACTIC_RANDOM)))
-        opponent = opponent_team.choose_player(tactic=Team.TACTIC_WEAKEST)
+        # opponent = opponent_team.choose_player(tactic=random.choice((Team.TACTIC_WEAKEST, Team.TACTIC_STRONGEST, Team.TACTIC_RANDOM)))
+        #opponent = opponent_team.choose_player(tactic=Team.TACTIC_WEAKEST)
+        #opponent = opponent_team.choose_player(tactic=Team.TACTIC_NEAREST, other_player=current_player)
+        opponent = opponent_team.choose_player(tactic=Team.TACTIC_FURTHEST, other_player=current_player)
 
         print("Player {0} attacks Player {1} from the {2} team".format(current_player.name,
                                                                        opponent.name,
                                                                        opponent_team.name))
-        opponent.HP -= random.randint(1,3)
+        opponent.HP -= random.randint(1, 3)
         if opponent.is_dead() is True:
             print("Player {0} killed Player {1}".format(current_player.name, opponent.name))
             self.order_of_play.remove(opponent)
@@ -687,6 +720,7 @@ class Game():
     LOADED = "LOADED"
     READY = "READY"
     PLAYING = "PLAYING"
+    BATTLE = "BATTLE"
     PAUSED = "PAUSED"
     GAME_OVER = "GAME OVER"
     END = "END"
@@ -708,6 +742,8 @@ class Game():
         self._locations = None
         self._npcs = None
         self.floor_factory = None
+        self.battle = None
+        self._battle_floor_id = None
 
         self._stats = utils.StatEngine(self.name)
         self.hst = utils.HighScoreTable(self.name)
@@ -737,6 +773,28 @@ class Game():
     def print(self):
         print(self)
         self.events.print()
+
+    def start_battle(self):
+        self.state = Game.BATTLE
+        self._battle_floor_id = 0
+
+        team1 = Team("Blue")
+        team2 = Team("Red")
+        for i in range(0, 5):
+            team1.add_player(Player(name=Objects.SQUOID, rect=(i, 0, 0, 0)))
+            team2.add_player(Player(name=Objects.SPHERE, rect=(i, 5, 0, 0)))
+
+        battle_floor = self.floor_factory.floors[self._battle_floor_id]
+
+        self.battle = Battle(team1, team2, battle_floor)
+        self.battle.start()
+
+        for i in range(1, 20):
+            self.battle.do_turn()
+
+        print(str(self.battle))
+        self.battle.print()
+
 
     def tick(self):
 
@@ -780,20 +838,7 @@ class Game():
 
         self.add_player(new_player)
 
-        team1 = Team("Blue")
-        team2 = Team("Red")
-        for i in range(0, 5):
-            team1.add_player(Player(name=Objects.SQUOID, rect=(0, 0, 0, 0)))
-            team2.add_player(Player(name=Objects.SPHERE, rect=(0, 0, 0, 0)))
 
-        new_battle = Battle(team1, team2)
-        new_battle.start()
-
-        for i in range(1,20):
-            new_battle.do_turn()
-
-        print(str(new_battle))
-        new_battle.print()
 
     def load_map(self, location_file_name: str, map_links_file_name: str):
 
