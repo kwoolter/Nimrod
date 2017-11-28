@@ -88,7 +88,8 @@ class ImageManager:
             "SphereGreen1.png"),
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid2.png",
-            model.Objects.SQUOID2: "SquoidBasic.png",
+            model.Objects.SQUOID_GREEN: "Squoid_green.png",
+            model.Objects.SQUOID2: "Squoid_green.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.LAVA: ("lava_0.png", "lava_1.png", "lava_2.png", "lava_1.png"),
@@ -306,6 +307,8 @@ class MainFrame(View):
             self.game_ready.tick()
         elif self.game.state == model.Game.PLAYING:
             self.game_view.tick()
+        elif self.game.state == model.Game.BATTLE:
+            self.battle_view.tick()
         elif self.game.state == model.Game.GAME_OVER:
             self.game_over.tick()
 

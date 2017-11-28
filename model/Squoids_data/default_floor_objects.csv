@@ -23,6 +23,7 @@ o,sphere_green,32,32,32,True,True,False
 0,sphere_blue,32,32,32,True,True,False
 S,squoid,32,32,32,True,True,False
 s,squoid2,32,32,32,True,True,False
+G,squoid_green,32,32,32,True,True,False
 l,lava,32,32,32,True,True,False
 k,key1,32,32,32,True,True,False
 C,cylinder,32,32,32,True,True,False
