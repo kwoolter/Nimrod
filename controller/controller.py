@@ -20,6 +20,7 @@ class Controller:
     KEY_RIGHT = K_z
     KEY_BATTLE = K_b
     KEY_ATTACK = K_SPACE
+    KEY_END_TURN = K_ESCAPE
 
     def __init__(self):
 
@@ -117,7 +118,16 @@ class Controller:
                         elif event.key == K_5:
                             self.game.battle.set_current_target(model.Team.TACTIC_WEAKEST)
                         elif event.key == Controller.KEY_ATTACK:
-                            self.game.battle.do_attack()
+                            try:
+                                self.game.battle.do_attack()
+                            except Exception as err:
+                                print(str(err))
+
+                        elif event.key == Controller.KEY_END_TURN:
+                            self.game.battle.next_player()
+
+                        elif event.key == K_F12:
+                            self.game.battle.print()
 
                     elif self.game.state == model.Game.PAUSED:
                         if event.key == Controller.KEY_PAUSE:

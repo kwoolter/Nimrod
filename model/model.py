@@ -136,6 +136,8 @@ class FloorObject(object):
 
 
 class Player(FloorObject):
+    MAX_AP = 2
+
     def __init__(self, name: str,
                  rect: pygame.Rect,
                  height: int = 40):
@@ -146,7 +148,7 @@ class Player(FloorObject):
         self.boss_keys = 0
         self.HP = 10
         self.layer = 1
-        self.AP = 1
+        self.AP = Player.MAX_AP
         self._name = name
 
     def __str__(self):
@@ -250,6 +252,7 @@ class Team:
 
 
 class Floor:
+
     EXIT_NORTH = "NORTH"
     EXIT_SOUTH = "SOUTH"
     EXIT_EAST = "EAST"
@@ -601,6 +604,8 @@ class FloorObjectLoader():
 
 
 class Battle:
+
+    EVENTS = None
     READY = "ready"
     PLAYING = "playing"
     END = "end"
@@ -648,17 +653,18 @@ class Battle:
                 loop = False
 
     def get_current_player(self):
-        current_player = self.order_of_play[0]
 
-        if current_player.AP <= 0:
-            old_player = self.order_of_play.pop(0)
-            old_player.AP = 1
-            current_player = self.order_of_play[0]
-            self.set_current_target(tactic=Team.TACTIC_NEAREST)
-            self.order_of_play.append(old_player)
-            self.turns += 1
+        return self.order_of_play[0]
 
-        return current_player
+    def next_player(self):
+
+        old_player = self.order_of_play.pop(0)
+        old_player.AP = Player.MAX_AP
+        self.order_of_play.append(old_player)
+        self.set_current_target(tactic=Team.TACTIC_NEAREST)
+        self.turns += 1
+
+        return self.get_current_player()
 
     def set_current_target(self, tactic : str = Team.TACTIC_NEAREST):
 
@@ -678,6 +684,7 @@ class Battle:
 
 
     def get_opposite_team(self, selected_team: Team):
+
         if selected_team == self.teams[0]:
             return self.teams[1]
         elif selected_team == self.teams[1]:
@@ -718,6 +725,11 @@ class Battle:
     def do_attack(self):
 
         current_player = self.get_current_player()
+
+        if current_player.AP <=0:
+            Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.NO_AP, description="Not enough AP!"))
+            raise Exception("Player {0} does not have enough AP ({1})".format(current_player.name, current_player.AP))
+
         opponent = self.get_current_target()
 
         if opponent is not None:
@@ -896,6 +908,7 @@ class Game():
         self.floor_factory.load_floors()
 
         Floor.EVENTS = self.events
+        Battle.EVENTS = self.events
 
         self.hst.load()
 
@@ -1004,6 +1017,7 @@ class Event():
     STATE = "state"
     GAME = "game"
     FLOOR = "floor"
+    BATTLE = "battle"
 
     # Events
     TICK = "Tick"
@@ -1014,6 +1028,7 @@ class Event():
     KEY = "key"
     GAIN_HEALTH = "gain health"
     LOSE_HEALTH = "lose health"
+    NO_AP = "No action points"
 
     def __init__(self, name: str, description: str = None, type: str = DEFAULT):
         self.name = name
