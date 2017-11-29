@@ -25,6 +25,9 @@ class Objects:
     UP = "up"
     DOWN = "down"
     HEART = "heart"
+    BASE = "base"
+    BASE_RED = "base_red"
+    BASE_YELLOW = "base_yellow"
     BLOCK = "block"
     BLOCK_ORNATE = "block_ornate"
     BLOCK_HEXAGON = "block_hexagon"
@@ -587,6 +590,7 @@ class Battle:
         self.next_team = None
         self.battle_floor = battle_floor
         self.order_of_play = []
+        self.current_target = None
 
     def __str__(self):
         return "Battle between team {0} and team {1} ({5})\nRound {2}\n{3}\n{4}".format(self.teams[0].name,
@@ -633,6 +637,16 @@ class Battle:
 
         return current_player
 
+    def get_current_target(self, tactic : str = Team.TACTIC_NEAREST):
+
+        current_player = self.get_current_player()
+        current_team = self.get_player_team(current_player)
+
+        opponent_team = self.get_opposite_team(current_team)
+
+        return opponent_team.choose_player(tactic=tactic, other_player=current_player)
+
+
     def get_opposite_team(self, selected_team: Team):
         if selected_team == self.teams[0]:
             return self.teams[1]
@@ -653,7 +667,7 @@ class Battle:
         current_player = self.get_current_player()
         current_team = self.get_player_team(current_player)
 
-        print("Player {0}'s turn from the {1} team".format(current_player.name, current_team.name))
+        #print("Player {0}'s turn from the {1} team".format(current_player.name, current_team.name))
 
         opponent_team = self.get_opposite_team(current_team)
         # opponent = opponent_team.choose_player(tactic=random.choice((Team.TACTIC_WEAKEST, Team.TACTIC_STRONGEST, Team.TACTIC_RANDOM)))
@@ -782,8 +796,8 @@ class Game():
         team1 = Team("Blue")
         team2 = Team("Red")
         for i in range(0, 5):
-            team1.add_player(Player(name=Objects.SQUOID, rect=(i*2+3, 3, 0, 0)))
-            team2.add_player(Player(name=Objects.SQUOID2, rect=(i*2+3, 11, 0, 0)))
+            team1.add_player(Player(name=Objects.SQUOID, rect=(i*2+3, 3, 32, 32)))
+            team2.add_player(Player(name=Objects.SQUOID2, rect=(i*2+3, 11, 32, 32)))
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
 

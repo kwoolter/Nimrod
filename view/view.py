@@ -63,6 +63,9 @@ class ImageManager:
 
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.HEART: "heart.png",
+            model.Objects.BASE: "Base_yellow.png",
+            model.Objects.BASE_YELLOW: "Base_yellow.png",
+            model.Objects.BASE_RED: "Base_red.png",
             model.Objects.BLOCK: "Block32x32.png",
             model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
             model.Objects.BLOCK_HEXAGON: "Hexagon.png",
@@ -776,10 +779,33 @@ class BattleView(View):
 
         skin_name = floor.skin_name
 
+        current_player = self.game.battle.get_current_player()
+        current_target = self.game.battle.get_current_target()
+
         for x in range(0, floor.rect.width):
             for y in range(0, floor.rect.height):
                 view_object = floor.get_floor_tile(x, y, layer_id)
                 if view_object is not None:
+
+                    if view_object == current_player:
+
+                        image = View.image_manager.get_skin_image(model.Objects.BASE_YELLOW,
+                                                                  tick=self.tick_count,
+                                                                  width=view_object.rect.width,
+                                                                  height=view_object.rect.height,
+                                                                  skin_name=skin_name)
+
+                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                    elif view_object == current_target:
+                        image = View.image_manager.get_skin_image(model.Objects.BASE_RED,
+                                                                  tick=self.tick_count,
+                                                                  width=view_object.rect.width,
+                                                                  height=view_object.rect.height,
+                                                                  skin_name=skin_name)
+
+                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
                     image = View.image_manager.get_skin_image(view_object.name,
                                                               tick=self.tick_count,
                                                               width=view_object.rect.width,
@@ -793,6 +819,9 @@ class BattleView(View):
                             image.set_alpha(255)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+
+
 
         return surface
 
