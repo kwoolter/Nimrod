@@ -107,27 +107,32 @@ class Controller:
                             self.game.start_battle()
 
                     elif self.game.state == model.Game.BATTLE:
-                        if event.key == K_1:
-                            self.game.battle.set_current_target(model.Team.TACTIC_RANDOM)
-                        elif event.key == K_2:
-                            self.game.battle.set_current_target(model.Team.TACTIC_NEAREST)
-                        elif event.key == K_3:
-                            self.game.battle.set_current_target(model.Team.TACTIC_FURTHEST)
-                        elif event.key == K_4:
-                            self.game.battle.set_current_target(model.Team.TACTIC_STRONGEST)
-                        elif event.key == K_5:
-                            self.game.battle.set_current_target(model.Team.TACTIC_WEAKEST)
-                        elif event.key == Controller.KEY_ATTACK:
-                            try:
-                                self.game.battle.do_attack()
-                            except Exception as err:
-                                print(str(err))
+                        try:
 
-                        elif event.key == Controller.KEY_END_TURN:
-                            self.game.battle.next_player()
+                            if event.key == K_1:
+                                self.game.battle.set_current_target(model.Team.TACTIC_RANDOM)
+                            elif event.key == K_2:
+                                self.game.battle.set_current_target(model.Team.TACTIC_NEAREST)
+                            elif event.key == K_3:
+                                self.game.battle.set_current_target(model.Team.TACTIC_FURTHEST)
+                            elif event.key == K_4:
+                                self.game.battle.set_current_target(model.Team.TACTIC_STRONGEST)
+                            elif event.key == K_5:
+                                self.game.battle.set_current_target(model.Team.TACTIC_WEAKEST)
+                            elif event.key == Controller.KEY_ATTACK:
+                                try:
+                                    self.game.battle.do_attack()
+                                except Exception as err:
+                                    print(str(err))
 
-                        elif event.key == K_F12:
-                            self.game.battle.print()
+                            elif event.key == Controller.KEY_END_TURN:
+                                self.game.battle.next_player()
+
+                            elif event.key == K_F12:
+                                self.game.battle.print()
+
+                        except Exception as err:
+                            print(str(err))
 
                     elif self.game.state == model.Game.PAUSED:
                         if event.key == Controller.KEY_PAUSE:

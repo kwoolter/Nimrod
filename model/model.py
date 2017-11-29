@@ -71,7 +71,6 @@ class FloorObject(object):
                  solid: bool = True,
                  visible: bool = True,
                  interactable: bool = True):
-
         self._name = name
         self._rect = pygame.Rect(rect)
 
@@ -153,8 +152,8 @@ class Player(FloorObject):
 
     def __str__(self):
         return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
-                                                                             self.rect.x, self.rect.y, self.layer,
-                                                                             self.is_dead()))
+                                                                          self.rect.x, self.rect.y, self.layer,
+                                                                          self.is_dead()))
 
     def is_dead(self):
         return self.HP <= 0
@@ -179,7 +178,6 @@ class Monster(FloorObject):
 
 
 class Team:
-
     TACTIC_RANDOM = "random"
     TACTIC_WEAKEST = "weakest"
     TACTIC_STRONGEST = "strongest"
@@ -200,23 +198,33 @@ class Team:
         else:
             return False
 
+    def is_dead(self):
+        is_dead = True
+        for player in self.players:
+            if player.is_dead() == False:
+                is_dead = False
+                break
+
+        return is_dead
+
     def choose_player(self, tactic: int = TACTIC_RANDOM, other_player: Player = None):
 
         print("Choosing player based on {0}".format(tactic))
+
+        if self.is_dead():
+            raise Exception("Team {0} are all dead!".format(self.name))
 
         available_players = []
         for player in self.players:
             if player.is_dead() is False:
                 if other_player is not None:
                     player.distance = math.sqrt((player.rect.x - other_player.rect.x) ** 2 +
-                                                (player.rect.x - other_player.rect.y) ** 2 +
+                                                (player.rect.y - other_player.rect.y) ** 2 +
                                                 (player.layer - other_player.layer) ** 2)
                 else:
-                    player.distance = 0
+                    player.distance = 9999
+                    print("defaulting distance to 999")
                 available_players.append(player)
-
-        # for player in available_players:
-        #     print(player, player.distance)
 
         if tactic == Team.TACTIC_RANDOM:
             chosen_player = random.choice(available_players)
@@ -230,6 +238,9 @@ class Team:
         elif tactic == Team.TACTIC_NEAREST:
             if other_player is not None:
                 chosen_player = sorted(available_players, key=attrgetter("distance"), reverse=False)[0]
+                # print("Attacker at ({0},{1},{2})".format(other_player.rect.x,other_player.rect.y,other_player.layer))
+                # for player in available_players:
+                #      print(player, player.distance)
             else:
                 chosen_player = random.choice(available_players)
 
@@ -238,7 +249,6 @@ class Team:
                 chosen_player = sorted(available_players, key=attrgetter("distance"), reverse=True)[0]
             else:
                 chosen_player = random.choice(available_players)
-
 
         return chosen_player
 
@@ -252,7 +262,6 @@ class Team:
 
 
 class Floor:
-
     EXIT_NORTH = "NORTH"
     EXIT_SOUTH = "SOUTH"
     EXIT_EAST = "EAST"
@@ -291,7 +300,8 @@ class Floor:
 
     def __str__(self):
         return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}".format(self.name, self.rect, self.object_count,
-                                                                       len(self.monsters), len(self.floor_plans.keys()))
+                                                                                len(self.monsters),
+                                                                                len(self.floor_plans.keys()))
 
     @property
     def object_count(self):
@@ -604,7 +614,6 @@ class FloorObjectLoader():
 
 
 class Battle:
-
     EVENTS = None
     READY = "ready"
     PLAYING = "playing"
@@ -628,6 +637,9 @@ class Battle:
                                                                                         self._state)
 
     def print(self):
+        print("Team {0} vs. Team {1}: Round {2}".format(self.teams[0].name,
+                                                        self.teams[1].name,
+                                                        self.turns))
         for team in self.teams:
             team.print()
 
@@ -642,7 +654,6 @@ class Battle:
                 new_player = t1.pop(0)
                 self.order_of_play.append(new_player)
                 self.battle_floor.add_player(new_player)
-
 
             if len(t2) > 0:
                 new_player = t2.pop(0)
@@ -666,7 +677,7 @@ class Battle:
 
         return self.get_current_player()
 
-    def set_current_target(self, tactic : str = Team.TACTIC_NEAREST):
+    def set_current_target(self, tactic: str = Team.TACTIC_NEAREST):
 
         current_player = self.get_current_player()
         current_team = self.get_player_team(current_player)
@@ -680,8 +691,6 @@ class Battle:
     def get_current_target(self):
 
         return self.current_target
-
-
 
     def get_opposite_team(self, selected_team: Team):
 
@@ -704,12 +713,12 @@ class Battle:
         current_player = self.get_current_player()
         current_team = self.get_player_team(current_player)
 
-        #print("Player {0}'s turn from the {1} team".format(current_player.name, current_team.name))
+        # print("Player {0}'s turn from the {1} team".format(current_player.name, current_team.name))
 
         opponent_team = self.get_opposite_team(current_team)
         # opponent = opponent_team.choose_player(tactic=random.choice((Team.TACTIC_WEAKEST, Team.TACTIC_STRONGEST, Team.TACTIC_RANDOM)))
-        #opponent = opponent_team.choose_player(tactic=Team.TACTIC_WEAKEST)
-        #opponent = opponent_team.choose_player(tactic=Team.TACTIC_NEAREST, other_player=current_player)
+        # opponent = opponent_team.choose_player(tactic=Team.TACTIC_WEAKEST)
+        # opponent = opponent_team.choose_player(tactic=Team.TACTIC_NEAREST, other_player=current_player)
         opponent = opponent_team.choose_player(tactic=Team.TACTIC_FURTHEST, other_player=current_player)
 
         print("Player {0} attacks Player {1} from the {2} team".format(current_player.name,
@@ -724,9 +733,20 @@ class Battle:
 
     def do_attack(self):
 
-        current_player = self.get_current_player()
+        if self._state != Battle.PLAYING:
+            raise Exception("Battle in state '{0}' - not playing so can't do attack!".format(self._state))
 
-        if current_player.AP <=0:
+
+        current_player = self.get_current_player()
+        current_team = self.get_player_team(current_player)
+        opposite_team = self.get_opposite_team(current_team)
+
+        if opposite_team.is_dead() is True:
+            Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.VICTORY,
+                                          description="Team {0} are all dead!".format(opposite_team.name)))
+            raise Exception("Team {0} are all dead!".format(opposite_team.name))
+
+        if current_player.AP <= 0:
             Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.NO_AP, description="Not enough AP!"))
             raise Exception("Player {0} does not have enough AP ({1})".format(current_player.name, current_player.AP))
 
@@ -734,7 +754,7 @@ class Battle:
 
         if opponent is not None:
 
-            damage = random.randint(1, 3)
+            damage = random.randint(1, 5)
             opponent.HP -= damage
             current_player.AP -= 1
 
@@ -743,9 +763,19 @@ class Battle:
                                                                              damage))
 
             if opponent.is_dead() is True:
-                print("Player {0} killed Player {1}".format(current_player.name, opponent.name))
-                self.order_of_play.remove(opponent)
-                self.set_current_target(tactic=Team.TACTIC_NEAREST)
+                Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.KILLED_OPPONENT,
+                                              description="Player {0} killed Player {1}".format(current_player.name,
+                                                                                                opponent.name)))
+
+                if opposite_team.is_dead() is True:
+                    self._state = Battle.END
+                    Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.VICTORY,
+                                                  description="Team {0} are all dead!".format(opposite_team.name)))
+                    raise Exception("Team {0} are all dead!".format(opposite_team.name))
+                else:
+
+                    self.order_of_play.remove(opponent)
+                    self.set_current_target(tactic=Team.TACTIC_NEAREST)
 
 
 class Character(trpg.RPGCharacter):
@@ -858,8 +888,8 @@ class Game():
         team1 = Team("Blue")
         team2 = Team("Red")
         for i in range(0, 5):
-            team1.add_player(Player(name=Objects.SQUOID, rect=(i*2+3, 3, 32, 32)))
-            team2.add_player(Player(name=Objects.SQUOID2, rect=(i*2+3, 11, 32, 32)))
+            team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32)))
+            team2.add_player(Player(name=Objects.SQUOID2, rect=(i * 2 + 3, 11, 32, 32)))
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
 
@@ -871,7 +901,6 @@ class Game():
         #
         # print(str(self.battle))
         # self.battle.print()
-
 
     def tick(self):
 
@@ -915,8 +944,6 @@ class Game():
         new_player = Player(name=Objects.SQUOID, rect=(19, 19, 0, 0))
 
         self.add_player(new_player)
-
-
 
     def load_map(self, location_file_name: str, map_links_file_name: str):
 
@@ -1029,6 +1056,8 @@ class Event():
     GAIN_HEALTH = "gain health"
     LOSE_HEALTH = "lose health"
     NO_AP = "No action points"
+    KILLED_OPPONENT = "killed opponent"
+    VICTORY = "victory"
 
     def __init__(self, name: str, description: str = None, type: str = DEFAULT):
         self.name = name
