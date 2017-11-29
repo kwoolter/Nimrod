@@ -62,6 +62,7 @@ class ImageManager:
         new_skin = (new_skin_name, {
 
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
+            model.Objects.SKULL: "skull.png",
             model.Objects.HEART: "heart.png",
             model.Objects.BASE: "Base_yellow.png",
             model.Objects.BASE_YELLOW: "Base_yellow.png",

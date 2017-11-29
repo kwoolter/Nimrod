@@ -29,3 +29,4 @@ k,key1,32,32,32,True,True,False
 C,cylinder,32,32,32,True,True,False
 y,base_yellow,32,32,32,False,True,False
 r,base_red,32,32,32,False,True,False
+X,skull,32,32,32,False,True,False

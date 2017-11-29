@@ -18,6 +18,7 @@ class Objects:
     EMPTY = "empty"
     TREE = "tree"
     PLAYER = "player"
+    SKULL = "skull"
     NORTH = "north"
     SOUTH = "south"
     EAST = "east"
@@ -70,7 +71,8 @@ class FloorObject(object):
                  solid: bool = True,
                  visible: bool = True,
                  interactable: bool = True):
-        self.name = name
+
+        self._name = name
         self._rect = pygame.Rect(rect)
 
         self.layer = layer
@@ -85,6 +87,14 @@ class FloorObject(object):
         self.dy = 0
         self.d2x = 0
         self.d2y = 0
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, new_name):
+        self._name = new_name
 
     @property
     def rect(self):
@@ -137,6 +147,7 @@ class Player(FloorObject):
         self.HP = 10
         self.layer = 1
         self.AP = 1
+        self._name = name
 
     def __str__(self):
         return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
@@ -145,6 +156,17 @@ class Player(FloorObject):
 
     def is_dead(self):
         return self.HP <= 0
+
+    @property
+    def name(self):
+        if self.is_dead():
+            return Objects.SKULL
+        else:
+            return self._name
+
+    @name.setter
+    def name(self, new_name):
+        self._name = new_name
 
 
 class Monster(FloorObject):
@@ -632,19 +654,27 @@ class Battle:
             old_player = self.order_of_play.pop(0)
             old_player.AP = 1
             current_player = self.order_of_play[0]
+            self.set_current_target(tactic=Team.TACTIC_NEAREST)
             self.order_of_play.append(old_player)
             self.turns += 1
 
         return current_player
 
-    def get_current_target(self, tactic : str = Team.TACTIC_NEAREST):
+    def set_current_target(self, tactic : str = Team.TACTIC_NEAREST):
 
         current_player = self.get_current_player()
         current_team = self.get_player_team(current_player)
 
         opponent_team = self.get_opposite_team(current_team)
 
-        return opponent_team.choose_player(tactic=tactic, other_player=current_player)
+        self.current_target = opponent_team.choose_player(tactic=tactic, other_player=current_player)
+
+        return self.current_target
+
+    def get_current_target(self):
+
+        return self.current_target
+
 
 
     def get_opposite_team(self, selected_team: Team):
@@ -684,6 +714,26 @@ class Battle:
             self.order_of_play.remove(opponent)
 
         current_player.AP -= 1
+
+    def do_attack(self):
+
+        current_player = self.get_current_player()
+        opponent = self.get_current_target()
+
+        if opponent is not None:
+
+            damage = random.randint(1, 3)
+            opponent.HP -= damage
+            current_player.AP -= 1
+
+            print("Player {0} attacks Player {1} and does {2} damage".format(current_player.name,
+                                                                             opponent.name,
+                                                                             damage))
+
+            if opponent.is_dead() is True:
+                print("Player {0} killed Player {1}".format(current_player.name, opponent.name))
+                self.order_of_play.remove(opponent)
+                self.set_current_target(tactic=Team.TACTIC_NEAREST)
 
 
 class Character(trpg.RPGCharacter):
@@ -804,11 +854,11 @@ class Game():
         self.battle = Battle(team1, team2, battle_floor)
         self.battle.start()
 
-        for i in range(1, 20):
-            self.battle.do_turn()
-
-        print(str(self.battle))
-        self.battle.print()
+        # for i in range(1, 20):
+        #     self.battle.do_turn()
+        #
+        # print(str(self.battle))
+        # self.battle.print()
 
 
     def tick(self):

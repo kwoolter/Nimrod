@@ -19,6 +19,7 @@ class Controller:
     KEY_LEFT = K_a
     KEY_RIGHT = K_z
     KEY_BATTLE = K_b
+    KEY_ATTACK = K_SPACE
 
     def __init__(self):
 
@@ -103,6 +104,20 @@ class Controller:
                             self.game.game_over()
                         elif event.key == Controller.KEY_BATTLE:
                             self.game.start_battle()
+
+                    elif self.game.state == model.Game.BATTLE:
+                        if event.key == K_1:
+                            self.game.battle.set_current_target(model.Team.TACTIC_RANDOM)
+                        elif event.key == K_2:
+                            self.game.battle.set_current_target(model.Team.TACTIC_NEAREST)
+                        elif event.key == K_3:
+                            self.game.battle.set_current_target(model.Team.TACTIC_FURTHEST)
+                        elif event.key == K_4:
+                            self.game.battle.set_current_target(model.Team.TACTIC_STRONGEST)
+                        elif event.key == K_5:
+                            self.game.battle.set_current_target(model.Team.TACTIC_WEAKEST)
+                        elif event.key == Controller.KEY_ATTACK:
+                            self.game.battle.do_attack()
 
                     elif self.game.state == model.Game.PAUSED:
                         if event.key == Controller.KEY_PAUSE:
