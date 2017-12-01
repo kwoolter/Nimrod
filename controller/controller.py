@@ -76,6 +76,8 @@ class Controller:
 
                 # Timer events
                 if event.type == USEREVENT + 1:
+
+
                     try:
 
                         self.game.tick()

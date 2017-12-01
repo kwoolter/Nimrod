@@ -86,10 +86,10 @@ class ImageManager:
             model.Objects.PYRAMID1: "Block32x32Pyramid4.png",
             model.Objects.PYRAMID2: "Block32x32Pyramid2.png",
             model.Objects.SPHERE: (
-            "Sphere0.png", "Sphere1.png", "Sphere2.png", "Sphere3.png", "Sphere2.png", "Sphere1.png"),
+                "Sphere0.png", "Sphere1.png", "Sphere2.png", "Sphere3.png", "Sphere2.png", "Sphere1.png"),
             model.Objects.SPHERE_GREEN: (
-            "SphereGreen0.png", "SphereGreen1.png", "SphereGreen2.png", "SphereGreen3.png", "SphereGreen2.png",
-            "SphereGreen1.png"),
+                "SphereGreen0.png", "SphereGreen1.png", "SphereGreen2.png", "SphereGreen3.png", "SphereGreen2.png",
+                "SphereGreen1.png"),
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid2.png",
             model.Objects.SQUOID_GREEN: "Squoid_green.png",
@@ -745,7 +745,7 @@ class GameView(View):
         origin_y = 128
         view_x = int(origin_x + (GameView.TILE_WIDTH * x / 2) - (GameView.TILE_WIDTH * y / 2))
         view_y = int(origin_y + (GameView.TILE_HEIGHT * x / 4) + (GameView.TILE_HEIGHT * y / 4) - (
-        layer_id * GameView.TILE_HEIGHT / 2))
+            layer_id * GameView.TILE_HEIGHT / 2))
         return view_x, view_y
 
 
@@ -754,6 +754,9 @@ class BattleView(View):
     FG_COLOUR = Colours.WHITE
     TILE_WIDTH = 32
     TILE_HEIGHT = 32
+    LINE_UP_WIDTH = 34
+    LINE_UP_HEIGHT = 34
+
     TRANSPARENT = Colours.TRANSPARENT
 
     def __init__(self, width: int, height: int):
@@ -763,6 +766,9 @@ class BattleView(View):
 
         self.game = None
 
+        self.attacker_view = PlayerView(100, 200)
+        self.opponent_view = PlayerView(100, 200)
+
     def initialise(self, game: model.Game):
         super(BattleView, self).initialise()
 
@@ -770,6 +776,8 @@ class BattleView(View):
 
     def tick(self):
         super(BattleView, self).tick()
+        self.attacker_view.tick()
+        self.opponent_view.tick()
 
     def draw_layer(self, surface, layer_id):
 
@@ -821,9 +829,6 @@ class BattleView(View):
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
-
-
-
         return surface
 
     def draw(self):
@@ -832,19 +837,143 @@ class BattleView(View):
         if self.game.battle is None:
             raise Exception("No Battle to view!")
 
+        pane_rect = self.surface.get_rect()
+        current_player = self.game.battle.get_current_player()
+        current_target = self.game.battle.get_current_target()
+
+        line_up = self.game.battle.order_of_play
+        x = pane_rect.centerx - int(len(line_up) * (BattleView.LINE_UP_WIDTH+3) / 2)
+        y = 8
+        for player in line_up:
+            image = View.image_manager.get_skin_image(player.name,
+                                                      tick=self.tick_count,
+                                                      width=player.rect.width,
+                                                      height=player.rect.height)
+            if player != current_player:
+
+                if player == current_target:
+                    pygame.draw.rect(self.surface, Colours.RED,
+                                     (x, y, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), 3)
+                    image.set_alpha(255)
+                else:
+                    image.set_alpha(128)
+            else:
+                image.set_alpha(255)
+                pygame.draw.rect(self.surface, Colours.YELLOW,
+                                 (x, y, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), 3)
+
+            self.surface.blit(image, (x, y))
+
+            x += BattleView.LINE_UP_WIDTH + 3
+
         for layer_id in self.game.battle.battle_floor.layers.keys():
             self.draw_layer(self.surface, layer_id)
 
+        if current_player is not None:
+            self.attacker_view.initialise(current_player)
+            surface = self.attacker_view.draw()
+            self.surface.blit(surface, (2, 2))
+
+        if current_target is not None:
+            self.opponent_view.initialise(current_target)
+            surface = self.opponent_view.draw()
+            self.surface.blit(surface, (pane_rect.width - surface.get_rect().width - 2, 2))
+
     def end(self):
         super(BattleView, self).end()
+        self.opponent_view.end()
+        self.attacker_view.end()
 
     def model_to_view(self, x, y, layer_id):
         origin_x = self.surface.get_rect().width / 2
         origin_y = 128
         view_x = int(origin_x + (BattleView.TILE_WIDTH * x / 2) - (BattleView.TILE_WIDTH * y / 2))
         view_y = int(origin_y + (BattleView.TILE_HEIGHT * x / 4) + (BattleView.TILE_HEIGHT * y / 4) - (
-        layer_id * BattleView.TILE_HEIGHT / 2))
+            layer_id * BattleView.TILE_HEIGHT / 2))
         return view_x, view_y
+
+
+class PlayerView(View):
+    BG_COLOUR = Colours.DARK_GREY
+    FG_COLOUR = Colours.WHITE
+    AVATAR_WIDTH = 64
+    AVATAR_HEIGHT = 64
+
+    def __init__(self, width: int, height: int):
+        super(PlayerView, self).__init__()
+
+        self.surface = pygame.Surface((width, height))
+
+        self.player = None
+
+    def initialise(self, player: model.Player):
+        super(PlayerView, self).initialise()
+
+        self.player = player
+
+    def tick(self):
+        super(PlayerView, self).tick()
+
+    def draw(self):
+        self.surface.fill(PlayerView.BG_COLOUR)
+
+        if self.player is None:
+            raise Exception("No Player to view!")
+
+        pane_rect = self.surface.get_rect()
+
+        x = pane_rect.centerx
+        y = 20
+
+        msg = self.player.name
+
+        draw_text(self.surface,
+                  msg=msg,
+                  x=x,
+                  y=y,
+                  size=30,
+                  fg_colour=PlayerView.FG_COLOUR,
+                  bg_colour=PlayerView.BG_COLOUR)
+
+        image = View.image_manager.get_skin_image(self.player.name, tick=self.tick_count)
+
+        image_width = PlayerView.AVATAR_WIDTH
+        image_height = PlayerView.AVATAR_HEIGHT
+
+        x = pane_rect.centerx - int(image_width / 2)
+        y += 16
+        image = pygame.transform.scale(image, (image_width, image_height))
+        self.surface.blit(image, (x, y))
+
+        x = pane_rect.centerx
+        y += 68
+
+        msg = "HP={0}".format(self.player.HP)
+
+        draw_text(self.surface,
+                  msg=msg,
+                  x=x,
+                  y=y,
+                  size=16,
+                  fg_colour=PlayerView.FG_COLOUR,
+                  bg_colour=PlayerView.BG_COLOUR)
+
+        y += 16
+
+        msg = "AP={0}".format(self.player.AP)
+
+        draw_text(self.surface,
+                  msg=msg,
+                  x=x,
+                  y=y,
+                  size=16,
+                  fg_colour=PlayerView.FG_COLOUR,
+                  bg_colour=PlayerView.BG_COLOUR)
+
+        return self.surface
+
+    def end(self):
+        super(PlayerView, self).end()
 
 
 def draw_icon(surface, x, y, icon_name, count: int = None, tick: int = 0):

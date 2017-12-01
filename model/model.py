@@ -314,8 +314,6 @@ class Floor:
 
         self.players.append(new_player)
 
-        # self.add_object(new_player)
-
         print("Adding player at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
 
     def add_object(self, new_object: FloorObject):
@@ -388,12 +386,10 @@ class Floor:
         layer = self.floor_plans[layer_id]
         layer[x][y] = new_object
 
-    def move_player(self, name: str, dx: int = 0, dy: int = 0):
+    def move_player(self, selected_player: Player, dx: int = 0, dy: int = 0):
 
-        if name not in self.players.keys():
+        if selected_player not in self.players:
             raise Exception("{0}:move_player() - Player {1} is not on floor (2).".format(__class__, name, self.name))
-
-        selected_player = self.players[name]
 
         selected_player.move(dx, dy)
         x, y = selected_player.rect.x, selected_player.rect.y
@@ -447,7 +443,7 @@ class Floor:
     def tick(self):
 
         # For each player...
-        for selected_player in self.players.values():
+        for selected_player in self.players:
 
             x, y, layer = selected_player.rect.x, selected_player.rect.y, selected_player.layer
 
@@ -896,11 +892,6 @@ class Game():
         self.battle = Battle(team1, team2, battle_floor)
         self.battle.start()
 
-        # for i in range(1, 20):
-        #     self.battle.do_turn()
-        #
-        # print(str(self.battle))
-        # self.battle.print()
 
     def tick(self):
 
@@ -1034,7 +1025,7 @@ class Game():
 
     def move_player(self, dx: int, dy: int):
 
-        self.current_floor.move_player(self.player.name, dx, dy)
+        self.current_floor.move_player(self.player, dx, dy)
 
 
 class Event():
