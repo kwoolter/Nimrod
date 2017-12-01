@@ -842,7 +842,7 @@ class BattleView(View):
         current_target = self.game.battle.get_current_target()
 
         line_up = self.game.battle.order_of_play
-        x = pane_rect.centerx - int(len(line_up) * (BattleView.LINE_UP_WIDTH+3) / 2)
+        x = pane_rect.centerx - int( len(line_up) * (BattleView.LINE_UP_WIDTH+3) / 2)
         y = 8
         for player in line_up:
             image = View.image_manager.get_skin_image(player.name,
