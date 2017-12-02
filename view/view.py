@@ -62,11 +62,12 @@ class ImageManager:
         new_skin = (new_skin_name, {
 
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
-            model.Objects.SKULL: "skull.png",
+            model.Objects.SKULL: "Squoid_warrior_skull.png",
             model.Objects.HEART: "heart.png",
             model.Objects.BASE: "Base_yellow.png",
             model.Objects.BASE_YELLOW: "Base_yellow.png",
             model.Objects.BASE_RED: "Base_red.png",
+            model.Objects.BASE_SHADOW: "Base_shadow2.png",
             model.Objects.BLOCK: "Block32x32.png",
             model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
             model.Objects.BLOCK_HEXAGON: "Hexagon.png",
@@ -91,11 +92,12 @@ class ImageManager:
                 "SphereGreen0.png", "SphereGreen1.png", "SphereGreen2.png", "SphereGreen3.png", "SphereGreen2.png",
                 "SphereGreen1.png"),
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
-            model.Objects.SQUOID: "Squoid2.png",
-            model.Objects.SQUOID_GREEN: "Squoid_green.png",
+            model.Objects.SQUOID: "Squoid_warrior2.png",
+            model.Objects.SQUOID_GREEN: "Squoid_warrior_green.png",
             model.Objects.SQUOID2: "Squoid_green.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CYLINDER: "Cylinder.png",
+            model.Objects.ICE: "ice2.png",
             model.Objects.LAVA: ("lava_0.png", "lava_1.png", "lava_2.png", "lava_1.png"),
 
         })
@@ -815,6 +817,16 @@ class BattleView(View):
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
+                    else:
+
+                        image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
+                                                                  tick=self.tick_count,
+                                                                  width=view_object.rect.width,
+                                                                  height=view_object.rect.height,
+                                                                  skin_name=skin_name)
+
+                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
                     image = View.image_manager.get_skin_image(view_object.name,
                                                               tick=self.tick_count,
                                                               width=view_object.rect.width,
@@ -856,7 +868,7 @@ class BattleView(View):
                                      (x, y, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), 3)
                     image.set_alpha(255)
                 else:
-                    image.set_alpha(128)
+                    image.set_alpha(175)
             else:
                 image.set_alpha(255)
                 pygame.draw.rect(self.surface, Colours.YELLOW,
@@ -923,7 +935,7 @@ class PlayerView(View):
         pane_rect = self.surface.get_rect()
 
         x = pane_rect.centerx
-        y = 20
+        y = 10
 
         msg = self.player.name
 
@@ -936,6 +948,8 @@ class PlayerView(View):
                   bg_colour=PlayerView.BG_COLOUR)
 
         image = View.image_manager.get_skin_image(self.player.name, tick=self.tick_count)
+        image.set_alpha(255)
+
 
         image_width = PlayerView.AVATAR_WIDTH
         image_height = PlayerView.AVATAR_HEIGHT

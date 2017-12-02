@@ -29,6 +29,7 @@ class Objects:
     BASE = "base"
     BASE_RED = "base_red"
     BASE_YELLOW = "base_yellow"
+    BASE_SHADOW = "base_shadow"
     BLOCK = "block"
     BLOCK_ORNATE = "block_ornate"
     BLOCK_HEXAGON = "block_hexagon"
@@ -55,6 +56,7 @@ class Objects:
     SQUOID2 = "squoid2"
     KEY = "key1"
     LAVA = "lava"
+    ICE = "ice"
     CYLINDER = "cylinder"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
@@ -885,7 +887,7 @@ class Game():
         team2 = Team("Red")
         for i in range(0, 5):
             team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32)))
-            team2.add_player(Player(name=Objects.SQUOID2, rect=(i * 2 + 3, 11, 32, 32)))
+            team2.add_player(Player(name=Objects.SQUOID_GREEN, rect=(i * 2 + 3, 11, 32, 32)))
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
 

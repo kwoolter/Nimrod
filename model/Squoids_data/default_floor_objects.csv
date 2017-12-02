@@ -25,6 +25,7 @@ S,squoid,32,32,32,True,True,False
 s,squoid2,32,32,32,True,True,False
 G,squoid_green,32,32,32,True,True,False
 l,lava,32,32,32,True,True,False
+i,ice,32,32,32,True,True,False
 k,key1,32,32,32,True,True,False
 C,cylinder,32,32,32,True,True,False
 y,base_yellow,32,32,32,False,True,False
