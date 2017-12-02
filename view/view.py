@@ -744,7 +744,7 @@ class GameView(View):
         super(GameView, self).end()
 
     def model_to_view(self, x, y, layer_id):
-        origin_x = self.surface.get_rect().width / 2
+        origin_x = (self.surface.get_rect().width / 2) - (GameView.TILE_WIDTH / 2)
         origin_y = 128
         view_x = int(origin_x + (GameView.TILE_WIDTH * x / 2) - (GameView.TILE_WIDTH * y / 2))
         view_y = int(origin_y + (GameView.TILE_HEIGHT * x / 4) + (GameView.TILE_HEIGHT * y / 4) - (
@@ -915,7 +915,7 @@ class BattleView(View):
         self.attacker_view.end()
 
     def model_to_view(self, x, y, layer_id):
-        origin_x = self.surface.get_rect().width / 2
+        origin_x = (self.surface.get_rect().width / 2) - (BattleView.TILE_WIDTH / 2)
         origin_y = 128
         view_x = int(origin_x + (BattleView.TILE_WIDTH * x / 2) - (BattleView.TILE_WIDTH * y / 2))
         view_y = int(origin_y + (BattleView.TILE_HEIGHT * x / 4) + (BattleView.TILE_HEIGHT * y / 4) - (

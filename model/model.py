@@ -194,10 +194,10 @@ class Player(FloorObject):
         self.keys = 0
         self.boss_keys = 0
         self.layer = 1
-        self.AP = Player.MAX_AP
+
         self._name = name
         self.character = character
-        #self.HP = self.character.get_stat("MaxHP")
+        self.AP = self.MaxAP
 
     def __str__(self):
         return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
@@ -219,6 +219,10 @@ class Player(FloorObject):
     @property
     def HP(self):
         return self.character.get_stat("HP").value
+
+    @property
+    def MaxAP(self):
+        return self.character.get_stat("MaxAP").value
 
 
     def do_damage(self, new_value):
@@ -743,7 +747,7 @@ class Battle:
     def next_player(self):
 
         old_player = self.order_of_play.pop(0)
-        old_player.AP = Player.MAX_AP
+        old_player.AP = old_player.MaxAP
         self.order_of_play.append(old_player)
         self.set_current_target(tactic=Team.TACTIC_NEAREST)
         self.turns += 1
