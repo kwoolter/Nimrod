@@ -193,19 +193,17 @@ class Player(FloorObject):
         self.treasure = 0
         self.keys = 0
         self.boss_keys = 0
-        self.HP = 10
         self.layer = 1
         self.AP = Player.MAX_AP
         self._name = name
         self.character = character
+        #self.HP = self.character.get_stat("MaxHP")
 
     def __str__(self):
         return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
                                                                           self.rect.x, self.rect.y, self.layer,
                                                                           self.is_dead()))
 
-    def is_dead(self):
-        return self.HP <= 0
 
     @property
     def name(self):
@@ -217,6 +215,27 @@ class Player(FloorObject):
     @name.setter
     def name(self, new_name):
         self._name = new_name
+
+    @property
+    def HP(self):
+        return self.character.get_stat("HP").value
+
+
+    def do_damage(self, new_value):
+        self.character.increment_stat("Damage", new_value)
+
+    @property
+    def kills(self):
+        return self.character.get_stat("Kills").value
+
+    @kills.setter
+    def kills(self, new_value):
+        self.character.update_stat("Kills", new_value)
+
+
+    def is_dead(self):
+
+        return self.HP <= 0
 
 
 class Monster(FloorObject):
@@ -809,7 +828,7 @@ class Battle:
         if opponent is not None:
 
             damage = random.randint(1, 5)
-            opponent.HP -= damage
+            opponent.do_damage(damage)
             current_player.AP -= 1
 
             print("Player {0} attacks Player {1} and does {2} damage".format(current_player.name,
@@ -820,6 +839,8 @@ class Battle:
                 Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.KILLED_OPPONENT,
                                               description="Player {0} killed Player {1}".format(current_player.name,
                                                                                                 opponent.name)))
+
+                current_player.kills += 1
 
                 if opposite_team.is_dead() is True:
                     self._state = Battle.END
@@ -908,14 +929,15 @@ class Game():
         team1 = Team("Blue")
         team2 = Team("Red")
 
-        new_char1 = self._npcs.get_character_by_name("Jack")
-        new_char2 = self._npcs.get_character_by_name("Fred")
+        characters = list(self._npcs.get_characters())
 
-        for i in range(0, 5):
-            new_char = random.choice(list(self._npcs.get_characters()))
+        for i in range(0, 4):
+            new_char = random.choice(characters)
+            characters.remove(new_char)
             team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32), character = new_char))
 
-            new_char = random.choice(list(self._npcs.get_characters()))
+            new_char = random.choice(characters)
+            characters.remove(new_char)
             team2.add_player(Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32), character = new_char))
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
@@ -963,7 +985,8 @@ class Game():
 
         self.hst.load()
 
-        new_player = Player(name=Objects.SQUOID, rect=(19, 19, 0, 0))
+        new_char = random.choice(list(self._npcs.get_characters()))
+        new_player = Player(name=Objects.SQUOID, rect=(19, 19, 0, 0), character=new_char)
 
         self.add_player(new_player)
 

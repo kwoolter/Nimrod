@@ -277,11 +277,20 @@ class LevelUP(RPGDerivedStat):
 class MaxHP(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
         super(MaxHP, self).__init__("MaxHP", "Attributes", owner=owner)
-        self.add_dependency("Vitality")
+        self.add_dependency("Constitution")
 
     def calculate(self):
-        con = self.get_dependency_value("Vitality")
+        con = self.get_dependency_value("Constitution")
         return 10 + con
+
+class MaxAP(RPGDerivedStat):
+    def __init__(self, owner: RPGObject):
+        super(MaxAP, self).__init__("MaxAP", "Attributes", owner=owner)
+        self.add_dependency("Dexterity")
+
+    def calculate(self):
+        dex = self.get_dependency_value("Dexterity")
+        return 2 + dex // 10
 
 
 class HP(RPGDerivedStat):
@@ -364,30 +373,31 @@ def add_core_stats(character: RPGCharacter):
 
 def add_derived_stats(character: RPGCharacter):
     character.add_stat(XPToLevel(character))
-    character.add_stat(physical_attack_chop(character))
-    character.add_stat(physical_attack_regular(character))
-    character.add_stat(physical_attack_thrust(character))
-    character.add_stat(physical_attack_swing(character))
-    character.add_stat(physical_attack_chop(character))
-    character.add_stat(physical_defence_regular(character))
-    character.add_stat(physical_defence_thrust(character))
-    character.add_stat(physical_defence_swing(character))
-    character.add_stat(physical_defence_chop(character))
-    character.add_stat(elemental_attack_dark(character))
-    character.add_stat(elemental_attack_fire(character))
-    character.add_stat(elemental_attack_magic(character))
-    character.add_stat(elemental_attack_miracle(character))
-    character.add_stat(elemental_defence_fire(character))
-    character.add_stat(elemental_defence_lightning(character))
-    character.add_stat(elemental_defence_dark(character))
-    character.add_stat(elemental_defence_magic(character))
-    character.add_stat(resistance_bleed(character))
-    character.add_stat(resistance_curse(character))
-    character.add_stat(resistance_poison(character))
-    character.add_stat(item_discovery(character))
+    # character.add_stat(physical_attack_chop(character))
+    # character.add_stat(physical_attack_regular(character))
+    # character.add_stat(physical_attack_thrust(character))
+    # character.add_stat(physical_attack_swing(character))
+    # character.add_stat(physical_attack_chop(character))
+    # character.add_stat(physical_defence_regular(character))
+    # character.add_stat(physical_defence_thrust(character))
+    # character.add_stat(physical_defence_swing(character))
+    # character.add_stat(physical_defence_chop(character))
+    # character.add_stat(elemental_attack_dark(character))
+    # character.add_stat(elemental_attack_fire(character))
+    # character.add_stat(elemental_attack_magic(character))
+    # character.add_stat(elemental_attack_miracle(character))
+    # character.add_stat(elemental_defence_fire(character))
+    # character.add_stat(elemental_defence_lightning(character))
+    # character.add_stat(elemental_defence_dark(character))
+    # character.add_stat(elemental_defence_magic(character))
+    # character.add_stat(resistance_bleed(character))
+    # character.add_stat(resistance_curse(character))
+    # character.add_stat(resistance_poison(character))
+    # character.add_stat(item_discovery(character))
 
     character.add_stat(LevelUP(character))
     character.add_stat(MaxHP(character))
+    character.add_stat(MaxAP(character))
     character.add_stat(HP(character))
     character.add_stat(MaxLoad(character))
     character.add_stat(TotalWeight(character))
