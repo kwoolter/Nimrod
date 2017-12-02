@@ -892,6 +892,23 @@ class BattleView(View):
             surface = self.opponent_view.draw()
             self.surface.blit(surface, (pane_rect.width - surface.get_rect().width - 2, 2))
 
+        if self.game.battle.state == model.Battle.END:
+
+            x = pane_rect.centerx
+            y = 80
+
+            winning_team = self.game.battle.get_winning_team()
+
+            msg = "Team {0} Wins !".format(winning_team.name)
+
+            draw_text(self.surface,
+                      msg=msg,
+                      x=x,
+                      y=y,
+                      size=60,
+                      fg_colour=BattleView.FG_COLOUR,
+                      bg_colour=BattleView.BG_COLOUR)
+
     def end(self):
         super(BattleView, self).end()
         self.opponent_view.end()

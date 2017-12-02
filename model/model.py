@@ -831,6 +831,16 @@ class Battle:
                     self.order_of_play.remove(opponent)
                     self.set_current_target(tactic=Team.TACTIC_NEAREST)
 
+    def get_winning_team(self):
+        winning_team = None
+
+        if self.state == Battle.END:
+            if self.teams[0].is_dead() is True:
+                winning_team = self.teams[1]
+            else:
+                winning_team = self.teams[0]
+
+        return winning_team
 
 
 class Game():
