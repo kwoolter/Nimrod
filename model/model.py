@@ -14,6 +14,50 @@ import utils.trpg as trpg
 from .derived_stats import *
 
 
+class Character(trpg.RPGCharacter):
+    def __init__(self, name: str, rpg_race: str, rpg_class: str,
+                 x: int = 1, y: int = 1, width: int = 1, height: int = 1, HP: int = 20):
+        super(trpg.RPGCharacter, self).__init__(name, rpg_race, rpg_class)
+
+        self.name = name
+        self._HP = HP
+        self._x = x
+        self._y = y
+        self.height = height
+        self.width = width
+        self.old_x = x
+        self.old_y = y
+        self.initialise()
+
+    def initialise(self):
+        self.HP = self._HP
+
+    @property
+    def x(self):
+        return self._x
+
+    @x.setter
+    def x(self, new_x):
+        self.old_x = self._x
+        self._x = new_x
+
+    @property
+    def y(self):
+        return self._y
+
+    @y.setter
+    def y(self, new_y):
+        self.old_y = self._y
+        self._y = new_y
+
+    def moved(self):
+        return (self._x, self._y) != (self.old_x, self.old_y)
+
+    # Go back to old position
+    def back(self):
+        self._x = self.old_x
+        self._y = self.old_y
+
 class Objects:
     EMPTY = "empty"
     TREE = "tree"
@@ -142,7 +186,8 @@ class Player(FloorObject):
 
     def __init__(self, name: str,
                  rect: pygame.Rect,
-                 height: int = 40):
+                 height: int = 40,
+                 character : Character = None):
         super(Player, self).__init__(name=name, rect=rect, height=height)
 
         self.treasure = 0
@@ -152,6 +197,7 @@ class Player(FloorObject):
         self.layer = 1
         self.AP = Player.MAX_AP
         self._name = name
+        self.character = character
 
     def __str__(self):
         return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
@@ -642,8 +688,17 @@ class Battle:
         for team in self.teams:
             team.print()
 
+    @property
+    def state(self):
+
+        if self.teams[0].is_dead() or self.teams[1].is_dead():
+            return Battle.END
+        else:
+            return self._state
+
     def start(self):
         self._state = Battle.PLAYING
+
         t1 = copy.copy(self.teams[0].players)
         t2 = copy.copy(self.teams[1].players)
         loop = True
@@ -777,50 +832,6 @@ class Battle:
                     self.set_current_target(tactic=Team.TACTIC_NEAREST)
 
 
-class Character(trpg.RPGCharacter):
-    def __init__(self, name: str, rpg_race: str, rpg_class: str,
-                 x: int = 1, y: int = 1, width: int = 1, height: int = 1, HP: int = 20):
-        super(trpg.RPGCharacter, self).__init__(name, rpg_race, rpg_class)
-
-        self.name = name
-        self._HP = HP
-        self._x = x
-        self._y = y
-        self.height = height
-        self.width = width
-        self.old_x = x
-        self.old_y = y
-        self.initialise()
-
-    def initialise(self):
-        self.HP = self._HP
-
-    @property
-    def x(self):
-        return self._x
-
-    @x.setter
-    def x(self, new_x):
-        self.old_x = self._x
-        self._x = new_x
-
-    @property
-    def y(self):
-        return self._y
-
-    @y.setter
-    def y(self, new_y):
-        self.old_y = self._y
-        self._y = new_y
-
-    def moved(self):
-        return (self._x, self._y) != (self.old_x, self.old_y)
-
-    # Go back to old position
-    def back(self):
-        self._x = self.old_x
-        self._y = self.old_y
-
 
 class Game():
     LOADED = "LOADED"
@@ -886,9 +897,13 @@ class Game():
 
         team1 = Team("Blue")
         team2 = Team("Red")
+
+        new_char1 = self._npcs.get_character_by_name("Jack")
+        new_char2 = self._npcs.get_character_by_name("Fred")
+
         for i in range(0, 5):
-            team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32)))
-            team2.add_player(Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32)))
+            team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32), character = new_char1))
+            team2.add_player(Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32), character = new_char2))
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
 

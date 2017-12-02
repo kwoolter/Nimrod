@@ -95,7 +95,7 @@ class ImageManager:
             model.Objects.SQUOID: "Squoid_warrior2.png",
             model.Objects.SQUOID_GREEN: "Squoid_warrior_green.png",
             model.Objects.SQUOID_RED: "Squoid_warrior_red.png",
-            model.Objects.SQUOID2: "Squoid_green.png",
+            model.Objects.SQUOID2: "Squoid_warrior_green.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.ICE: "ice2.png",
@@ -753,7 +753,7 @@ class GameView(View):
 
 
 class BattleView(View):
-    BG_COLOUR = Colours.BLACK
+    BG_COLOUR = Colours.DARK_GREY
     FG_COLOUR = Colours.WHITE
     TILE_WIDTH = 32
     TILE_HEIGHT = 32
@@ -769,8 +769,8 @@ class BattleView(View):
 
         self.game = None
 
-        self.attacker_view = PlayerView(100, 200)
-        self.opponent_view = PlayerView(100, 200)
+        self.attacker_view = PlayerView(110, 200)
+        self.opponent_view = PlayerView(110, 200)
 
     def initialise(self, game: model.Game):
         super(BattleView, self).initialise()
@@ -818,7 +818,7 @@ class BattleView(View):
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
-                    else:
+                    elif isinstance(view_object, model.Player) is True:
 
                         image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
                                                                   tick=self.tick_count,
@@ -907,7 +907,7 @@ class BattleView(View):
 
 
 class PlayerView(View):
-    BG_COLOUR = Colours.DARK_GREY
+    BG_COLOUR = Colours.BLACK
     FG_COLOUR = Colours.WHITE
     AVATAR_WIDTH = 64
     AVATAR_HEIGHT = 64
@@ -938,13 +938,26 @@ class PlayerView(View):
         x = pane_rect.centerx
         y = 10
 
-        msg = self.player.name
+        msg = self.player.character.name
 
         draw_text(self.surface,
                   msg=msg,
                   x=x,
                   y=y,
                   size=30,
+                  fg_colour=PlayerView.FG_COLOUR,
+                  bg_colour=PlayerView.BG_COLOUR)
+
+        y+=16
+
+        msg = "{0} {1}".format(self.player.character.race, self.player.character.rpg_class)
+
+
+        draw_text(self.surface,
+                  msg=msg,
+                  x=x,
+                  y=y,
+                  size=14,
                   fg_colour=PlayerView.FG_COLOUR,
                   bg_colour=PlayerView.BG_COLOUR)
 
@@ -956,7 +969,7 @@ class PlayerView(View):
         image_height = PlayerView.AVATAR_HEIGHT
 
         x = pane_rect.centerx - int(image_width / 2)
-        y += 16
+        y += 8
         image = pygame.transform.scale(image, (image_width, image_height))
         self.surface.blit(image, (x, y))
 

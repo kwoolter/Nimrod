@@ -76,8 +76,6 @@ class Controller:
 
                 # Timer events
                 if event.type == USEREVENT + 1:
-
-
                     try:
 
                         self.game.tick()
@@ -94,7 +92,7 @@ class Controller:
 
                     if self.game.state == model.Game.PLAYING:
                         if event.key == Controller.KEY_LEFT:
-                            self.game.move_player(-1,0)
+                            self.game.move_player(-1, 0)
                         elif event.key == Controller.KEY_RIGHT:
                             self.game.move_player(1, 0)
                         elif event.key == Controller.KEY_UP:
@@ -111,27 +109,32 @@ class Controller:
                     elif self.game.state == model.Game.BATTLE:
                         try:
 
-                            if event.key == K_1:
-                                self.game.battle.set_current_target(model.Team.TACTIC_RANDOM)
-                            elif event.key == K_2:
-                                self.game.battle.set_current_target(model.Team.TACTIC_NEAREST)
-                            elif event.key == K_3:
-                                self.game.battle.set_current_target(model.Team.TACTIC_FURTHEST)
-                            elif event.key == K_4:
-                                self.game.battle.set_current_target(model.Team.TACTIC_STRONGEST)
-                            elif event.key == K_5:
-                                self.game.battle.set_current_target(model.Team.TACTIC_WEAKEST)
-                            elif event.key == Controller.KEY_ATTACK:
-                                try:
-                                    self.game.battle.do_attack()
-                                except Exception as err:
-                                    print(str(err))
+                            if self.game.battle.state == model.Battle.PLAYING:
+                                if event.key == K_1:
+                                    self.game.battle.set_current_target(model.Team.TACTIC_RANDOM)
+                                elif event.key == K_2:
+                                    self.game.battle.set_current_target(model.Team.TACTIC_NEAREST)
+                                elif event.key == K_3:
+                                    self.game.battle.set_current_target(model.Team.TACTIC_FURTHEST)
+                                elif event.key == K_4:
+                                    self.game.battle.set_current_target(model.Team.TACTIC_STRONGEST)
+                                elif event.key == K_5:
+                                    self.game.battle.set_current_target(model.Team.TACTIC_WEAKEST)
+                                elif event.key == Controller.KEY_ATTACK:
+                                    try:
+                                        self.game.battle.do_attack()
+                                    except Exception as err:
+                                        print(str(err))
 
-                            elif event.key == Controller.KEY_END_TURN:
-                                self.game.battle.next_player()
+                                elif event.key == Controller.KEY_END_TURN:
+                                    self.game.battle.next_player()
 
-                            elif event.key == K_F12:
-                                self.game.battle.print()
+                                elif event.key == K_F12:
+                                    self.game.battle.print()
+
+                            elif self.game.battle.state == model.Battle.END:
+                                if event.key == K_ESCAPE:
+                                    self.game.state = model.Game.PLAYING
 
                         except Exception as err:
                             print(str(err))
