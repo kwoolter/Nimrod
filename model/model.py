@@ -912,8 +912,11 @@ class Game():
         new_char2 = self._npcs.get_character_by_name("Fred")
 
         for i in range(0, 5):
-            team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32), character = new_char1))
-            team2.add_player(Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32), character = new_char2))
+            new_char = random.choice(list(self._npcs.get_characters()))
+            team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32), character = new_char))
+
+            new_char = random.choice(list(self._npcs.get_characters()))
+            team2.add_player(Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32), character = new_char))
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
 
