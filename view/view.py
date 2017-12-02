@@ -94,6 +94,7 @@ class ImageManager:
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid_warrior2.png",
             model.Objects.SQUOID_GREEN: "Squoid_warrior_green.png",
+            model.Objects.SQUOID_RED: "Squoid_warrior_red.png",
             model.Objects.SQUOID2: "Squoid_green.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CYLINDER: "Cylinder.png",
