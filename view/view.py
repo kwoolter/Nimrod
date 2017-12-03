@@ -36,20 +36,21 @@ class ImageManager:
             if image_file_name in self.sprite_sheets.keys():
                 file_name, rect = self.sprite_sheets[image_file_name]
                 filename = ImageManager.RESOURCES_DIR + file_name
-            else:
-                filename = ImageManager.RESOURCES_DIR + image_file_name
-                rect = (0, 0, width, height)
-
-            try:
                 logging.info("Loading image {0} from {1} at {2}...".format(image_file_name, filename, rect))
 
                 image_sheet = utils.spritesheet(filename)
                 original_image = image_sheet.image_at(rect)
+            else:
+                filename = ImageManager.RESOURCES_DIR + image_file_name
+                logging.info("Loading image {0}...".format(filename))
+                original_image = pygame.image.load(filename)
+
+            try:
 
                 image = pygame.transform.scale(original_image, (width, height))
 
                 ImageManager.image_cache[image_file_name] = image
-                logging.info("Image {0} loaded and cached.".format(filename))
+                logging.info("Image {0} loaded and scaled to {1}x{2} and cached.".format(filename,width,height))
 
             except Exception as err:
                 print(str(err))
@@ -69,6 +70,7 @@ class ImageManager:
             model.Objects.BASE_RED: "Base_red.png",
             model.Objects.BASE_SHADOW: "Base_shadow2.png",
             model.Objects.BLOCK: "Block32x32.png",
+            model.Objects.BLOCK: "Brick32x32.png",
             model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
             model.Objects.BLOCK_HEXAGON: "Hexagon.png",
             model.Objects.BLOCK_TOP: "BlockFront.png",
@@ -169,6 +171,7 @@ class ImageManager:
         self.sprite_sheets["BlockSlopeNW.png"] = (sheet_file_name, (192, 32, 32, 32))
         self.sprite_sheets["BlockSlopeNE.png"] = (sheet_file_name, (224, 32, 32, 32))
         self.sprite_sheets["BlockSlopeSE.png"] = (sheet_file_name, (256, 32, 32, 32))
+        self.sprite_sheets["Brick32x32.png"] = (sheet_file_name, (288, 32, 32, 32))
 
         sheet_file_name = "blocks_sheet_blue.png"
 
@@ -226,7 +229,7 @@ class MainFrame(View):
     TITLE_HEIGHT = 80
     STATUS_HEIGHT = 50
 
-    def __init__(self, model: model.Game, width: int = 500, height: int = 500):
+    def __init__(self, model: model.Game, width: int = 800, height: int = 800):
 
         super(MainFrame, self).__init__(width, height)
 
@@ -715,13 +718,13 @@ class GameView(View):
                 if view_object is not None:
                     image = View.image_manager.get_skin_image(view_object.name,
                                                               tick=self.tick_count,
-                                                              width=view_object.rect.width,
-                                                              height=view_object.rect.height,
+                                                              width=GameView.TILE_WIDTH,
+                                                              height=GameView.TILE_HEIGHT,
                                                               skin_name=skin_name)
                     if image is not None:
 
                         if layer_id > 1:
-                            image.set_alpha(255 - (layer_id * 10))
+                            image.set_alpha(255 - (layer_id * 15))
                         else:
                             image.set_alpha(255)
 
@@ -759,6 +762,7 @@ class BattleView(View):
     TILE_HEIGHT = 32
     LINE_UP_WIDTH = 34
     LINE_UP_HEIGHT = 34
+    LAYER_ALPHA_MULTIPLIER = 15
 
     TRANSPARENT = Colours.TRANSPARENT
 
@@ -803,8 +807,8 @@ class BattleView(View):
 
                         image = View.image_manager.get_skin_image(model.Objects.BASE_YELLOW,
                                                                   tick=self.tick_count,
-                                                                  width=view_object.rect.width,
-                                                                  height=view_object.rect.height,
+                                                                  width=BattleView.TILE_WIDTH,
+                                                                  height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
@@ -812,8 +816,8 @@ class BattleView(View):
                     elif view_object == current_target:
                         image = View.image_manager.get_skin_image(model.Objects.BASE_RED,
                                                                   tick=self.tick_count,
-                                                                  width=view_object.rect.width,
-                                                                  height=view_object.rect.height,
+                                                                  width=BattleView.TILE_WIDTH,
+                                                                  height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
@@ -822,21 +826,21 @@ class BattleView(View):
 
                         image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
                                                                   tick=self.tick_count,
-                                                                  width=view_object.rect.width,
-                                                                  height=view_object.rect.height,
+                                                                  width=BattleView.TILE_WIDTH,
+                                                                  height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
                     image = View.image_manager.get_skin_image(view_object.name,
                                                               tick=self.tick_count,
-                                                              width=view_object.rect.width,
-                                                              height=view_object.rect.height,
+                                                              width=BattleView.TILE_WIDTH,
+                                                              height=BattleView.TILE_HEIGHT,
                                                               skin_name=skin_name)
                     if image is not None:
 
                         if layer_id > 1:
-                            image.set_alpha(255 - (layer_id * 10))
+                            image.set_alpha(255 - (layer_id * BattleView.LAYER_ALPHA_MULTIPLIER))
                         else:
                             image.set_alpha(255)
 
@@ -860,8 +864,8 @@ class BattleView(View):
         for player in line_up:
             image = View.image_manager.get_skin_image(player.name,
                                                       tick=self.tick_count,
-                                                      width=player.rect.width,
-                                                      height=player.rect.height)
+                                                      width=BattleView.TILE_WIDTH,
+                                                      height=BattleView.TILE_HEIGHT)
             if player != current_player:
 
                 if player == current_target:

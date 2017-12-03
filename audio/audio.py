@@ -45,7 +45,7 @@ class AudioManager:
         self.sounds_cache = None
         self.current_music = None
         self.music_on = False
-        self.sound_on = True
+        self.sound_on = False
 
     def process_event(self, new_event: model.Event):
         print("AudioManager event process:{0}".format(new_event))
