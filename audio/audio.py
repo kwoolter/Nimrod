@@ -50,7 +50,8 @@ class AudioManager:
     def process_event(self, new_event: model.Event):
         print("AudioManager event process:{0}".format(new_event))
         sound = self.get_theme_sound(new_event.name, sound_theme=new_event.type)
-        sound.play()
+        if sound is not None:
+            sound.play()
 
         if new_event.type == model.Event.STATE:
             self.play_theme_music(new_event.name)
