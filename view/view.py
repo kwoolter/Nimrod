@@ -773,8 +773,8 @@ class BattleView(View):
 
         self.game = None
 
-        self.attacker_view = PlayerView(110, 200)
-        self.opponent_view = PlayerView(110, 200)
+        self.attacker_view = PlayerView(110, 300)
+        self.opponent_view = PlayerView(110, 300)
 
     def initialise(self, game: model.Game):
         super(BattleView, self).initialise()
@@ -997,18 +997,6 @@ class PlayerView(View):
         x = pane_rect.centerx
         y += 68
 
-        msg = "HP={0}".format(self.player.HP)
-
-        draw_text(self.surface,
-                  msg=msg,
-                  x=x,
-                  y=y,
-                  size=16,
-                  fg_colour=PlayerView.FG_COLOUR,
-                  bg_colour=PlayerView.BG_COLOUR)
-
-        y += 16
-
         msg = "AP={0}".format(self.player.AP)
 
         draw_text(self.surface,
@@ -1018,6 +1006,26 @@ class PlayerView(View):
                   size=16,
                   fg_colour=PlayerView.FG_COLOUR,
                   bg_colour=PlayerView.BG_COLOUR)
+
+        stats = {"Physical Defence" : "DEF", "HP" : "HP", "Level" : "LVL", "Strength" : "STR", "Dexterity" : "DEX",
+                 "Intelligence" : "INT", "Kills":"Kills"}
+        for stat in stats.keys():
+            y += 16
+
+            stat_value = self.player.get_stat(stat)
+            if stat_value is None:
+                stat_value = 0
+
+            msg = "{0}={1}".format(stats[stat], stat_value)
+
+            draw_text(self.surface,
+                      msg=msg,
+                      x=x,
+                      y=y,
+                      size=16,
+                      fg_colour=PlayerView.FG_COLOUR,
+                      bg_colour=PlayerView.BG_COLOUR)
+
 
         return self.surface
 

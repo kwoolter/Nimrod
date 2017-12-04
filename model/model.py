@@ -224,9 +224,14 @@ class Player(FloorObject):
     def MaxAP(self):
         return self.character.get_stat("MaxAP").value
 
+    def get_stat(self, stat_name : str):
+        return self.character.get_stat(stat_name).value
 
     def do_damage(self, new_value):
         self.character.increment_stat("Damage", new_value)
+
+    def do_heal(self, new_value):
+        self.character.increment_stat("Damage", new_value * -1)
 
     @property
     def kills(self):
@@ -472,18 +477,22 @@ class Floor:
         else:
             tile = self.get_floor_tile(x, y, selected_player.layer, is_raw=True)
             if tile is not None:
+
                 if tile.name in (Objects.BLOCK_LEFT_SLOPE, Objects.BLOCK_RIGHT_SLOPE):
                     selected_player.layer += 1
+
                 elif tile.name in (Objects.SQUOID):
                     Floor.EVENTS.add_event(
                         Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
+
                 elif tile.name == Objects.SPHERE_GREEN:
                     selected_player.treasure += 1
                     self.set_floor_tile(x, y, selected_player.layer, None)
                     Floor.EVENTS.add_event(
                         Event(type=Event.FLOOR, name=Event.TREASURE, description="You found a {0}".format(tile.name)))
+
                 elif tile.name == Objects.SPHERE_BLUE:
-                    selected_player.HP += 1
+                    selected_player.do_heal(1)
                     self.set_floor_tile(x, y, selected_player.layer, None)
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
                                                  description="You found a {0}".format(tile.name)))
@@ -507,7 +516,7 @@ class Floor:
 
         # If standing on lava lose health
         elif base_tile.name == Objects.LAVA:
-            selected_player.HP -= 1
+            selected_player.do_damage(1)
             Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                          name=Event.LOSE_HEALTH,
                                          description="{0} stood on {1}".format(selected_player.name, base_tile.name)))
@@ -522,7 +531,7 @@ class Floor:
             # Check what the player is standing on...
             base_tile = self.get_floor_tile(x, y, layer - 1)
             if base_tile.name == Objects.LAVA:
-                selected_player.HP -= 1
+                selected_player.do_damage(1)
                 Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                              name=Event.LOSE_HEALTH,
                                              description="{0} stood on {1}".format(selected_player.name,

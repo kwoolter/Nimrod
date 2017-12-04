@@ -110,16 +110,19 @@ class elemental_attack_miracle(RPGDerivedStat):
         return 10 + faith
 
 
-class physical_defence_regular(RPGDerivedStat):
+class physical_defence(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
-        super(physical_defence_regular, self).__init__(name="Regular Defence", category="PHYSICAL DEFENCE", owner=owner)
-        self.add_dependency("Dexterity")
-        self.add_dependency("Strength")
+        super(physical_defence, self).__init__(name="Physical Defence", category="PHYSICAL DEFENCE", owner=owner)
+        self.add_dependency("Level")
+        self.add_dependency("Race_Defense_Bonus")
+        self.add_dependency("Class_Defense_Bonus")
+
 
     def calculate(self):
-        dex = self.get_dependency_value("Dexterity")
-        str = self.get_dependency_value("Strength")
-        return 10 + (dex + str) / 2
+        race_bonus = self.get_dependency_value("Race_Defense_Bonus")
+        class_bonus = self.get_dependency_value("Class_Defense_Bonus")
+        level = self.get_dependency_value("Level")
+        return round(10 + race_bonus + class_bonus + (level/2))
 
 
 class physical_defence_thrust(RPGDerivedStat):
@@ -378,7 +381,7 @@ def add_derived_stats(character: RPGCharacter):
     # character.add_stat(physical_attack_thrust(character))
     # character.add_stat(physical_attack_swing(character))
     # character.add_stat(physical_attack_chop(character))
-    # character.add_stat(physical_defence_regular(character))
+    character.add_stat(physical_defence(character))
     # character.add_stat(physical_defence_thrust(character))
     # character.add_stat(physical_defence_swing(character))
     # character.add_stat(physical_defence_chop(character))
