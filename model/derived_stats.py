@@ -370,6 +370,7 @@ def add_core_stats(character: RPGCharacter):
     character.add_stat(CoreStat("Sword", "Inventory", 0, owner=character))
     character.add_stat(CoreStat("Shield", "Inventory", 0, owner=character))
     character.add_stat(CoreStat("Kills", "Attributes", 0, owner=character))
+    character.add_stat(CoreStat("XP", "Attributes", 0, owner=character))
 
     return
 
@@ -402,9 +403,9 @@ def add_derived_stats(character: RPGCharacter):
     character.add_stat(MaxHP(character))
     character.add_stat(MaxAP(character))
     character.add_stat(HP(character))
-    character.add_stat(MaxLoad(character))
-    character.add_stat(TotalWeight(character))
-    character.add_stat(LoadPct(character))
+    #character.add_stat(MaxLoad(character))
+    #character.add_stat(TotalWeight(character))
+    #character.add_stat(LoadPct(character))
     character.add_stat(Score(character))
 
     return

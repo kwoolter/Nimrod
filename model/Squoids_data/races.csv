@@ -1,7 +1,7 @@
-RPGRace,Dexterity,Intelligence,Strength,Constitution,Race_Defense_Bonus,Playable,Weight
-Squoid,12,10,8,10,0,1,10
-Skeleton Pirate,10,11,8,6,2,1,10
-Whale,6,7,11,11,1,1,20
-Polar Bear,2,4,9,8,0,1,17
-Angler Fish,7,7,7,7,0,1,8
-Hermit Crab,9,5,7,5,2,1,8
+RPGRace,Dexterity,Intelligence,Strength,Constitution,Speed,Race_Defense_Bonus,Playable,Weight
+Squoid,12,10,8,10,2,0,1,10
+Skeleton Pirate,10,11,8,6,2,2,1,10
+Whale,6,7,11,11,2,1,1,20
+Polar Bear,2,4,9,8,2,0,1,17
+Angler Fish,7,7,7,7,2,0,1,8
+Hermit Crab,9,5,7,5,1,2,1,8

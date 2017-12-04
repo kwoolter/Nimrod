@@ -1008,7 +1008,7 @@ class PlayerView(View):
                   bg_colour=PlayerView.BG_COLOUR)
 
         stats = {"Physical Defence" : "DEF", "HP" : "HP", "Level" : "LVL", "Strength" : "STR", "Dexterity" : "DEX",
-                 "Intelligence" : "INT", "Kills":"Kills"}
+                 "Intelligence" : "INT", "XP": "XP", "Kills":"Kills"}
         for stat in stats.keys():
             y += 16
 
