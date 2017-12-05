@@ -22,57 +22,9 @@ class RPGDerivedStat(DerivedStat):
         return value
 
 
-class physical_attack_regular(RPGDerivedStat):
-    def __init__(self, owner: RPGObject):
-        super(physical_attack_regular, self).__init__(name="Regular Attack", category="PHYSICAL ATTACK", owner=owner)
-        self.add_dependency("Dexterity")
-        self.add_dependency("Strength")
-
-    def calculate(self):
-        dex = self.get_dependency_value("Dexterity")
-        str = self.get_dependency_value("Strength")
-        return 10 + (dex + str) / 2
-
-
-class physical_attack_thrust(RPGDerivedStat):
-    def __init__(self, owner: RPGObject):
-        super(physical_attack_thrust, self).__init__(name="Thrust Attack", category="PHYSICAL ATTACK", owner=owner)
-        self.add_dependency("Dexterity")
-        self.add_dependency("Strength")
-
-    def calculate(self):
-        dex = self.get_dependency_value("Dexterity")
-        str = self.get_dependency_value("Strength")
-        return 10 + (dex + str) / 2
-
-
-class physical_attack_swing(RPGDerivedStat):
-    def __init__(self, owner: RPGObject):
-        super(physical_attack_swing, self).__init__(name="Swing Attack", category="PHYSICAL ATTACK", owner=owner)
-        self.add_dependency("Strength")
-        self.add_dependency("Stamina")
-
-    def calculate(self):
-        strength = self.get_dependency_value("Strength")
-        stamina = self.get_dependency_value("Stamina")
-        return 10 + (strength + stamina) / 2
-
-
-class physical_attack_chop(RPGDerivedStat):
-    def __init__(self, owner: RPGObject):
-        super(physical_attack_chop, self).__init__(name="Chop Attack", category="PHYSICAL ATTACK", owner=owner)
-        self.add_dependency("Strength")
-        self.add_dependency("Intelligence")
-
-    def calculate(self):
-        strength = self.get_dependency_value("Strength")
-        intelligence = self.get_dependency_value("Intelligence")
-        return 10 + (strength + intelligence) / 2
-
-
 class elemental_attack_dark(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
-        super(elemental_attack_dark, self).__init__(name="Dark Attack", category="ELEMENTAL ATTACK", owner=owner)
+        super(elemental_attack_dark, self).__init__(name="Dark Attack", category="ATTACK", owner=owner)
         self.add_dependency("Faith")
 
     def calculate(self):
@@ -82,7 +34,7 @@ class elemental_attack_dark(RPGDerivedStat):
 
 class elemental_attack_fire(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
-        super(elemental_attack_fire, self).__init__(name="Fire Attack", category="ELEMENTAL ATTACK", owner=owner)
+        super(elemental_attack_fire, self).__init__(name="Fire Attack", category="ATTACK", owner=owner)
         self.add_dependency("Dexterity")
 
     def calculate(self):
@@ -92,23 +44,35 @@ class elemental_attack_fire(RPGDerivedStat):
 
 class elemental_attack_magic(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
-        super(elemental_attack_magic, self).__init__(name="Magic Attack", category="ELEMENTAL ATTACK", owner=owner)
+        super(elemental_attack_magic, self).__init__(name="Magic Attack", category="ATTACK", owner=owner)
         self.add_dependency("Intelligence")
 
     def calculate(self):
         intelligence = self.get_dependency_value("Intelligence")
         return 10 + intelligence
 
-
-class elemental_attack_miracle(RPGDerivedStat):
-    def __init__(self, owner: RPGObject):
-        super(elemental_attack_miracle, self).__init__(name="Miracle Attack", category="ELEMENTAL ATTACK", owner=owner)
-        self.add_dependency("Faith")
+class attribute_modifier(RPGDerivedStat):
+    def __init__(self, owner: RPGObject, attribute_name : str):
+        super(attribute_modifier, self).__init__(name=attribute_name+" Modifier", category="Abilities", owner=owner)
+        self.attribute_name = attribute_name
+        self.add_dependency(self.attribute_name)
 
     def calculate(self):
-        faith = self.get_dependency_value("Faith")
-        return 10 + faith
+        attribute_value = self.get_dependency_value(self.attribute_name)
 
+        return round((attribute_value - 10)/2)
+
+
+class physical_attack(RPGDerivedStat):
+    def __init__(self, owner: RPGObject):
+        super(physical_attack, self).__init__(name="Physical Attack Bonus", category="ATTACK", owner=owner)
+        self.add_dependency("Strength Modifier")
+        self.add_dependency("Level")
+
+    def calculate(self):
+        strength_mod = self.get_dependency_value("Strength Modifier")
+        level = self.get_dependency_value("Level")
+        return round(strength_mod + level/2)
 
 class physical_defence(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
@@ -124,41 +88,6 @@ class physical_defence(RPGDerivedStat):
         level = self.get_dependency_value("Level")
         return round(10 + race_bonus + class_bonus + (level/2))
 
-
-class physical_defence_thrust(RPGDerivedStat):
-    def __init__(self, owner: RPGObject):
-        super(physical_defence_thrust, self).__init__(name="Thrust Defence", category="PHYSICAL DEFENCE", owner=owner)
-        self.add_dependency("Dexterity")
-        self.add_dependency("Luck")
-
-    def calculate(self):
-        dex = self.get_dependency_value("Dexterity")
-        luck = self.get_dependency_value("Luck")
-        return 10 + (dex + luck) / 2
-
-
-class physical_defence_swing(RPGDerivedStat):
-    def __init__(self, owner: RPGObject):
-        super(physical_defence_swing, self).__init__(name="Swing Defence", category="PHYSICAL DEFENCE", owner=owner)
-        self.add_dependency("Strength")
-        self.add_dependency("Luck")
-
-    def calculate(self):
-        strength = self.get_dependency_value("Strength")
-        luck = self.get_dependency_value("Luck")
-        return 10 + (strength + luck) / 2
-
-
-class physical_defence_chop(RPGDerivedStat):
-    def __init__(self, owner: RPGObject):
-        super(physical_defence_chop, self).__init__(name="Chop Defence", category="PHYSICAL DEFENCE", owner=owner)
-        self.add_dependency("Strength")
-        self.add_dependency("Luck")
-
-    def calculate(self):
-        strength = self.get_dependency_value("Strength")
-        luck = self.get_dependency_value("Luck")
-        return 10 + (strength + luck) / 2
 
 
 class elemental_defence_magic(RPGDerivedStat):
@@ -190,16 +119,6 @@ class elemental_defence_lightning(RPGDerivedStat):
     def calculate(self):
         stamina = self.get_dependency_value("Stamina")
         return 10 + stamina
-
-
-class elemental_defence_dark(RPGDerivedStat):
-    def __init__(self, owner: RPGObject):
-        super(elemental_defence_dark, self).__init__(name="Dark Defence", category="ELEMENTAL DEFENCE", owner=owner)
-        self.add_dependency("Faith")
-
-    def calculate(self):
-        faith = self.get_dependency_value("Faith")
-        return 10 + faith
 
 
 class resistance_bleed(RPGDerivedStat):
@@ -381,7 +300,7 @@ def add_derived_stats(character: RPGCharacter):
     # character.add_stat(physical_attack_regular(character))
     # character.add_stat(physical_attack_thrust(character))
     # character.add_stat(physical_attack_swing(character))
-    # character.add_stat(physical_attack_chop(character))
+    character.add_stat(physical_attack(character))
     character.add_stat(physical_defence(character))
     # character.add_stat(physical_defence_thrust(character))
     # character.add_stat(physical_defence_swing(character))
@@ -407,5 +326,11 @@ def add_derived_stats(character: RPGCharacter):
     #character.add_stat(TotalWeight(character))
     #character.add_stat(LoadPct(character))
     character.add_stat(Score(character))
+
+
+    attribute_names = ("Strength", "Intelligence", "Dexterity")
+    for attribute in attribute_names:
+        character.add_stat(attribute_modifier(owner=character, attribute_name=attribute))
+
 
     return

@@ -58,6 +58,7 @@ class Character(trpg.RPGCharacter):
         self._x = self.old_x
         self._y = self.old_y
 
+
 class Objects:
     EMPTY = "empty"
     TREE = "tree"
@@ -187,7 +188,7 @@ class Player(FloorObject):
     def __init__(self, name: str,
                  rect: pygame.Rect,
                  height: int = 40,
-                 character : Character = None):
+                 character: Character = None):
         super(Player, self).__init__(name=name, rect=rect, height=height)
 
         self.treasure = 0
@@ -203,7 +204,6 @@ class Player(FloorObject):
         return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
                                                                           self.rect.x, self.rect.y, self.layer,
                                                                           self.is_dead()))
-
 
     @property
     def name(self):
@@ -224,7 +224,7 @@ class Player(FloorObject):
     def MaxAP(self):
         return self.character.get_stat("MaxAP").value
 
-    def get_stat(self, stat_name : str):
+    def get_stat(self, stat_name: str):
         return self.character.get_stat(stat_name).value
 
     def do_damage(self, new_value):
@@ -240,7 +240,6 @@ class Player(FloorObject):
     @kills.setter
     def kills(self, new_value):
         self.character.update_stat("Kills", new_value)
-
 
     def is_dead(self):
 
@@ -761,6 +760,10 @@ class Battle:
         self.set_current_target(tactic=Team.TACTIC_NEAREST)
         self.turns += 1
 
+        Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.NEXT_PLAYER,
+                                      description="{0}'s turn.".format(
+                                          self.get_current_player().character.name)))
+
         return self.get_current_player()
 
     def set_current_target(self, tactic: str = Team.TACTIC_NEAREST):
@@ -822,36 +825,57 @@ class Battle:
         if self._state != Battle.PLAYING:
             raise Exception("Battle in state '{0}' - not playing so can't do attack!".format(self._state))
 
-
         current_player = self.get_current_player()
         current_team = self.get_player_team(current_player)
         opposite_team = self.get_opposite_team(current_team)
 
         if opposite_team.is_dead() is True:
-            Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.VICTORY,
+            Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                          name=Event.VICTORY,
                                           description="Team {0} are all dead!".format(opposite_team.name)))
             raise Exception("Team {0} are all dead!".format(opposite_team.name))
 
         if current_player.AP <= 0:
-            Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.NO_AP, description="Not enough AP!"))
-            raise Exception("Player {0} does not have enough AP ({1})".format(current_player.name, current_player.AP))
+            Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                          name=Event.NO_AP,
+                                          description="{0} does not have enough AP!".format(
+                                              current_player.character.name)))
+
+            raise Exception(
+                "Player {0} does not have enough AP ({1})".format(current_player.character.name, current_player.AP))
 
         opponent = self.get_current_target()
 
         if opponent is not None:
 
-            damage = random.randint(1, 5)
-            opponent.do_damage(damage)
+            attack_bonus = current_player.get_stat("Physical Attack Bonus")
+            opponent_defence = opponent.get_stat("Physical Defence")
+
+            attack_roll = random.randint(1, 24) + attack_bonus
+            if attack_roll > opponent_defence:
+                damage = random.randint(1, 5)
+                opponent.do_damage(damage)
+                Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                              name=Event.DAMAGE_OPPONENT,
+                                              description="{0} did {1} damage to {2}".format(
+                                                  current_player.character.name,
+                                                  damage,
+                                                  opponent.character.name)))
+            else:
+                Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                              name=Event.MISSED_OPPONENT,
+                                              description="{0} attacked {1} but missed".format(
+                                                  current_player.character.name,
+                                                  opponent.character.name)))
+
             current_player.AP -= 1
 
-            print("Player {0} attacks Player {1} and does {2} damage".format(current_player.name,
-                                                                             opponent.name,
-                                                                             damage))
-
             if opponent.is_dead() is True:
-                Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.KILLED_OPPONENT,
-                                              description="Player {0} killed Player {1}".format(current_player.name,
-                                                                                                opponent.name)))
+                Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                              name=Event.KILLED_OPPONENT,
+                                              description="{0} killed {1}".format(
+                                                  current_player.character.name,
+                                                  opponent.character.name)))
 
                 current_player.kills += 1
 
@@ -947,17 +971,16 @@ class Game():
         for i in range(0, 4):
             new_char = random.choice(characters)
             characters.remove(new_char)
-            team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32), character = new_char))
+            team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32), character=new_char))
 
             new_char = random.choice(characters)
             characters.remove(new_char)
-            team2.add_player(Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32), character = new_char))
+            team2.add_player(Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32), character=new_char))
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
 
         self.battle = Battle(team1, team2, battle_floor)
         self.battle.start()
-
 
     def tick(self):
 
@@ -1115,7 +1138,10 @@ class Event():
     LOSE_HEALTH = "lose health"
     NO_AP = "No action points"
     KILLED_OPPONENT = "killed opponent"
+    MISSED_OPPONENT = "missed opponent"
+    DAMAGE_OPPONENT = "damaged opponent"
     VICTORY = "victory"
+    NEXT_PLAYER = "next player"
 
     def __init__(self, name: str, description: str = None, type: str = DEFAULT):
         self.name = name

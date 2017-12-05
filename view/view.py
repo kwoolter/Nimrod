@@ -217,7 +217,7 @@ class View():
         self.tick_count += 1
 
     def process_event(self, new_event: model.Event):
-        pass
+        print("Default View Class event process:{0}".format(new_event))
 
     def draw(self):
         pass
@@ -309,7 +309,17 @@ class MainFrame(View):
         self.surface.blit(self.status_bar.surface, (x, y))
 
     def process_event(self, new_event: model.Event):
-        print("MainFrame event process:{0}".format(new_event))
+
+        #print("MainFrame event process:{0}".format(new_event))
+
+        if self.game.state == model.Game.READY:
+            self.game_ready.process_event(new_event)
+        elif self.game.state == model.Game.PLAYING:
+            self.game_view.process_event(new_event)
+        elif self.game.state == model.Game.BATTLE:
+            self.battle_view.process_event(new_event)
+        elif self.game.state == model.Game.GAME_OVER:
+            self.game_over.process_event(new_event)
 
     def tick(self):
 
@@ -776,6 +786,8 @@ class BattleView(View):
         self.attacker_view = PlayerView(110, 300)
         self.opponent_view = PlayerView(110, 300)
 
+        self.next_event = None
+
     def initialise(self, game: model.Game):
         super(BattleView, self).initialise()
 
@@ -785,6 +797,9 @@ class BattleView(View):
         super(BattleView, self).tick()
         self.attacker_view.tick()
         self.opponent_view.tick()
+
+    def process_event(self, new_event: model.Event):
+        self.next_event = new_event
 
     def draw_layer(self, surface, layer_id):
 
@@ -895,6 +910,21 @@ class BattleView(View):
             self.opponent_view.initialise(current_target)
             surface = self.opponent_view.draw()
             self.surface.blit(surface, (pane_rect.width - surface.get_rect().width - 2, 2))
+
+        if self.next_event is not None:
+
+            x = pane_rect.centerx
+            y = 500
+
+            msg = self.next_event.description
+
+            draw_text(self.surface,
+                      msg=msg,
+                      x=x,
+                      y=y,
+                      size=30,
+                      fg_colour=BattleView.FG_COLOUR,
+                      bg_colour=BattleView.BG_COLOUR)
 
         if self.game.battle.state == model.Battle.END:
 
@@ -1008,7 +1038,7 @@ class PlayerView(View):
                   bg_colour=PlayerView.BG_COLOUR)
 
         stats = {"Physical Defence" : "DEF", "HP" : "HP", "Level" : "LVL", "Strength" : "STR", "Dexterity" : "DEX",
-                 "Intelligence" : "INT", "XP": "XP", "Kills":"Kills"}
+                 "Intelligence" : "INT", "XP": "XP", "Kills":"Kills", "Physical Attack Bonus" : "ATK"}
         for stat in stats.keys():
             y += 16
 
