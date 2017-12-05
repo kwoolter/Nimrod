@@ -74,7 +74,6 @@ class RPGCharacter(RPGObject):
         for core_stat in RPGCharacter.CORE_STAT_NAMES:
             self.add_stat(CoreStat(core_stat, "Abilities", core_stat_values.pop()))
 
-            # self.add_derived_stats()
 
     # Convert a Character object to a string
     def __str__(self):
@@ -125,7 +124,7 @@ class RPGCharacter(RPGObject):
         text += "\nStats"
 
         # attributes = ["Age", "XP", "Level", "XPToLevel", "LevelUp","Damage", "HP", "Max HP", "Gold", "LoadPct"]
-        # attributes = ["Age", "XP", "Level", "XPToLevel"]
+        attributes = ["XP", "Level", "XPToLevel"]
         attributes = []
 
         for attribute_name in attributes:

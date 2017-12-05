@@ -200,10 +200,15 @@ class MaxHP(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
         super(MaxHP, self).__init__("MaxHP", "Attributes", owner=owner)
         self.add_dependency("Constitution")
+        self.add_dependency("Level")
+        self.add_dependency("Class_HP_Per_Level")
 
     def calculate(self):
         con = self.get_dependency_value("Constitution")
-        return 10 + con
+        lvl  = self.get_dependency_value("Level")
+        hp_per_lvl =  self.get_dependency_value("Class_HP_Per_Level")
+
+        return 10 + con + ((lvl - 1)*hp_per_lvl)
 
 class MaxAP(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
@@ -212,7 +217,7 @@ class MaxAP(RPGDerivedStat):
 
     def calculate(self):
         dex = self.get_dependency_value("Dexterity")
-        return 2 + dex // 10
+        return 2 + dex // 12
 
 
 class HP(RPGDerivedStat):

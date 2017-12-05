@@ -102,6 +102,8 @@ class ImageManager:
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.ICE: "ice2.png",
             model.Objects.LAVA: ("lava_0.png", "lava_1.png", "lava_2.png", "lava_1.png"),
+            model.Objects.RED_DOT: "red_dot.png",
+            model.Objects.GREEN_DOT: "green_dot.png",
 
         })
 
@@ -1003,7 +1005,6 @@ class PlayerView(View):
 
         msg = "{0} {1}".format(self.player.character.race, self.player.character.rpg_class)
 
-
         draw_text(self.surface,
                   msg=msg,
                   x=x,
@@ -1024,23 +1025,26 @@ class PlayerView(View):
         image = pygame.transform.scale(image, (image_width, image_height))
         self.surface.blit(image, (x, y))
 
+        max_ap = self.player.get_stat("MaxAP")
+
+        for i in range (0, max_ap):
+            if (max_ap - i) <= self.player.AP:
+                draw_icon(self.surface, x=8, y=y + (i * 20), icon_name=model.Objects.GREEN_DOT,tick=self.tick_count, width=16, height=16)
+            else:
+                draw_icon(self.surface, x=8, y=y + (i * 20), icon_name=model.Objects.RED_DOT, tick=self.tick_count,
+                          width=16, height=16)
+
+
+        # draw_icon(self.surface, x=0, y=0, icon_name=model.Objects.HEART, count=self.player.HP,
+        #           tick=self.tick_count, width=16, height=16)
+
         x = pane_rect.centerx
         y += 68
 
-        msg = "AP={0}".format(self.player.AP)
-
-        draw_text(self.surface,
-                  msg=msg,
-                  x=x,
-                  y=y,
-                  size=16,
-                  fg_colour=PlayerView.FG_COLOUR,
-                  bg_colour=PlayerView.BG_COLOUR)
-
-        stats = {"Physical Defence" : "DEF", "HP" : "HP", "Level" : "LVL", "Strength" : "STR", "Dexterity" : "DEX",
+        stat_order = ("HP", "Strength", "Dexterity", "Level" )
+        stats = {"HP" : "HP", "Physical Defence" : "DEF", "Level" : "LVL", "Strength" : "STR", "Dexterity" : "DEX",
                  "Intelligence" : "INT", "XP": "XP", "Kills":"Kills", "Physical Attack Bonus" : "ATK"}
-        for stat in stats.keys():
-            y += 16
+        for stat in stat_order:
 
             stat_value = self.player.get_stat(stat)
             if stat_value is None:
@@ -1055,6 +1059,7 @@ class PlayerView(View):
                       size=16,
                       fg_colour=PlayerView.FG_COLOUR,
                       bg_colour=PlayerView.BG_COLOUR)
+            y += 16
 
 
         return self.surface
@@ -1063,8 +1068,9 @@ class PlayerView(View):
         super(PlayerView, self).end()
 
 
-def draw_icon(surface, x, y, icon_name, count: int = None, tick: int = 0):
+def draw_icon(surface, x, y, icon_name, count: int = None, tick: int = 0, width=32, height=32):
     image = View.image_manager.get_skin_image(tile_name=icon_name, skin_name="default", tick=tick)
+    image = pygame.transform.scale(image, (width, height))
     iconpos = image.get_rect()
     iconpos.left = x
     iconpos.top = y

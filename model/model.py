@@ -104,6 +104,8 @@ class Objects:
     LAVA = "lava"
     ICE = "ice"
     CYLINDER = "cylinder"
+    RED_DOT = "red dot"
+    GREEN_DOT = "green_dot"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
 
@@ -1051,10 +1053,12 @@ class Game():
 
         for character_name in character_names:
             character = self._npcs.get_character_by_name(character_name)
+            character.roll()
             character.load_stats(rpg_classes.get_stats_by_name(character.rpg_class), overwrite=False)
             character.load_stats(rpg_races.get_stats_by_name(character.race), overwrite=False)
             add_core_stats(character)
             add_derived_stats(character)
+            #character.examine()
 
     def load_items(self, item_file_name: str):
         self._items = trpg.ItemFactory(Game.GAME_DATA_DIR + item_file_name, self._stats)
