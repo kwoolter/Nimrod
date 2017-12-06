@@ -201,6 +201,7 @@ class Player(FloorObject):
         self._name = name
         self.character = character
         self.AP = self.MaxAP
+        self._attacks = {}
 
     def __str__(self):
         return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
@@ -246,6 +247,14 @@ class Player(FloorObject):
     def is_dead(self):
 
         return self.HP <= 0
+
+    def add_attack(self, attack_name: str, attack_stats: list):
+        self._attacks[attack_name] = copy.deepcopy(attack_stats)
+
+    def get_attack(self):
+        attack_name = list(self._attacks.keys())[0]
+
+        return attack_name, self._attacks[attack_name]
 
 
 class Monster(FloorObject):
@@ -855,14 +864,30 @@ class Battle:
 
             attack_roll = random.randint(1, 24) + attack_bonus
             if attack_roll > opponent_defence:
-                damage = random.randint(1, 5)
+
+                attack_name, attack_stats = current_player.get_attack()
+
+                number_of_dice = 1
+                dice_sides = 3
+
+                for stat in attack_stats:
+                    if stat.name == "Number of Dice":
+                        number_of_dice = stat.value
+                    elif stat.name == "Dice Sides":
+                        dice_sides = stat.value
+
+                damage = random.randint(number_of_dice, number_of_dice * dice_sides)
+
+                print("{0} attack {1}d{2} did {3} damage".format(attack_name, number_of_dice, dice_sides, damage))
+
                 opponent.do_damage(damage)
                 Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                               name=Event.DAMAGE_OPPONENT,
-                                              description="{0} did {1} damage to {2}".format(
+                                              description="{0} did {1} damage to {2} with {3} attack".format(
                                                   current_player.character.name,
                                                   damage,
-                                                  opponent.character.name)))
+                                                  opponent.character.name,
+                                                  attack_name)))
             else:
                 Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                               name=Event.MISSED_OPPONENT,
@@ -928,6 +953,7 @@ class Game():
         self._maps = None
         self._locations = None
         self._npcs = None
+        self._attacks = None
         self.floor_factory = None
         self.battle = None
         self._battle_floor_id = None
@@ -969,15 +995,22 @@ class Game():
         team2 = Team("Red")
 
         characters = list(self._npcs.get_characters())
+        attacks = list(self._attacks.get_rpg_object_names())
 
         for i in range(0, 4):
             new_char = random.choice(characters)
+            new_player = Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
+            random_attack_name = random.choice(attacks)
+            new_player.add_attack(random_attack_name, self._attacks.get_stats_by_name(random_attack_name))
             characters.remove(new_char)
-            team1.add_player(Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32), character=new_char))
+            team1.add_player(new_player)
 
             new_char = random.choice(characters)
+            new_player = Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32), character=new_char)
+            random_attack_name = random.choice(attacks)
+            new_player.add_attack(random_attack_name, self._attacks.get_stats_by_name(random_attack_name))
             characters.remove(new_char)
-            team2.add_player(Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32), character=new_char))
+            team2.add_player(new_player)
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
 
@@ -1011,6 +1044,7 @@ class Game():
         self.load_characters("characters.csv")
         self.load_map("locations.csv", "maplinks.csv")
         self.load_items("items.csv")
+        self.load_attacks("attacks.csv")
 
         self._stats.print()
 
@@ -1058,11 +1092,22 @@ class Game():
             character.load_stats(rpg_races.get_stats_by_name(character.race), overwrite=False)
             add_core_stats(character)
             add_derived_stats(character)
-            #character.examine()
+            # character.examine()
 
     def load_items(self, item_file_name: str):
         self._items = trpg.ItemFactory(Game.GAME_DATA_DIR + item_file_name, self._stats)
         self._items.load()
+
+    def load_attacks(self, attacks_file_name: str):
+        self._attacks = trpg.RPGCSVFactory(name="Attacks", file_name=Game.GAME_DATA_DIR + attacks_file_name,
+                                           stat_category="Attacks")
+        self._attacks.load()
+        attacks = self._attacks.get_rpg_object_names()
+        for attack in attacks:
+            stats = self._attacks.get_stats_by_name(attack)
+            print("Stats for attack {0}:".format(attack))
+            for stat in stats:
+                print("\t{0}".format(stat))
 
     def start(self):
 

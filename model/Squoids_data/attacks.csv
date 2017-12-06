@@ -1,0 +1,4 @@
+Name,Description,Type,Number of Dice,Dice Sides
+Sword,Sword Attack,Melee,1,6
+Dagger,Dagger Attack,Melee,1,4
+Bow,Bow Attack,Ranged,1,4

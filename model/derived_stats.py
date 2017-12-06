@@ -208,7 +208,7 @@ class MaxHP(RPGDerivedStat):
         lvl  = self.get_dependency_value("Level")
         hp_per_lvl =  self.get_dependency_value("Class_HP_Per_Level")
 
-        return 10 + con + ((lvl - 1)*hp_per_lvl)
+        return con + ((lvl - 1)*hp_per_lvl)
 
 class MaxAP(RPGDerivedStat):
     def __init__(self, owner: RPGObject):

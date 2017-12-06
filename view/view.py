@@ -50,7 +50,7 @@ class ImageManager:
                 image = pygame.transform.scale(original_image, (width, height))
 
                 ImageManager.image_cache[image_file_name] = image
-                logging.info("Image {0} loaded and scaled to {1}x{2} and cached.".format(filename,width,height))
+                logging.info("Image {0} loaded and scaled to {1}x{2} and cached.".format(filename, width, height))
 
             except Exception as err:
                 print(str(err))
@@ -312,7 +312,7 @@ class MainFrame(View):
 
     def process_event(self, new_event: model.Event):
 
-        #print("MainFrame event process:{0}".format(new_event))
+        # print("MainFrame event process:{0}".format(new_event))
 
         if self.game.state == model.Game.READY:
             self.game_ready.process_event(new_event)
@@ -876,7 +876,7 @@ class BattleView(View):
         current_target = self.game.battle.get_current_target()
 
         line_up = self.game.battle.order_of_play
-        x = pane_rect.centerx - int( len(line_up) * (BattleView.LINE_UP_WIDTH+3) / 2)
+        x = pane_rect.centerx - int(len(line_up) * (BattleView.LINE_UP_WIDTH + 3) / 2)
         y = 8
         for player in line_up:
             image = View.image_manager.get_skin_image(player.name,
@@ -914,7 +914,6 @@ class BattleView(View):
             self.surface.blit(surface, (pane_rect.width - surface.get_rect().width - 2, 2))
 
         if self.next_event is not None:
-
             x = pane_rect.centerx
             y = 500
 
@@ -929,7 +928,6 @@ class BattleView(View):
                       bg_colour=BattleView.BG_COLOUR)
 
         if self.game.battle.state == model.Battle.END:
-
             x = pane_rect.centerx
             y = 80
 
@@ -1001,7 +999,7 @@ class PlayerView(View):
                   fg_colour=PlayerView.FG_COLOUR,
                   bg_colour=PlayerView.BG_COLOUR)
 
-        y+=16
+        y += 16
 
         msg = "{0} {1}".format(self.player.character.race, self.player.character.rpg_class)
 
@@ -1016,7 +1014,6 @@ class PlayerView(View):
         image = View.image_manager.get_skin_image(self.player.name, tick=self.tick_count)
         image.set_alpha(255)
 
-
         image_width = PlayerView.AVATAR_WIDTH
         image_height = PlayerView.AVATAR_HEIGHT
 
@@ -1027,13 +1024,13 @@ class PlayerView(View):
 
         max_ap = self.player.get_stat("MaxAP")
 
-        for i in range (0, max_ap):
+        for i in range(0, max_ap):
             if (max_ap - i) <= self.player.AP:
-                draw_icon(self.surface, x=8, y=y + (i * 20), icon_name=model.Objects.GREEN_DOT,tick=self.tick_count, width=16, height=16)
+                draw_icon(self.surface, x=8, y=y + (i * 20), icon_name=model.Objects.GREEN_DOT, tick=self.tick_count,
+                          width=16, height=16)
             else:
                 draw_icon(self.surface, x=8, y=y + (i * 20), icon_name=model.Objects.RED_DOT, tick=self.tick_count,
                           width=16, height=16)
-
 
         # draw_icon(self.surface, x=0, y=0, icon_name=model.Objects.HEART, count=self.player.HP,
         #           tick=self.tick_count, width=16, height=16)
@@ -1041,9 +1038,11 @@ class PlayerView(View):
         x = pane_rect.centerx
         y += 68
 
-        stat_order = ("HP", "Strength", "Dexterity", "Level" )
-        stats = {"HP" : "HP", "Physical Defence" : "DEF", "Level" : "LVL", "Strength" : "STR", "Dexterity" : "DEX",
-                 "Intelligence" : "INT", "XP": "XP", "Kills":"Kills", "Physical Attack Bonus" : "ATK"}
+        stat_order = ("HP", "Strength", "Dexterity", "Level")
+        stats_with_modifiers = ("Strength", "Dexterity")
+        stats = {"HP": "HP", "Physical Defence": "DEF", "Level": "LVL", "Strength": "STR", "Dexterity": "DEX",
+                 "Intelligence": "INT", "XP": "XP", "Kills": "Kills", "Physical Attack Bonus": "ATK"}
+
         for stat in stat_order:
 
             stat_value = self.player.get_stat(stat)
@@ -1051,6 +1050,11 @@ class PlayerView(View):
                 stat_value = 0
 
             msg = "{0}={1}".format(stats[stat], stat_value)
+
+            if stat in stats_with_modifiers:
+                stat_modifier_value = self.player.get_stat(stat + " Modifier")
+                if stat_modifier_value is not None:
+                    msg += " ({0})".format(stat_modifier_value)
 
             draw_text(self.surface,
                       msg=msg,
@@ -1061,6 +1065,25 @@ class PlayerView(View):
                       bg_colour=PlayerView.BG_COLOUR)
             y += 16
 
+        attack_name, attack_stats = self.player.get_attack()
+        number_of_dice = 1
+        dice_sides = 3
+
+        for stat in attack_stats:
+            if stat.name == "Number of Dice":
+                number_of_dice = stat.value
+            elif stat.name == "Dice Sides":
+                dice_sides = stat.value
+
+        msg = "{0} ({1}d{2})".format(attack_name, number_of_dice, dice_sides)
+
+        draw_text(self.surface,
+                  msg=msg,
+                  x=x,
+                  y=y,
+                  size=16,
+                  fg_colour=PlayerView.FG_COLOUR,
+                  bg_colour=PlayerView.BG_COLOUR)
 
         return self.surface
 
