@@ -91,20 +91,25 @@ class Controller:
                 elif event.type == KEYUP:
 
                     if self.game.state == model.Game.PLAYING:
-                        if event.key == Controller.KEY_LEFT:
-                            self.game.move_player(-1, 0)
-                        elif event.key == Controller.KEY_RIGHT:
-                            self.game.move_player(1, 0)
-                        elif event.key == Controller.KEY_UP:
-                            self.game.move_player(0, -1)
-                        elif event.key == Controller.KEY_DOWN:
-                            self.game.move_player(0, 1)
-                        elif event.key == Controller.KEY_PAUSE:
-                            self.game.pause()
-                        elif event.key == Controller.KEY_GAME_OVER:
-                            self.game.game_over()
-                        elif event.key == Controller.KEY_BATTLE:
-                            self.game.start_battle()
+
+                        try:
+                            if event.key == Controller.KEY_LEFT:
+                                self.game.move_player(-1, 0)
+                            elif event.key == Controller.KEY_RIGHT:
+                                self.game.move_player(1, 0)
+                            elif event.key == Controller.KEY_UP:
+                                self.game.move_player(0, -1)
+                            elif event.key == Controller.KEY_DOWN:
+                                self.game.move_player(0, 1)
+                            elif event.key == Controller.KEY_PAUSE:
+                                self.game.pause()
+                            elif event.key == Controller.KEY_GAME_OVER:
+                                self.game.game_over()
+                            elif event.key == Controller.KEY_BATTLE:
+                                self.game.start_battle()
+
+                        except Exception as err:
+                            print(str(err))
 
                     elif self.game.state == model.Game.BATTLE:
                         try:
@@ -120,6 +125,14 @@ class Controller:
                                     self.game.battle.set_current_target(model.Team.TACTIC_STRONGEST)
                                 elif event.key == K_5:
                                     self.game.battle.set_current_target(model.Team.TACTIC_WEAKEST)
+                                if event.key == Controller.KEY_LEFT:
+                                    self.game.battle.move_player(-1, 0)
+                                elif event.key == Controller.KEY_RIGHT:
+                                    self.game.battle.move_player(1, 0)
+                                elif event.key == Controller.KEY_UP:
+                                    self.game.battle.move_player(0, -1)
+                                elif event.key == Controller.KEY_DOWN:
+                                    self.game.battle.move_player(0, 1)
                                 elif event.key == Controller.KEY_ATTACK:
                                     try:
                                         self.game.battle.do_attack()

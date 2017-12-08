@@ -827,6 +827,7 @@ class BattleView(View):
                                                                   width=BattleView.TILE_WIDTH,
                                                                   height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
+                        image.set_alpha(100)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
@@ -836,6 +837,7 @@ class BattleView(View):
                                                                   width=BattleView.TILE_WIDTH,
                                                                   height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
+                        image.set_alpha(100)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
@@ -846,6 +848,8 @@ class BattleView(View):
                                                                   width=BattleView.TILE_WIDTH,
                                                                   height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
+
+                        image.set_alpha(100)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
@@ -1067,15 +1071,19 @@ class PlayerView(View):
 
         attack_name, attack_stats = self.player.get_attack()
         number_of_dice = 1
-        dice_sides = 3
+        dice_sides = 2
 
         for stat in attack_stats:
             if stat.name == "Number of Dice":
                 number_of_dice = stat.value
             elif stat.name == "Dice Sides":
                 dice_sides = stat.value
+            elif stat.name == "Attack Bonus":
+                attack_bonus = stat.value
 
         msg = "{0} ({1}d{2})".format(attack_name, number_of_dice, dice_sides)
+        if attack_bonus > 0:
+            msg+= "+{0}".format(attack_bonus)
 
         draw_text(self.surface,
                   msg=msg,
