@@ -499,6 +499,7 @@ class Floor:
         new_x = x + dx
         new_y = y + dy
 
+        # Is ths new position out of bounds?
         if new_x >= self.rect.width or new_x < 0 or new_y >= self.rect.height or new_y < 0:
 
             Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED, description="You hit an edge!"))
@@ -506,23 +507,23 @@ class Floor:
 
         tile = self.get_floor_tile(new_x, new_y, selected_player.layer, is_raw=False)
 
+        # Is the new position occupied?
         if tile is not None and tile.name in Objects.SQUOIDS:
 
-            Floor.EVENTS.add_event(
-                Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
+                Floor.EVENTS.add_event(
+                    Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
 
+        # Else move the player and see what happens next
         else:
 
             selected_player.move(dx, dy)
+            x, y = selected_player.rect.x, selected_player.rect.y
 
             tile = self.get_floor_tile(x, y, selected_player.layer, is_raw=True)
 
             if tile is not None:
 
-                if tile.name in (Objects.BLOCK_LEFT_SLOPE, Objects.BLOCK_RIGHT_SLOPE):
-                    selected_player.layer += 1
-
-                elif tile.name == Objects.SPHERE_GREEN:
+                if tile.name == Objects.SPHERE_GREEN:
                     selected_player.treasure += 1
                     self.set_floor_tile(x, y, selected_player.layer, None)
                     Floor.EVENTS.add_event(
@@ -545,6 +546,7 @@ class Floor:
 
             # Check what the player is standing on...
             base_tile = self.get_floor_tile(selected_player.rect.x, selected_player.rect.y, selected_player.layer - 1)
+
             # If standing on nothing move back
             if base_tile is None:
                 selected_player.back()
