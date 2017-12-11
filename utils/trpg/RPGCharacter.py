@@ -286,7 +286,7 @@ class RPGCSVFactory(object):
                         rpg_object_stats = self._rpg_object_stats[rpg_object_name]
 
                         # Create a new core stat from the field name and the value of this field in the row
-                        new_stat = CoreStat(field, self.stat_category, int(value))
+                        new_stat = CoreStat(field, self.stat_category, float(value))
 
                         # ...and add it to the list of stats for this RPG object
                         rpg_object_stats.append(new_stat)

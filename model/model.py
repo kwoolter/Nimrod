@@ -102,7 +102,8 @@ class Objects:
     SQUOID_GREEN = "squoid_green"
     SQUOID_RED = "squoid_red"
     SQUOID2 = "squoid2"
-    SKELETON = "skeleton"
+    SKELETON_LEFT = "skeleton_left"
+    SKELETON_RIGHT = "skeleton_right"
     KEY = "key1"
     LAVA = "lava"
     ICE = "ice"
@@ -111,7 +112,7 @@ class Objects:
     GREEN_DOT = "green_dot"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
-    SQUOIDS = (SQUOID,SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON)
+    SQUOIDS = (SQUOID,SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
 
 
 class FloorObject(object):
@@ -1066,7 +1067,7 @@ class Game():
 
         for i in range(0, 4):
             new_char = random.choice(characters)
-            new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN, Objects.SKELETON))
+            new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN, Objects.SKELETON_LEFT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
             random_attack_name = random.choice(attacks)
             new_player.add_attack(random_attack_name, self._attacks.get_stats_by_name(random_attack_name))
@@ -1074,7 +1075,7 @@ class Game():
             team1.add_player(new_player)
 
             new_char = random.choice(characters)
-            new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON))
+            new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON_RIGHT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 11, 32, 32), character=new_char)
             random_attack_name = random.choice(attacks)
             new_player.add_attack(random_attack_name, self._attacks.get_stats_by_name(random_attack_name))

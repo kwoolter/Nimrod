@@ -97,7 +97,8 @@ class ImageManager:
             model.Objects.SQUOID: "Squoid_warrior2.png",
             model.Objects.CRAB_GREEN: "crab.png",
             model.Objects.CRAB_RED: "crab_red2.png",
-            model.Objects.SKELETON: "skeleton2.png",
+            model.Objects.SKELETON_LEFT: "skeleton_left.png",
+            model.Objects.SKELETON_RIGHT: "skeleton_right.png",
             model.Objects.SQUOID_GREEN: "Squoid_warrior_green.png",
             model.Objects.SQUOID_RED: "Squoid_warrior_red.png",
             model.Objects.SQUOID2: "Squoid_warrior_green.png",
@@ -1059,7 +1060,7 @@ class PlayerView(View):
 
         max_ap = self.player.get_stat("MaxAP")
 
-        for i in range(0, max_ap):
+        for i in range(0, int(max_ap)):
             if (max_ap - i) <= self.player.AP:
                 draw_icon(self.surface, x=4, y=y + (i * 20), icon_name=model.Objects.GREEN_DOT, tick=self.tick_count,
                           width=16, height=16)
@@ -1084,12 +1085,12 @@ class PlayerView(View):
             if stat_value is None:
                 stat_value = 0
 
-            msg = "{0}={1}".format(stats[stat], stat_value)
+            msg = "{0}={1:.0f}".format(stats[stat], stat_value)
 
             if stat in stats_with_modifiers:
                 stat_modifier_value = self.player.get_stat(stat + " Modifier")
                 if stat_modifier_value is not None:
-                    msg += " ({0})".format(stat_modifier_value)
+                    msg += " ({0:.0f})".format(stat_modifier_value)
 
             draw_text(self.surface,
                       msg=msg,
@@ -1112,9 +1113,9 @@ class PlayerView(View):
             elif stat.name == "Attack Bonus":
                 attack_bonus = stat.value
 
-        msg = "{0} ({1}d{2})".format(attack_name, number_of_dice, dice_sides)
+        msg = "{0} ({1:.0f}d{2:.0f})".format(attack_name, number_of_dice, dice_sides)
         if attack_bonus > 0:
-            msg+= "+{0}".format(attack_bonus)
+            msg+= "+{0:.0f}".format(attack_bonus)
 
         draw_text(self.surface,
                   msg=msg,

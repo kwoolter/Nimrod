@@ -1,6 +1,7 @@
 Name,Description,Type,Number of Dice,Dice Sides,Attack Bonus,Range
-Sword,Sword Attack,Melee,1,6,20,10
-Dagger,Dagger Attack,Melee,1,14,0,1
-Bow,Bow Attack,Ranged,1,4,10,4
-Hammer,Hammer Attack,Melee,2,4,10,1
-Fish Bone,Fish Bone Spear,Melee,1,3,0,1,1.5
+Sword,Sword Attack,Melee,1,6,0,1
+Dagger,Dagger Attack,Melee,1,3,0,1
+Bow,Bow Attack,Ranged,1,4,0,5
+Hammer,Hammer Attack,Melee,2,4,1,1
+Fish Bone,Fish Bone Spear,Melee,1,3,0,1.5
+Slingshot,Slingshot,Ranged,1,4,0,4
