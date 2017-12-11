@@ -1,6 +1,6 @@
 import logging
 import os
-
+import math
 import pygame
 from pygame.locals import *
 
@@ -68,7 +68,7 @@ class ImageManager:
             model.Objects.BASE: "Base_yellow.png",
             model.Objects.BASE_YELLOW: "Base_yellow.png",
             model.Objects.BASE_RED: "Base_red.png",
-            model.Objects.BASE_SHADOW: "Base_shadow2.png",
+            model.Objects.BASE_SHADOW: "Base_shadow.png",
             model.Objects.BLOCK: "Block32x32.png",
             model.Objects.BLOCK: "Brick32x32.png",
             model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
@@ -95,6 +95,9 @@ class ImageManager:
                 "SphereGreen1.png"),
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid_warrior2.png",
+            model.Objects.CRAB_GREEN: "crab.png",
+            model.Objects.CRAB_RED: "crab_red2.png",
+            model.Objects.SKELETON: "skeleton2.png",
             model.Objects.SQUOID_GREEN: "Squoid_warrior_green.png",
             model.Objects.SQUOID_RED: "Squoid_warrior_red.png",
             model.Objects.SQUOID2: "Squoid_warrior_green.png",
@@ -323,6 +326,8 @@ class MainFrame(View):
         elif self.game.state == model.Game.GAME_OVER:
             self.game_over.process_event(new_event)
 
+        self.status_bar.process_event(new_event)
+
     def tick(self):
 
         if self.game.state == model.Game.READY:
@@ -333,6 +338,8 @@ class MainFrame(View):
             self.battle_view.tick()
         elif self.game.state == model.Game.GAME_OVER:
             self.game_over.tick()
+
+        self.status_bar.tick()
 
     def update(self):
         pygame.display.update()
@@ -399,7 +406,8 @@ class StatusBar(View):
     ICON_WIDTH = 40
     PADDING = 40
     STATUS_TEXT_FONT_SIZE = 18
-    MESSAGE_TICK_DURATION = 8
+    MESSAGE_TICK_DURATION = 6
+    MESSAGE_TICK_LIFE = 16
 
     def __init__(self, width: int, height: int):
 
@@ -418,17 +426,32 @@ class StatusBar(View):
         self.title = game.name
         self.current_message_number = 0
 
+    def process_event(self, new_event: model.Event):
+        if new_event.type == model.Event.BATTLE:
+            self.status_messages.append((new_event.description,StatusBar.MESSAGE_TICK_LIFE ))
+
     def tick(self):
 
         super(StatusBar, self).tick()
 
-        self.status_messages = list(self.game.status_messages.keys())
+        if len(self.status_messages) > 0:
+
+            msg, count = self.status_messages[self.current_message_number]
+            if count > 1:
+                self.status_messages[self.current_message_number]= (msg, count-1)
+            else:
+                del self.status_messages[self.current_message_number]
 
         if self.tick_count % StatusBar.MESSAGE_TICK_DURATION == 0:
 
             self.current_message_number += 1
             if self.current_message_number >= len(self.status_messages):
                 self.current_message_number = 0
+
+
+
+
+
 
     def draw(self):
 
@@ -437,7 +460,7 @@ class StatusBar(View):
         if len(self.status_messages) == 0 or self.current_message_number >= len(self.status_messages):
             msg = "{0}".format(self.game.state)
         else:
-            msg = self.status_messages[self.current_message_number]
+            msg, count = self.status_messages[self.current_message_number]
 
         pane_rect = self.surface.get_rect()
 
@@ -817,7 +840,9 @@ class BattleView(View):
 
         for x in range(0, floor.rect.width):
             for y in range(0, floor.rect.height):
+
                 view_object = floor.get_floor_tile(x, y, layer_id)
+
                 if view_object is not None:
 
                     if view_object == current_player:
@@ -865,7 +890,13 @@ class BattleView(View):
                         else:
                             image.set_alpha(255)
 
-                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                        if isinstance(view_object, model.Player):
+                            y_offset = 2*(1+math.sin(self.tick_count/4))
+                        else:
+                            y_offset = 0
+
+                        view_x, view_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
+                        surface.blit(image, (view_x, view_y - y_offset))
 
         return surface
 
@@ -1030,10 +1061,10 @@ class PlayerView(View):
 
         for i in range(0, max_ap):
             if (max_ap - i) <= self.player.AP:
-                draw_icon(self.surface, x=8, y=y + (i * 20), icon_name=model.Objects.GREEN_DOT, tick=self.tick_count,
+                draw_icon(self.surface, x=4, y=y + (i * 20), icon_name=model.Objects.GREEN_DOT, tick=self.tick_count,
                           width=16, height=16)
             else:
-                draw_icon(self.surface, x=8, y=y + (i * 20), icon_name=model.Objects.RED_DOT, tick=self.tick_count,
+                draw_icon(self.surface, x=4, y=y + (i * 20), icon_name=model.Objects.RED_DOT, tick=self.tick_count,
                           width=16, height=16)
 
         # draw_icon(self.surface, x=0, y=0, icon_name=model.Objects.HEART, count=self.player.HP,

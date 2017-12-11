@@ -97,9 +97,12 @@ class Objects:
     SPHERE_GREEN = "sphere_green"
     SPHERE_BLUE = "sphere_blue"
     SQUOID = "squoid"
+    CRAB_GREEN = "crab"
+    CRAB_RED = "crab_red"
     SQUOID_GREEN = "squoid_green"
     SQUOID_RED = "squoid_red"
     SQUOID2 = "squoid2"
+    SKELETON = "skeleton"
     KEY = "key1"
     LAVA = "lava"
     ICE = "ice"
@@ -108,7 +111,7 @@ class Objects:
     GREEN_DOT = "green_dot"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
-    SQUOIDS = (SQUOID,SQUOID2, SQUOID_GREEN, SQUOID_RED)
+    SQUOIDS = (SQUOID,SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON)
 
 
 class FloorObject(object):
@@ -233,7 +236,7 @@ class Player(FloorObject):
             return self._name
 
     @name.setter
-    def name(self, new_name):
+    def name(self, new_name : str):
         self._name = new_name
 
     @property
@@ -244,8 +247,20 @@ class Player(FloorObject):
     def MaxAP(self):
         return self.character.get_stat("MaxAP").value
 
+    @property
+    def XP(self):
+        return self.character.get_stat("XP").value
+
+    @XP.setter
+    def XP(self, xp_gained : int):
+
+        self.character.increment_stat("XP", xp_gained)
+
     def get_stat(self, stat_name: str):
         return self.character.get_stat(stat_name).value
+
+    def increment_stat(self, stat_name: str, new_value : float):
+        self.character.increment_stat(stat_name, new_value)
 
     def do_damage(self, new_value):
         self.character.increment_stat("Damage", new_value)
@@ -494,6 +509,8 @@ class Floor:
 
         if selected_player not in self.players:
             raise Exception("{0}:move_player() - Player {1} is not on floor (2).".format(__class__, selected_player.character.name, self.name))
+
+        selected_player.rect = selected_player.rect
 
         x, y = selected_player.rect.x, selected_player.rect.y
         new_x = x + dx
@@ -788,6 +805,8 @@ class Battle:
             if len(t1) + len(t2) == 0:
                 loop = False
 
+        self.set_current_target(tactic=Team.TACTIC_NEAREST)
+
     def get_current_player(self):
 
         return self.order_of_play[0]
@@ -872,6 +891,8 @@ class Battle:
 
             number_of_dice = 1
             dice_sides = 3
+            attack_range = 1
+            attack_bonus = 0
 
             for stat in attack_stats:
                 if stat.name == "Number of Dice":
@@ -927,21 +948,24 @@ class Battle:
             current_player.AP -= 1
 
             if opponent.is_dead() is True:
+                current_player.kills += 1
+                xp_gained = opponent.get_stat("XPReward")
+                if xp_gained is None:
+                    xp_gained = 5
+
+                current_player.increment_stat("XP", xp_gained)
+
                 Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                               name=Event.KILLED_OPPONENT,
-                                              description="{0} killed {1}".format(
+                                              description="{0} killed {1} and gained {2} XP".format(
                                                   current_player.character.name,
-                                                  opponent.character.name)))
-
-                current_player.kills += 1
+                                                  opponent.character.name, xp_gained)))
 
                 if opposite_team.is_dead() is True:
                     self._state = Battle.END
                     Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.VICTORY,
                                                   description="Team {0} are all dead!".format(opposite_team.name)))
-                    # raise Exception("Team {0} are all dead!".format(opposite_team.name))
                 else:
-
                     self.order_of_play.remove(opponent)
                     self.set_current_target(tactic=Team.TACTIC_NEAREST)
 
@@ -1041,14 +1065,16 @@ class Game():
 
         for i in range(0, 4):
             new_char = random.choice(characters)
-            new_player = Player(name=Objects.SQUOID, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
+            new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN))
+            new_player = Player(name=new_char_type, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
             random_attack_name = random.choice(attacks)
             new_player.add_attack(random_attack_name, self._attacks.get_stats_by_name(random_attack_name))
             characters.remove(new_char)
             team1.add_player(new_player)
 
             new_char = random.choice(characters)
-            new_player = Player(name=Objects.SQUOID_RED, rect=(i * 2 + 3, 11, 32, 32), character=new_char)
+            new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON))
+            new_player = Player(name=new_char_type, rect=(i * 2 + 3, 11, 32, 32), character=new_char)
             random_attack_name = random.choice(attacks)
             new_player.add_attack(random_attack_name, self._attacks.get_stats_by_name(random_attack_name))
             characters.remove(new_char)

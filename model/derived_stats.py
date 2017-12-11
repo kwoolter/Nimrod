@@ -231,6 +231,18 @@ class HP(RPGDerivedStat):
         dmg = self.get_dependency_value("Damage")
         return max_HP - dmg
 
+class XPReward(RPGDerivedStat):
+    def __init__(self, owner: RPGObject):
+        super(XPReward, self).__init__("XPReward", "Attributes", owner=owner)
+        self.add_dependency("MaxHP")
+        self.add_dependency("XPToLevel")
+
+    def calculate(self):
+        xp_level = self.get_dependency_value("XPToLevel")
+        max_HP = self.get_dependency_value("MaxHP")
+
+        return xp_level * 5 + max_HP
+
 
 class MaxLoad(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
@@ -327,6 +339,7 @@ def add_derived_stats(character: RPGCharacter):
     character.add_stat(MaxHP(character))
     character.add_stat(MaxAP(character))
     character.add_stat(HP(character))
+    character.add_stat(XPReward(character))
     #character.add_stat(MaxLoad(character))
     #character.add_stat(TotalWeight(character))
     #character.add_stat(LoadPct(character))

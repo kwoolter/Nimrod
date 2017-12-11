@@ -134,11 +134,7 @@ class Controller:
                                 elif event.key == Controller.KEY_DOWN:
                                     self.game.battle.move_player(0, 1)
                                 elif event.key == Controller.KEY_ATTACK:
-                                    try:
-                                        self.game.battle.do_attack()
-                                    except Exception as err:
-                                        print(str(err))
-
+                                    self.game.battle.do_attack()
                                 elif event.key == Controller.KEY_END_TURN:
                                     self.game.battle.next_player()
 
