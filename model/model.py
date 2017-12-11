@@ -510,6 +510,7 @@ class Floor:
         if selected_player not in self.players:
             raise Exception("{0}:move_player() - Player {1} is not on floor (2).".format(__class__, selected_player.character.name, self.name))
 
+        # Make player's last position the same as their current position
         selected_player.rect = selected_player.rect
 
         x, y = selected_player.rect.x, selected_player.rect.y
@@ -1065,7 +1066,7 @@ class Game():
 
         for i in range(0, 4):
             new_char = random.choice(characters)
-            new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN))
+            new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN, Objects.SKELETON))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
             random_attack_name = random.choice(attacks)
             new_player.add_attack(random_attack_name, self._attacks.get_stats_by_name(random_attack_name))

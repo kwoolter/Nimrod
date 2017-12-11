@@ -43,7 +43,7 @@ class ImageManager:
             else:
                 filename = ImageManager.RESOURCES_DIR + image_file_name
                 logging.info("Loading image {0}...".format(filename))
-                original_image = pygame.image.load(filename)
+                original_image = utils.spritesheet(filename).image_at((0,0,width,height))
 
             try:
 
@@ -852,7 +852,7 @@ class BattleView(View):
                                                                   width=BattleView.TILE_WIDTH,
                                                                   height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
-                        image.set_alpha(100)
+                        image.set_alpha(150)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
@@ -862,7 +862,7 @@ class BattleView(View):
                                                                   width=BattleView.TILE_WIDTH,
                                                                   height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
-                        image.set_alpha(100)
+                        image.set_alpha(150)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
@@ -874,7 +874,7 @@ class BattleView(View):
                                                                   height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
 
-                        image.set_alpha(100)
+                        image.set_alpha(150)
 
                         surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
@@ -891,7 +891,7 @@ class BattleView(View):
                             image.set_alpha(255)
 
                         if isinstance(view_object, model.Player):
-                            y_offset = 2*(1+math.sin(self.tick_count/4))
+                            y_offset = 2*(1+math.sin(self.tick_count/2))
                         else:
                             y_offset = 0
 
@@ -925,7 +925,7 @@ class BattleView(View):
                                      (x, y, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), 3)
                     image.set_alpha(255)
                 else:
-                    image.set_alpha(175)
+                    image.set_alpha(100)
             else:
                 image.set_alpha(255)
                 pygame.draw.rect(self.surface, Colours.YELLOW,
