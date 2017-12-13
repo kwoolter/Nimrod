@@ -1125,6 +1125,20 @@ class PlayerView(View):
                   fg_colour=PlayerView.FG_COLOUR,
                   bg_colour=PlayerView.BG_COLOUR)
 
+        y += 16
+
+        msg = "{0}: {1} vs. {2}".format(attack.type,
+                                        model.Attack.ATTACK_ATTRIBUTES[attack.attack_attribute],
+                                        model.Attack.DEFENCE_TYPES[attack.defence_attribute])
+
+        draw_text(self.surface,
+                  msg=msg,
+                  x=x,
+                  y=y,
+                  size=16,
+                  fg_colour=PlayerView.FG_COLOUR,
+                  bg_colour=PlayerView.BG_COLOUR)
+
         return self.surface
 
     def end(self):

@@ -764,7 +764,7 @@ class Attack:
     INTELLIGENCE = "Intelligence"
     WISDOM = "Wisdom"
 
-    ATTACK_ATTRIBUTES = (STRENGTH, DEXTERITY, INTELLIGENCE, WISDOM)
+    ATTACK_ATTRIBUTES = {STRENGTH:"STR", DEXTERITY:"DEX", INTELLIGENCE:"INT", WISDOM:"WIS"}
 
     # Defence types
     AC = "AC"
@@ -772,7 +772,7 @@ class Attack:
     REFLEX = "Reflex"
     WILL = "Will"
 
-    DEFENCE_TYPES = (AC, FORTITIUDE, REFLEX, WILL)
+    DEFENCE_TYPES = {AC:"AC", FORTITIUDE:"FORT", REFLEX:"REF", WILL:"WILL"}
 
     def __init__(self, name : str, description : str, type : str, attack_attribute: str, defence_attribute : str):
         self.name = name
@@ -782,7 +782,7 @@ class Attack:
         else:
             self.type = Attack.UNKNOWN
 
-        if attack_attribute in Attack.ATTACK_ATTRIBUTES:
+        if attack_attribute in Attack.ATTACK_ATTRIBUTES.keys():
             self.attack_attribute = attack_attribute
         else:
             self.attack_attribute = Attack.UNKNOWN
@@ -950,14 +950,14 @@ class Battle:
 
         if opponent is not None:
 
-            attack_name, attack_stats = current_player.get_attack()
+            attack = current_player.get_attack()
 
             number_of_dice = 1
             dice_sides = 3
             attack_range = 1
             attack_bonus = 0
 
-            for stat in attack_stats:
+            for stat in attack.stats.values():
                 if stat.name == "Number of Dice":
                     number_of_dice = stat.value
                 elif stat.name == "Dice Sides":
@@ -987,7 +987,7 @@ class Battle:
 
                 damage = random.randint(number_of_dice, number_of_dice * dice_sides) + attack_bonus
 
-                print("{0} attack {1}d{2}+{3} did {4} damage".format(attack_name,
+                print("{0} attack {1}d{2}+{3} did {4} damage".format(attack.name,
                                                                      number_of_dice,
                                                                      dice_sides,
                                                                      attack_bonus,
@@ -1000,7 +1000,7 @@ class Battle:
                                                   current_player.character.name,
                                                   damage,
                                                   opponent.character.name,
-                                                  attack_name)))
+                                                  attack.name)))
             else:
                 Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                               name=Event.MISSED_OPPONENT,
