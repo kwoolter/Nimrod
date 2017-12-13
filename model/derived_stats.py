@@ -62,10 +62,9 @@ class attribute_modifier(RPGDerivedStat):
 
         return round((attribute_value - 10)/2)
 
-
-class physical_attack(RPGDerivedStat):
+class melee_attack(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
-        super(physical_attack, self).__init__(name="Physical Attack Bonus", category="ATTACK", owner=owner)
+        super(melee_attack, self).__init__(name="Melee Attack Bonus", category="ATTACK", owner=owner)
         self.add_dependency("Strength Modifier")
         self.add_dependency("Level")
 
@@ -74,21 +73,46 @@ class physical_attack(RPGDerivedStat):
         level = self.get_dependency_value("Level")
         return round(strength_mod + level/2)
 
-class physical_defence(RPGDerivedStat):
+class ranged_attack(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
-        super(physical_defence, self).__init__(name="Physical Defence", category="PHYSICAL DEFENCE", owner=owner)
+        super(ranged_attack, self).__init__(name="Ranged Attack Bonus", category="ATTACK", owner=owner)
+        self.add_dependency("Dexterity Modifier")
         self.add_dependency("Level")
-        self.add_dependency("Race_Defense_Bonus")
-        self.add_dependency("Class_Defense_Bonus")
-
 
     def calculate(self):
-        race_bonus = self.get_dependency_value("Race_Defense_Bonus")
-        class_bonus = self.get_dependency_value("Class_Defense_Bonus")
+        dex_mod = self.get_dependency_value("Dexterity Modifier")
+        level = self.get_dependency_value("Level")
+        return round(dex_mod + level/2)
+
+class physical_defence(RPGDerivedStat):
+    def __init__(self, owner: RPGObject):
+        super(physical_defence, self).__init__(name="Physical Defence", category="DEFENCE", owner=owner)
+        self.add_dependency("Level")
+        self.add_dependency("Race AC Bonus")
+        self.add_dependency("Class AC Bonus")
+
+    def calculate(self):
+        race_bonus = self.get_dependency_value("Race AC Bonus")
+        class_bonus = self.get_dependency_value("Class AC Bonus")
+
         level = self.get_dependency_value("Level")
         return round(10 + race_bonus + class_bonus + (level/2))
 
+class reflex_defence(RPGDerivedStat):
+    def __init__(self, owner: RPGObject):
+        super(reflex_defence, self).__init__(name="Reflex Defence", category="DEFENCE", owner=owner)
+        self.add_dependency("Level")
+        self.add_dependency("Race Reflex Bonus")
+        self.add_dependency("Class Reflex Bonus")
+        self.add_dependency("Dexterity Modifier")
 
+
+    def calculate(self):
+        race_bonus = self.get_dependency_value("Race Reflex Bonus")
+        class_bonus = self.get_dependency_value("Class Reflex Bonus")
+        dex_mod = self.get_dependency_value("Dexterity Modifier")
+        level = self.get_dependency_value("Level")
+        return round(10 + race_bonus + class_bonus +dex_mod + (level/2))
 
 class elemental_defence_magic(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
@@ -312,13 +336,23 @@ def add_core_stats(character: RPGCharacter):
 
 
 def add_derived_stats(character: RPGCharacter):
+
+    # Add core attribute modifiers
+    attribute_names = ("Strength", "Intelligence", "Dexterity")
+    for attribute in attribute_names:
+        character.add_stat(attribute_modifier(owner=character, attribute_name=attribute))
+
+
     character.add_stat(XPToLevel(character))
     # character.add_stat(physical_attack_chop(character))
     # character.add_stat(physical_attack_regular(character))
     # character.add_stat(physical_attack_thrust(character))
     # character.add_stat(physical_attack_swing(character))
-    character.add_stat(physical_attack(character))
+    character.add_stat(melee_attack(character))
+    character.add_stat(ranged_attack(character))
     character.add_stat(physical_defence(character))
+    character.add_stat(reflex_defence(character))
+
     # character.add_stat(physical_defence_thrust(character))
     # character.add_stat(physical_defence_swing(character))
     # character.add_stat(physical_defence_chop(character))
@@ -346,9 +380,6 @@ def add_derived_stats(character: RPGCharacter):
     character.add_stat(Score(character))
 
 
-    attribute_names = ("Strength", "Intelligence", "Dexterity")
-    for attribute in attribute_names:
-        character.add_stat(attribute_modifier(owner=character, attribute_name=attribute))
 
 
     return

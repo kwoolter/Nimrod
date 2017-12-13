@@ -1101,11 +1101,11 @@ class PlayerView(View):
                       bg_colour=PlayerView.BG_COLOUR)
             y += 16
 
-        attack_name, attack_stats = self.player.get_attack()
+        attack = self.player.get_attack()
         number_of_dice = 1
         dice_sides = 2
 
-        for stat in attack_stats:
+        for stat in attack.stats.values():
             if stat.name == "Number of Dice":
                 number_of_dice = stat.value
             elif stat.name == "Dice Sides":
@@ -1113,7 +1113,7 @@ class PlayerView(View):
             elif stat.name == "Attack Bonus":
                 attack_bonus = stat.value
 
-        msg = "{0} ({1:.0f}d{2:.0f})".format(attack_name, number_of_dice, dice_sides)
+        msg = "{0} ({1:.0f}d{2:.0f})".format(attack.name, number_of_dice, dice_sides)
         if attack_bonus > 0:
             msg+= "+{0:.0f}".format(attack_bonus)
 

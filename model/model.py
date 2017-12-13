@@ -287,7 +287,7 @@ class Player(FloorObject):
     def get_attack(self):
         attack_name = list(self._attacks.keys())[0]
 
-        return attack_name, self._attacks[attack_name]
+        return self._attacks[attack_name]
 
 
 class Monster(FloorObject):
@@ -748,7 +748,68 @@ class FloorObjectLoader():
         return FloorObjectLoader.get_object_copy_by_code(object_code)
 
 
+class Attack:
+
+    # Attack Types
+    MELEE = "Melee"
+    RANGED = "Ranged"
+    MAGIC = "Magic"
+    UNKNOWN = "UNKNOWN"
+
+    TYPES = (MELEE, RANGED, MAGIC)
+
+    # Attack attributes
+    STRENGTH = "Strength"
+    DEXTERITY = "Dexterity"
+    INTELLIGENCE = "Intelligence"
+    WISDOM = "Wisdom"
+
+    ATTACK_ATTRIBUTES = (STRENGTH, DEXTERITY, INTELLIGENCE, WISDOM)
+
+    # Defence types
+    AC = "AC"
+    FORTITIUDE = "Fortitude"
+    REFLEX = "Reflex"
+    WILL = "Will"
+
+    DEFENCE_TYPES = (AC, FORTITIUDE, REFLEX, WILL)
+
+    def __init__(self, name : str, description : str, type : str, attack_attribute: str, defence_attribute : str):
+        self.name = name
+        self.description = description
+        if type in Attack.TYPES:
+            self.type = type
+        else:
+            self.type = Attack.UNKNOWN
+
+        if attack_attribute in Attack.ATTACK_ATTRIBUTES:
+            self.attack_attribute = attack_attribute
+        else:
+            self.attack_attribute = Attack.UNKNOWN
+
+        if defence_attribute in Attack.DEFENCE_TYPES:
+            self.defence_attribute = defence_attribute
+        else:
+            self.defence_attribute = Attack.UNKNOWN
+
+        self.stats = {}
+
+    def add_stat(self, new_stat : trpg.BaseStat):
+        self.stats[new_stat.name] = copy.copy(new_stat)
+
+    def print(self):
+        print("{0}:{1} - type({2}) - {3} vs. {4}".format(self.name,
+                                                         self.description,
+                                                         self.type,
+                                                         self.attack_attribute,
+                                                         self.defence_attribute))
+        for stat in self.stats.values():
+            print("\t{0}={1}".format(stat.name, stat.value))
+
+
+
 class Battle:
+
     EVENTS = None
     READY = "ready"
     PLAYING = "playing"
@@ -1063,14 +1124,14 @@ class Game():
         team2 = Team("Red")
 
         characters = list(self._npcs.get_characters())
-        attacks = list(self._attacks.get_rpg_object_names())
+        attacks = list(self._attacks.keys())
 
         for i in range(0, 4):
             new_char = random.choice(characters)
             new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN, Objects.SKELETON_LEFT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
             random_attack_name = random.choice(attacks)
-            new_player.add_attack(random_attack_name, self._attacks.get_stats_by_name(random_attack_name))
+            new_player.add_attack(random_attack_name, self._attacks[random_attack_name])
             characters.remove(new_char)
             team1.add_player(new_player)
 
@@ -1078,7 +1139,7 @@ class Game():
             new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON_RIGHT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 11, 32, 32), character=new_char)
             random_attack_name = random.choice(attacks)
-            new_player.add_attack(random_attack_name, self._attacks.get_stats_by_name(random_attack_name))
+            new_player.add_attack(random_attack_name, self._attacks[random_attack_name])
             characters.remove(new_char)
             team2.add_player(new_player)
 
@@ -1169,15 +1230,38 @@ class Game():
         self._items.load()
 
     def load_attacks(self, attacks_file_name: str):
-        self._attacks = trpg.RPGCSVFactory(name="Attacks", file_name=Game.GAME_DATA_DIR + attacks_file_name,
+
+        self._attacks = {}
+
+        attack_data = trpg.RPGCSVFactory(name="Attacks", file_name=Game.GAME_DATA_DIR + attacks_file_name,
                                            stat_category="Attacks")
-        self._attacks.load()
-        attacks = self._attacks.get_rpg_object_names()
+        attack_data.load()
+
+        attacks = attack_data.get_rpg_object_names()
+
         for attack in attacks:
-            stats = self._attacks.get_stats_by_name(attack)
-            print("Stats for attack {0}:".format(attack))
+
+            attributes = attack_data.get_attributes_by_name(attack)
+            #print("Attributes for attack {0}:".format(attack))
+            for attribute, value in attributes.items():
+                #print("\t{0}={1}".format(attribute, value))
+
+                new_attack = Attack(name=attack,
+                                    description=attributes["Description"],
+                                    type=attributes["Type"],
+                                    attack_attribute=attributes["Attack Attribute"],
+                                    defence_attribute=attributes["Defence Attribute"])
+
+            stats = attack_data.get_stats_by_name(attack)
+            #rint("Stats for attack {0}:".format(attack))
             for stat in stats:
-                print("\t{0}".format(stat))
+                #print("\t{0}".format(stat))
+
+                new_attack.add_stat(stat)
+
+            self._attacks[attack] = new_attack
+
+            new_attack.print()
 
     def start(self):
 
