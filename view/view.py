@@ -856,7 +856,7 @@ class BattleView(View):
                                                                       width=BattleView.TILE_WIDTH,
                                                                       height=BattleView.TILE_HEIGHT,
                                                                       skin_name=skin_name)
-                            image.set_alpha(150)
+                            image.set_alpha(100)
 
                             surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
@@ -866,7 +866,7 @@ class BattleView(View):
                                                                       width=BattleView.TILE_WIDTH,
                                                                       height=BattleView.TILE_HEIGHT,
                                                                       skin_name=skin_name)
-                            image.set_alpha(150)
+                            image.set_alpha(100)
 
                             surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 

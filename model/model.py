@@ -579,6 +579,13 @@ class Floor:
                                              name=Event.LOSE_HEALTH,
                                              description="{0} stood on {1}".format(selected_player.name, base_tile.name)))
 
+            # If standing on ice lose health
+            elif base_tile.name == Objects.ICE:
+                selected_player.do_damage(1)
+                Floor.EVENTS.add_event(Event(type=Event.FLOOR,
+                                             name=Event.LOSE_HEALTH,
+                                             description="{0} stood on {1}".format(selected_player.name, base_tile.name)))
+
     def tick(self):
 
         # For each player...
