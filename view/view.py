@@ -827,7 +827,7 @@ class BattleView(View):
     def process_event(self, new_event: model.Event):
         self.next_event = new_event
 
-    def draw_layer(self, surface, layer_id):
+    def draw_floor(self, surface):
 
         if self.game.battle.battle_floor is None:
             raise Exception("No Floor to view!")
@@ -839,65 +839,68 @@ class BattleView(View):
         current_player = self.game.battle.get_current_player()
         current_target = self.game.battle.get_current_target()
 
+
         for x in range(0, floor.rect.width):
             for y in range(0, floor.rect.height):
+                for layer_id in sorted(floor.layers.keys()):
 
-                view_object = floor.get_floor_tile(x, y, layer_id)
 
-                if view_object is not None:
+                    view_object = floor.get_floor_tile(x, y, layer_id)
 
-                    if view_object == current_player:
+                    if view_object is not None:
 
-                        image = View.image_manager.get_skin_image(model.Objects.BASE_YELLOW,
+                        if view_object == current_player:
+
+                            image = View.image_manager.get_skin_image(model.Objects.BASE_YELLOW,
+                                                                      tick=self.tick_count,
+                                                                      width=BattleView.TILE_WIDTH,
+                                                                      height=BattleView.TILE_HEIGHT,
+                                                                      skin_name=skin_name)
+                            image.set_alpha(150)
+
+                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                        elif view_object == current_target:
+                            image = View.image_manager.get_skin_image(model.Objects.BASE_RED,
+                                                                      tick=self.tick_count,
+                                                                      width=BattleView.TILE_WIDTH,
+                                                                      height=BattleView.TILE_HEIGHT,
+                                                                      skin_name=skin_name)
+                            image.set_alpha(150)
+
+                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                        elif isinstance(view_object, model.Player) is True:
+
+                            image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
+                                                                      tick=self.tick_count,
+                                                                      width=BattleView.TILE_WIDTH,
+                                                                      height=BattleView.TILE_HEIGHT,
+                                                                      skin_name=skin_name)
+
+                            image.set_alpha(150)
+
+                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                        image = View.image_manager.get_skin_image(view_object.name,
                                                                   tick=self.tick_count,
                                                                   width=BattleView.TILE_WIDTH,
                                                                   height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
-                        image.set_alpha(150)
+                        if image is not None:
 
-                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                            if layer_id > 1:
+                                image.set_alpha(255 - (layer_id * BattleView.LAYER_ALPHA_MULTIPLIER))
+                            else:
+                                image.set_alpha(255)
 
-                    elif view_object == current_target:
-                        image = View.image_manager.get_skin_image(model.Objects.BASE_RED,
-                                                                  tick=self.tick_count,
-                                                                  width=BattleView.TILE_WIDTH,
-                                                                  height=BattleView.TILE_HEIGHT,
-                                                                  skin_name=skin_name)
-                        image.set_alpha(150)
+                            if isinstance(view_object, model.Player):
+                                y_offset = 2*(1+math.sin(self.tick_count/2))
+                            else:
+                                y_offset = 0
 
-                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
-
-                    elif isinstance(view_object, model.Player) is True:
-
-                        image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
-                                                                  tick=self.tick_count,
-                                                                  width=BattleView.TILE_WIDTH,
-                                                                  height=BattleView.TILE_HEIGHT,
-                                                                  skin_name=skin_name)
-
-                        image.set_alpha(150)
-
-                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
-
-                    image = View.image_manager.get_skin_image(view_object.name,
-                                                              tick=self.tick_count,
-                                                              width=BattleView.TILE_WIDTH,
-                                                              height=BattleView.TILE_HEIGHT,
-                                                              skin_name=skin_name)
-                    if image is not None:
-
-                        if layer_id > 1:
-                            image.set_alpha(255 - (layer_id * BattleView.LAYER_ALPHA_MULTIPLIER))
-                        else:
-                            image.set_alpha(255)
-
-                        if isinstance(view_object, model.Player):
-                            y_offset = 2*(1+math.sin(self.tick_count/2))
-                        else:
-                            y_offset = 0
-
-                        view_x, view_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
-                        surface.blit(image, (view_x, view_y - y_offset))
+                            view_x, view_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
+                            surface.blit(image, (view_x, view_y - y_offset))
 
         return surface
 
@@ -936,8 +939,7 @@ class BattleView(View):
 
             x += BattleView.LINE_UP_WIDTH + 3
 
-        for layer_id in self.game.battle.battle_floor.layers.keys():
-            self.draw_layer(self.surface, layer_id)
+        self.draw_floor(self.surface)
 
         if current_player is not None:
             self.attacker_view.initialise(current_player)
