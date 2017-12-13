@@ -830,7 +830,7 @@ class BattleView(View):
     def draw_layer(self, surface, layer_id):
 
         if self.game.battle.battle_floor is None:
-            raise ("No Floor to view!")
+            raise Exception("No Floor to view!")
 
         floor = self.game.battle.battle_floor
 
