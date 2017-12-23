@@ -108,6 +108,9 @@ class ImageManager:
             model.Objects.LAVA: ("lava_0.png", "lava_1.png", "lava_2.png", "lava_1.png"),
             model.Objects.RED_DOT: "red_dot.png",
             model.Objects.GREEN_DOT: "green_dot.png",
+            model.Objects.BUBBLES: ("bubbles0.png","bubbles1.png","bubbles2.png","bubbles3.png","bubbles4.png","bubbles5.png","bubbles6.png","bubbles7.png",
+                                    "bubbles8.png", "bubbles9.png", "bubbles10.png", "bubbles11.png", "bubbles12.png",
+                                    "bubbles13.png", "bubbles14.png", "bubbles15.png")
 
         })
 
@@ -203,6 +206,10 @@ class ImageManager:
         self.sprite_sheets["SphereGreen1.png"] = (sheet_file_name, (32, 0, 32, 32))
         self.sprite_sheets["SphereGreen2.png"] = (sheet_file_name, (64, 0, 32, 32))
         self.sprite_sheets["SphereGreen3.png"] = (sheet_file_name, (96, 0, 32, 32))
+
+        sheet_file_name = "bubbles3.png"
+        for i in range(0,16):
+            self.sprite_sheets["bubbles{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
 
 class View():

@@ -6,6 +6,7 @@ import math
 import os
 import random
 from operator import attrgetter
+from operator import itemgetter
 
 import pygame
 
@@ -110,9 +111,10 @@ class Objects:
     CYLINDER = "cylinder"
     RED_DOT = "red dot"
     GREEN_DOT = "green_dot"
+    BUBBLES = "bubbles"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
-    SQUOIDS = (SQUOID,SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
+    SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
 
 
 class FloorObject(object):
@@ -237,7 +239,7 @@ class Player(FloorObject):
             return self._name
 
     @name.setter
-    def name(self, new_name : str):
+    def name(self, new_name: str):
         self._name = new_name
 
     @property
@@ -253,14 +255,14 @@ class Player(FloorObject):
         return self.character.get_stat("XP").value
 
     @XP.setter
-    def XP(self, xp_gained : int):
+    def XP(self, xp_gained: int):
 
         self.character.increment_stat("XP", xp_gained)
 
     def get_stat(self, stat_name: str):
         return self.character.get_stat(stat_name).value
 
-    def increment_stat(self, stat_name: str, new_value : float):
+    def increment_stat(self, stat_name: str, new_value: float):
         self.character.increment_stat(stat_name, new_value)
 
     def do_damage(self, new_value):
@@ -506,10 +508,33 @@ class Floor:
         layer = self.floor_plans[layer_id]
         layer[x][y] = new_object
 
+    def is_occupiable(self, x, y, z):
+
+        result = True
+
+        # Is the position out of bounds?
+        if x >= self.rect.width or x < 0 or y >= self.rect.height or y < 0:
+            result = False
+        else:
+
+            tile = self.get_floor_tile(x, y, z, is_raw=False)
+
+            # Is the new position occupied?
+            if tile is not None:
+                result = False
+            # else:
+            #     tile = self.get_floor_tile(x, y, z - 1)
+            #     if tile is None:
+            #         result = False
+
+        return result
+
     def move_player(self, selected_player: Player, dx: int = 0, dy: int = 0):
 
         if selected_player not in self.players:
-            raise Exception("{0}:move_player() - Player {1} is not on floor (2).".format(__class__, selected_player.character.name, self.name))
+            raise Exception(
+                "{0}:move_player() - Player {1} is not on floor (2).".format(__class__, selected_player.character.name,
+                                                                             self.name))
 
         # Make player's last position the same as their current position
         selected_player.rect = selected_player.rect
@@ -520,7 +545,6 @@ class Floor:
 
         # Is ths new position out of bounds?
         if new_x >= self.rect.width or new_x < 0 or new_y >= self.rect.height or new_y < 0:
-
             Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED, description="You hit an edge!"))
             raise Exception("{0}:move_player() - out of bounds!".format(__class__, selected_player.character.name))
 
@@ -529,8 +553,8 @@ class Floor:
         # Is the new position occupied?
         if tile is not None and tile.name in Objects.SQUOIDS:
 
-                Floor.EVENTS.add_event(
-                    Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
+            Floor.EVENTS.add_event(
+                Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
 
         # Else move the player and see what happens next
         else:
@@ -577,14 +601,16 @@ class Floor:
                 selected_player.do_damage(1)
                 Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                              name=Event.LOSE_HEALTH,
-                                             description="{0} stood on {1}".format(selected_player.name, base_tile.name)))
+                                             description="{0} stood on {1}".format(selected_player.name,
+                                                                                   base_tile.name)))
 
             # If standing on ice lose health
             elif base_tile.name == Objects.ICE:
                 selected_player.do_damage(1)
                 Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                              name=Event.LOSE_HEALTH,
-                                             description="{0} stood on {1}".format(selected_player.name, base_tile.name)))
+                                             description="{0} stood on {1}".format(selected_player.name,
+                                                                                   base_tile.name)))
 
     def tick(self):
 
@@ -756,7 +782,6 @@ class FloorObjectLoader():
 
 
 class Attack:
-
     # Attack Types
     MELEE = "Melee"
     RANGED = "Ranged"
@@ -771,7 +796,7 @@ class Attack:
     INTELLIGENCE = "Intelligence"
     WISDOM = "Wisdom"
 
-    ATTACK_ATTRIBUTES = {STRENGTH:"STR", DEXTERITY:"DEX", INTELLIGENCE:"INT", WISDOM:"WIS"}
+    ATTACK_ATTRIBUTES = {STRENGTH: "STR", DEXTERITY: "DEX", INTELLIGENCE: "INT", WISDOM: "WIS"}
 
     # Defence types
     AC = "AC"
@@ -779,9 +804,9 @@ class Attack:
     REFLEX = "Reflex"
     WILL = "Will"
 
-    DEFENCE_TYPES = {AC:"AC", FORTITIUDE:"FORT", REFLEX:"REF", WILL:"WILL"}
+    DEFENCE_TYPES = {AC: "AC", FORTITIUDE: "FORT", REFLEX: "REF", WILL: "WILL"}
 
-    def __init__(self, name : str, description : str, type : str, attack_attribute: str, defence_attribute : str):
+    def __init__(self, name: str, description: str, type: str, attack_attribute: str, defence_attribute: str):
         self.name = name
         self.description = description
         if type in Attack.TYPES:
@@ -801,7 +826,7 @@ class Attack:
 
         self.stats = {}
 
-    def add_stat(self, new_stat : trpg.BaseStat):
+    def add_stat(self, new_stat: trpg.BaseStat):
         self.stats[new_stat.name] = copy.copy(new_stat)
 
     def print(self):
@@ -814,9 +839,7 @@ class Attack:
             print("\t{0}={1}".format(stat.name, stat.value))
 
 
-
 class Battle:
-
     EVENTS = None
     READY = "ready"
     PLAYING = "playing"
@@ -942,102 +965,111 @@ class Battle:
             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                           name=Event.VICTORY,
                                           description="Team {0} are all dead!".format(opposite_team.name)))
-            raise Exception("Team {0} are all dead!".format(opposite_team.name))
+            #raise Exception("Team {0} are all dead!".format(opposite_team.name))
 
-        if current_player.AP <= 0:
+        elif current_player.AP <= 0:
             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                           name=Event.NO_AP,
                                           description="{0} does not have enough AP to attack!".format(
                                               current_player.character.name)))
 
-            raise Exception(
-                "Player {0} does not have enough AP ({1})".format(current_player.character.name, current_player.AP))
+            #raise Exception("Player {0} does not have enough AP ({1})".format(current_player.character.name, current_player.AP))
 
-        opponent = self.get_current_target()
+        else:
+            opponent = self.get_current_target()
 
-        if opponent is not None:
+            if opponent is not None:
 
-            attack = current_player.get_attack()
+                attack = current_player.get_attack()
 
-            number_of_dice = 1
-            dice_sides = 3
-            attack_range = 1
-            attack_bonus = 0
+                number_of_dice = 1
+                dice_sides = 3
+                attack_range = 1
+                attack_bonus = 0
 
-            for stat in attack.stats.values():
-                if stat.name == "Number of Dice":
-                    number_of_dice = stat.value
-                elif stat.name == "Dice Sides":
-                    dice_sides = stat.value
-                elif stat.name == "Attack Bonus":
-                    attack_bonus = stat.value
-                elif stat.name == "Range":
-                    attack_range = stat.value
+                for stat in attack.stats.values():
+                    if stat.name == "Number of Dice":
+                        number_of_dice = stat.value
+                    elif stat.name == "Dice Sides":
+                        dice_sides = stat.value
+                    elif stat.name == "Attack Bonus":
+                        attack_bonus = stat.value
+                    elif stat.name == "Range":
+                        attack_range = stat.value
 
-            distance_to_target = current_player.distance_from_point(opponent.rect.x, opponent.rect.y)
+                distance_to_target = current_player.distance_from_point(opponent.rect.x, opponent.rect.y)
 
-            if distance_to_target > attack_range:
-                Battle.EVENTS.add_event(Event(type=Event.BATTLE,
-                                              name=Event.DAMAGE_OPPONENT,
-                                              description="{0} is too far away (distance={1:.1f}), attack range={2:.1f}".format(
-                                                  opponent.character.name, distance_to_target, attack_range)))
-                raise Exception(
-                    "{0} is too far away (distance={1}), attack range={2}".format(opponent.name, distance_to_target,
-                                                                                  attack_range))
-
-            physical_attack_bonus = current_player.get_stat("Physical Attack Bonus")
-            opponent_defence = opponent.get_stat("Physical Defence")
-
-            attack_roll = random.randint(1, 24) + physical_attack_bonus
-
-            if attack_roll > opponent_defence:
-
-                damage = random.randint(number_of_dice, number_of_dice * dice_sides) + attack_bonus
-
-                print("{0} attack {1}d{2}+{3} did {4} damage".format(attack.name,
-                                                                     number_of_dice,
-                                                                     dice_sides,
-                                                                     attack_bonus,
-                                                                     damage))
-
-                opponent.do_damage(damage)
-                Battle.EVENTS.add_event(Event(type=Event.BATTLE,
-                                              name=Event.DAMAGE_OPPONENT,
-                                              description="{0} did {1} damage to {2} with {3} attack".format(
-                                                  current_player.character.name,
-                                                  damage,
-                                                  opponent.character.name,
-                                                  attack.name)))
-            else:
-                Battle.EVENTS.add_event(Event(type=Event.BATTLE,
-                                              name=Event.MISSED_OPPONENT,
-                                              description="{0} attacked {1} but missed".format(
-                                                  current_player.character.name,
-                                                  opponent.character.name)))
-
-            current_player.AP -= 1
-
-            if opponent.is_dead() is True:
-                current_player.kills += 1
-                xp_gained = opponent.get_stat("XPReward")
-                if xp_gained is None:
-                    xp_gained = 5
-
-                current_player.increment_stat("XP", xp_gained)
-
-                Battle.EVENTS.add_event(Event(type=Event.BATTLE,
-                                              name=Event.KILLED_OPPONENT,
-                                              description="{0} killed {1} and gained {2} XP".format(
-                                                  current_player.character.name,
-                                                  opponent.character.name, xp_gained)))
-
-                if opposite_team.is_dead() is True:
-                    self._state = Battle.END
-                    Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.VICTORY,
-                                                  description="Team {0} are all dead!".format(opposite_team.name)))
+                if distance_to_target > attack_range:
+                    Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                                  name=Event.MISSED_OPPONENT,
+                                                  description="{0} is too far away (distance={1:.1f}), attack range={2:.1f}".format(
+                                                      opponent.character.name, distance_to_target, attack_range)))
+                    # raise Exception(
+                    #     "{0} is too far away (distance={1}), attack range={2}".format(opponent.name, distance_to_target,
+                    #                                                                   attack_range))
                 else:
-                    self.order_of_play.remove(opponent)
-                    self.set_current_target(tactic=Team.TACTIC_NEAREST)
+                    attack_route = Navigator(self.battle_floor)
+                    result = attack_route.navigate((current_player.rect.x,current_player.rect.y, current_player.layer),
+                                                   (opponent.rect.x, opponent.rect.y, opponent.layer), direct=True)
+
+                    if result is False:
+                        Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                                      name=Event.MISSED_OPPONENT,
+                                                      description="Target {0} is blocked".format(opponent.character.name)))
+                    else:
+                        physical_attack_bonus = current_player.get_stat("Melee Attack Bonus")
+                        opponent_defence = opponent.get_stat("Physical Defence")
+
+                        attack_roll = random.randint(1, 24) + physical_attack_bonus
+
+                        if attack_roll > opponent_defence:
+
+                            damage = random.randint(number_of_dice, number_of_dice * dice_sides) + attack_bonus
+
+                            print("{0} attack {1}d{2}+{3} did {4} damage".format(attack.name,
+                                                                                 number_of_dice,
+                                                                                 dice_sides,
+                                                                                 attack_bonus,
+                                                                                 damage))
+
+                            opponent.do_damage(damage)
+                            Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                                          name=Event.DAMAGE_OPPONENT,
+                                                          description="{0} did {1} damage to {2} with {3} attack".format(
+                                                              current_player.character.name,
+                                                              damage,
+                                                              opponent.character.name,
+                                                              attack.name)))
+                        else:
+                            Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                                          name=Event.MISSED_OPPONENT,
+                                                          description="{0} attacked {1} but missed".format(
+                                                              current_player.character.name,
+                                                              opponent.character.name)))
+
+                        current_player.AP -= 1
+
+                        if opponent.is_dead() is True:
+                            current_player.kills += 1
+                            xp_gained = opponent.get_stat("XPReward")
+                            if xp_gained is None:
+                                xp_gained = 5
+
+                            current_player.increment_stat("XP", xp_gained)
+
+                            Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                                          name=Event.KILLED_OPPONENT,
+                                                          description="{0} killed {1} and gained {2} XP".format(
+                                                              current_player.character.name,
+                                                              opponent.character.name, xp_gained)))
+
+                            if opposite_team.is_dead() is True:
+                                self._state = Battle.END
+                                Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.VICTORY,
+                                                              description="Team {0} are all dead!".format(opposite_team.name)))
+                            else:
+                                self.order_of_play.remove(opponent)
+                                self.set_current_target(tactic=Team.TACTIC_NEAREST)
 
     def move_player(self, dx: int, dy: int):
         current_player = self.get_current_player()
@@ -1241,7 +1273,7 @@ class Game():
         self._attacks = {}
 
         attack_data = trpg.RPGCSVFactory(name="Attacks", file_name=Game.GAME_DATA_DIR + attacks_file_name,
-                                           stat_category="Attacks")
+                                         stat_category="Attacks")
         attack_data.load()
 
         attacks = attack_data.get_rpg_object_names()
@@ -1249,9 +1281,9 @@ class Game():
         for attack in attacks:
 
             attributes = attack_data.get_attributes_by_name(attack)
-            #print("Attributes for attack {0}:".format(attack))
+            # print("Attributes for attack {0}:".format(attack))
             for attribute, value in attributes.items():
-                #print("\t{0}={1}".format(attribute, value))
+                # print("\t{0}={1}".format(attribute, value))
 
                 new_attack = Attack(name=attack,
                                     description=attributes["Description"],
@@ -1260,9 +1292,9 @@ class Game():
                                     defence_attribute=attributes["Defence Attribute"])
 
             stats = attack_data.get_stats_by_name(attack)
-            #rint("Stats for attack {0}:".format(attack))
+            # rint("Stats for attack {0}:".format(attack))
             for stat in stats:
-                #print("\t{0}".format(stat))
+                # print("\t{0}".format(stat))
 
                 new_attack.add_stat(stat)
 
@@ -1378,3 +1410,77 @@ class EventQueue():
     def print(self):
         for event in self.events:
             print(event)
+
+
+class Navigator:
+    def __init__(self, floor: Floor):
+        self.floor = floor
+        self.route = []
+
+    def distance(self, a, b):
+        ax, ay, az = a
+        bx, by, bz = b
+        d = math.sqrt(math.pow(ax - bx, 2) + math.pow(ay - by, 2) + math.pow(az - bz, 2))
+        return d
+
+    def navigate(self, start, finish, direct=False, level=0):
+
+        if level == 0:
+            self.route = []
+
+        d = self.distance(start, finish)
+
+        print("{3}. navigating from {0} to {1}. {2:.2f} distance to travel".format(start, finish, d, level))
+        finished = False
+
+        if start == finish:
+            print("found the finish")
+            finished = True
+        else:
+            startx, starty, startz = start
+
+            if level > 0 and self.floor.is_occupiable(startx, starty, startz) is False:
+                print("Hit an obstacle at {0}".format(start))
+                return False
+
+            finishx, finishy, finishz = finish
+
+            options = []
+
+            if startx > finishx:
+
+                option = (startx - 1, starty, startz)
+                options.append((option, self.distance(option, finish)))
+
+            elif startx < finishx:
+
+                option = (startx + 1, starty, startz)
+                options.append((option, self.distance(option, finish)))
+
+            if starty > finishy:
+
+                option = (startx, starty - 1, startz)
+                options.append((option, self.distance(option, finish)))
+
+            elif starty < finishy:
+
+                option = (startx, starty + 1, startz)
+                options.append((option, self.distance(option, finish)))
+
+            options.sort(key=itemgetter(1))
+            option, min_distance = options[0]
+
+            # print(str(options))
+
+            for option in options:
+                direction, d = option
+
+                if direct is True and d > min_distance:
+                    continue
+
+                if self.navigate(direction, finish, direct, level + 1) is True:
+                    self.route.insert(0, start)
+                    finished = True
+                    break
+
+        return finished
