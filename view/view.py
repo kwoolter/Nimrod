@@ -113,7 +113,9 @@ class ImageManager:
                                     "bubbles13.png", "bubbles14.png", "bubbles15.png"),
             model.Objects.TELEPORT: (
             "teleport0.png", "teleport1.png", "teleport2.png", "teleport3.png", "teleport4.png", "teleport5.png",
-            "teleport6.png", "teleport7.png","teleport6.png", "teleport5.png", "teleport4.png", "teleport3.png", "teleport2.png", "teleport1.png")
+            "teleport6.png", "teleport7.png","teleport6.png", "teleport5.png", "teleport4.png", "teleport3.png", "teleport2.png", "teleport1.png"),
+
+            model.Objects.SEAWEED: ("seaweed0.png","seaweed1.png","seaweed2.png","seaweed1.png")
 
         })
 
@@ -215,9 +217,13 @@ class ImageManager:
             self.sprite_sheets["bubbles{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
 
-        sheet_file_name = "teleport.png"
+        sheet_file_name = "teleport2.png"
         for i in range(0,8):
             self.sprite_sheets["teleport{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "seaweed.png"
+        for i in range(0,3):
+            self.sprite_sheets["seaweed{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
 
 class View():
@@ -752,7 +758,7 @@ class GameView(View):
     def tick(self):
         super(GameView, self).tick()
 
-    def draw_layer(self, surface, layer_id):
+    def draw_floor(self, surface):
 
         self.floor = self.game.current_floor
 
@@ -765,21 +771,22 @@ class GameView(View):
 
         for x in range(0, self.floor.rect.width):
             for y in range(0, self.floor.rect.height):
-                view_object = self.floor.get_floor_tile(x, y, layer_id)
-                if view_object is not None:
-                    image = View.image_manager.get_skin_image(view_object.name,
-                                                              tick=self.tick_count,
-                                                              width=GameView.TILE_WIDTH,
-                                                              height=GameView.TILE_HEIGHT,
-                                                              skin_name=skin_name)
-                    if image is not None:
+                for layer_id in sorted(self.floor.layers.keys()):
+                    view_object = self.floor.get_floor_tile(x, y, layer_id)
+                    if view_object is not None:
+                        image = View.image_manager.get_skin_image(view_object.name,
+                                                                  tick=self.tick_count,
+                                                                  width=GameView.TILE_WIDTH,
+                                                                  height=GameView.TILE_HEIGHT,
+                                                                  skin_name=skin_name)
+                        if image is not None:
 
-                        if layer_id > 1:
-                            image.set_alpha(255 - (layer_id * 15))
-                        else:
-                            image.set_alpha(255)
+                            if layer_id > 1:
+                                image.set_alpha(255 - (layer_id * 15))
+                            else:
+                                image.set_alpha(255)
 
-                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
         return surface
 
@@ -789,10 +796,7 @@ class GameView(View):
         if self.game is None:
             raise ("No Game to view!")
 
-        current_floor = self.game.current_floor
-
-        for layer_id in current_floor.layers.keys():
-            self.draw_layer(self.surface, layer_id)
+        self.draw_floor(self.surface)
 
     def end(self):
         super(GameView, self).end()
@@ -858,7 +862,6 @@ class BattleView(View):
         for x in range(0, floor.rect.width):
             for y in range(0, floor.rect.height):
                 for layer_id in sorted(floor.layers.keys()):
-
 
                     view_object = floor.get_floor_tile(x, y, layer_id)
 

@@ -113,6 +113,7 @@ class Objects:
     GREEN_DOT = "green_dot"
     BUBBLES = "bubbles"
     TELEPORT = "teleport"
+    SEAWEED = "seaweed"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -199,13 +200,14 @@ class FloorObject(object):
         self.rect.x += dx
         self.rect.y += dy
 
-    def set_pos(self, x: int, y: int):
+    def set_pos(self, x: int, y: int, z: int):
         self._old_rect = self._rect.copy()
         self.rect.x = x
         self.rect.y = y
+        self.layer = z
 
     def get_pos(self):
-        return self._rect.x, self._rect.y
+        return self._rect.x, self._rect.y, self.layer
 
 
 class Player(FloorObject):
@@ -420,6 +422,7 @@ class Floor:
         self.layers = {}
         self.floor_plans = {}
         self.exits = {}
+        self.teleports = []
 
     def __str__(self):
         return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}".format(self.name, self.rect, self.object_count,
@@ -463,6 +466,8 @@ class Floor:
             floor_plan = self.floor_plans[layer_id]
             for floor_object in self.layers[layer_id]:
                 floor_plan[floor_object.rect.x][floor_object.rect.y] = floor_object
+                if floor_object.name == Objects.TELEPORT:
+                    self.teleports.append((floor_object.rect.x, floor_object.rect.y, floor_object.layer))
 
     def remove_object(self, object: FloorObject):
         objects = self.layers[object.layer]
@@ -472,10 +477,10 @@ class Floor:
 
         objects = self.layers[object.layer]
 
-        x, y = object.get_pos()
+        x, y, z = object.get_pos()
 
         swap_object = FloorObjectLoader.get_object_copy_by_name(new_object_type)
-        swap_object.set_pos(x, y)
+        swap_object.set_pos(x, y, z)
         objects.remove(object)
         objects.append(swap_object)
 
@@ -518,7 +523,7 @@ class Floor:
             result = False
         else:
 
-            tile = self.get_floor_tile(x, y, z, is_raw=False)
+            tile = self.get_floor_tile(x, y, z)
 
             # Is the new position occupied?
             if tile is not None and tile.is_solid is True:
@@ -558,6 +563,7 @@ class Floor:
 
             selected_player.move(dx, dy)
             x, y = selected_player.rect.x, selected_player.rect.y
+            z = selected_player.layer
 
             tile = self.get_floor_tile(x, y, selected_player.layer, is_raw=True)
 
@@ -570,20 +576,32 @@ class Floor:
 
                 elif tile.name == Objects.SPHERE_GREEN:
                     selected_player.treasure += 1
-                    self.set_floor_tile(x, y, selected_player.layer, None)
+                    self.set_floor_tile(x, y, z, None)
                     Floor.EVENTS.add_event(
                         Event(type=Event.FLOOR, name=Event.TREASURE, description="You found a {0}".format(tile.name)))
 
                 elif tile.name == Objects.SPHERE_BLUE:
                     selected_player.do_heal(1)
-                    self.set_floor_tile(x, y, selected_player.layer, None)
+                    self.set_floor_tile(x, y, z, None)
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
                                                  description="You found a {0}".format(tile.name)))
                 elif tile.name == Objects.KEY:
                     selected_player.keys += 1
-                    self.set_floor_tile(x, y, selected_player.layer, None)
+                    self.set_floor_tile(x, y, z, None)
                     Floor.EVENTS.add_event(
                         Event(type=Event.FLOOR, name=Event.KEY, description="You found a {0}".format(tile.name)))
+
+                elif tile.name == Objects.TELEPORT:
+                    #print("current loc=({0}), teleports={1}".format((x,y,z), self.teleports))
+                    while True:
+                        new_position = random.choice(self.teleports)
+                        if new_position != (x, y, z):
+                            break
+                    x, y, z = new_position
+                    selected_player.set_pos(x, y, z)
+                    Floor.EVENTS.add_event(
+                        Event(type=Event.FLOOR, name=Event.TELEPORT, description="Teleporting {0}".format(selected_player.character.name)))
+                    #print("Teleporting {0} to ({1},{2},{3})...".format(selected_player.character.name, x, y, z))
 
             # Check what the player is standing on...
             base_tile = self.get_floor_tile(selected_player.rect.x, selected_player.rect.y, selected_player.layer - 1)
@@ -963,7 +981,7 @@ class Battle:
             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                           name=Event.VICTORY,
                                           description="Team {0} are all dead!".format(opposite_team.name)))
-            #raise Exception("Team {0} are all dead!".format(opposite_team.name))
+            # raise Exception("Team {0} are all dead!".format(opposite_team.name))
 
         elif current_player.AP <= 0:
             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
@@ -971,7 +989,7 @@ class Battle:
                                           description="{0} does not have enough AP to attack!".format(
                                               current_player.character.name)))
 
-            #raise Exception("Player {0} does not have enough AP ({1})".format(current_player.character.name, current_player.AP))
+            # raise Exception("Player {0} does not have enough AP ({1})".format(current_player.character.name, current_player.AP))
 
         else:
             opponent = self.get_current_target()
@@ -1007,13 +1025,14 @@ class Battle:
                     #                                                                   attack_range))
                 else:
                     attack_route = Navigator(self.battle_floor)
-                    result = attack_route.navigate((current_player.rect.x,current_player.rect.y, current_player.layer),
+                    result = attack_route.navigate((current_player.rect.x, current_player.rect.y, current_player.layer),
                                                    (opponent.rect.x, opponent.rect.y, opponent.layer), direct=True)
 
                     if result is False:
                         Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                                       name=Event.MISSED_OPPONENT,
-                                                      description="Target {0} is blocked".format(opponent.character.name)))
+                                                      description="Target {0} is blocked".format(
+                                                          opponent.character.name)))
                     else:
                         physical_attack_bonus = current_player.get_stat("Melee Attack Bonus")
                         opponent_defence = opponent.get_stat("Physical Defence")
@@ -1064,7 +1083,8 @@ class Battle:
                             if opposite_team.is_dead() is True:
                                 self._state = Battle.END
                                 Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.VICTORY,
-                                                              description="Team {0} are all dead!".format(opposite_team.name)))
+                                                              description="Team {0} are all dead!".format(
+                                                                  opposite_team.name)))
                             else:
                                 self.order_of_play.remove(opponent)
                                 self.set_current_target(tactic=Team.TACTIC_NEAREST)
@@ -1374,6 +1394,7 @@ class Event():
     BLOCKED = "blocked"
     TREASURE = "treasure"
     KEY = "key"
+    TELEPORT = "teleport"
     GAIN_HEALTH = "gain health"
     LOSE_HEALTH = "lose health"
     NO_AP = "No action points"

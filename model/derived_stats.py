@@ -241,7 +241,7 @@ class MaxAP(RPGDerivedStat):
 
     def calculate(self):
         dex = self.get_dependency_value("Dexterity")
-        return 2 + dex // 12
+        return 5 + dex // 12
 
 
 class HP(RPGDerivedStat):
