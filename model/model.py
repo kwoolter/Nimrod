@@ -112,6 +112,7 @@ class Objects:
     RED_DOT = "red dot"
     GREEN_DOT = "green_dot"
     BUBBLES = "bubbles"
+    TELEPORT = "teleport"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -520,12 +521,8 @@ class Floor:
             tile = self.get_floor_tile(x, y, z, is_raw=False)
 
             # Is the new position occupied?
-            if tile is not None:
+            if tile is not None and tile.is_solid is True:
                 result = False
-            # else:
-            #     tile = self.get_floor_tile(x, y, z - 1)
-            #     if tile is None:
-            #         result = False
 
         return result
 
@@ -566,7 +563,12 @@ class Floor:
 
             if tile is not None:
 
-                if tile.name == Objects.SPHERE_GREEN:
+                if tile.is_solid is True:
+                    selected_player.back()
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED,
+                                                 description="You are blocked by a {0}".format(tile.name)))
+
+                elif tile.name == Objects.SPHERE_GREEN:
                     selected_player.treasure += 1
                     self.set_floor_tile(x, y, selected_player.layer, None)
                     Floor.EVENTS.add_event(
@@ -582,10 +584,6 @@ class Floor:
                     self.set_floor_tile(x, y, selected_player.layer, None)
                     Floor.EVENTS.add_event(
                         Event(type=Event.FLOOR, name=Event.KEY, description="You found a {0}".format(tile.name)))
-                else:
-                    selected_player.back()
-                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED,
-                                                 description="You are blocked by a {0}".format(tile.name)))
 
             # Check what the player is standing on...
             base_tile = self.get_floor_tile(selected_player.rect.x, selected_player.rect.y, selected_player.layer - 1)
