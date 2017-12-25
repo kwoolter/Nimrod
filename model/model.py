@@ -755,7 +755,7 @@ class FloorObjectLoader():
 
             # For each row in the file....
             for row in reader:
-                print("loading {0}".format(row))
+                #print("loading {0}".format(row))
 
                 object_code = row.get("Code")
 

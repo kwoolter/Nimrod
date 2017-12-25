@@ -104,7 +104,7 @@ class ImageManager:
             model.Objects.SQUOID2: "Squoid_warrior_green.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CYLINDER: "Cylinder.png",
-            model.Objects.ICE: "ice2.png",
+            model.Objects.ICE: "ice3.png",
             model.Objects.LAVA: ("lava_0.png", "lava_1.png", "lava_2.png", "lava_1.png"),
             model.Objects.RED_DOT: "red_dot.png",
             model.Objects.GREEN_DOT: "green_dot.png",
@@ -187,10 +187,8 @@ class ImageManager:
         self.sprite_sheets["BlockSlopeSE.png"] = (sheet_file_name, (256, 32, 32, 32))
         self.sprite_sheets["Brick32x32.png"] = (sheet_file_name, (288, 32, 32, 32))
 
-        sheet_file_name = "blocks_sheet_blue.png"
-
         self.sprite_sheets["SphereBlue.png"] = (sheet_file_name, (96, 0, 32, 32))
-        # self.sprite_sheets["Block32x32Blue2.png"] = (sheet_file_name, (0,32, 32, 32))
+
 
         sheet_file_name = "blocks_sheet_green.png"
         self.sprite_sheets["SphereGreen.png"] = (sheet_file_name, (96, 0, 32, 32))
@@ -216,12 +214,11 @@ class ImageManager:
         for i in range(0,16):
             self.sprite_sheets["bubbles{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
-
         sheet_file_name = "teleport2.png"
         for i in range(0,8):
             self.sprite_sheets["teleport{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
-        sheet_file_name = "seaweed.png"
+        sheet_file_name = "seaweed2.png"
         for i in range(0,3):
             self.sprite_sheets["seaweed{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
@@ -460,7 +457,7 @@ class StatusBar(View):
 
             msg, count = self.status_messages[self.current_message_number]
             if count > 1:
-                self.status_messages[self.current_message_number]= (msg, count-1)
+                self.status_messages[self.current_message_number] = (msg, count-1)
             else:
                 del self.status_messages[self.current_message_number]
 
@@ -469,10 +466,6 @@ class StatusBar(View):
             self.current_message_number += 1
             if self.current_message_number >= len(self.status_messages):
                 self.current_message_number = 0
-
-
-
-
 
 
     def draw(self):
@@ -1094,8 +1087,8 @@ class PlayerView(View):
         x = pane_rect.centerx
         y += 68
 
-        stat_order = ("HP", "Strength", "Dexterity", "Level")
-        stats_with_modifiers = ("Strength", "Dexterity")
+        stat_order = ("HP", "Strength", "Dexterity", "Intelligence", "Level")
+        stats_with_modifiers = ("Strength", "Dexterity", "Intelligence")
         stats = {"HP": "HP", "Physical Defence": "DEF", "Level": "LVL", "Strength": "STR", "Dexterity": "DEX",
                  "Intelligence": "INT", "XP": "XP", "Kills": "Kills", "Physical Attack Bonus": "ATK"}
 
