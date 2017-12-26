@@ -549,7 +549,7 @@ class Floor:
         if new_x >= self.rect.width or new_x < 0 or new_y >= self.rect.height or new_y < 0:
 
             Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED, description="You hit an edge!"))
-            #raise Exception("{0}:move_player() - out of bounds!".format(__class__, selected_player.character.name))
+            # raise Exception("{0}:move_player() - out of bounds!".format(__class__, selected_player.character.name))
 
         else:
 
@@ -576,7 +576,8 @@ class Floor:
                         selected_player.treasure += 1
                         self.set_floor_tile(x, y, z, None)
                         Floor.EVENTS.add_event(
-                            Event(type=Event.FLOOR, name=Event.TREASURE, description="You found a {0}".format(tile.name)))
+                            Event(type=Event.FLOOR, name=Event.TREASURE,
+                                  description="You found a {0}".format(tile.name)))
 
                     elif tile.name == Objects.SPHERE_BLUE:
                         selected_player.do_heal(1)
@@ -598,10 +599,12 @@ class Floor:
                         x, y, z = new_position
                         selected_player.set_pos(x, y, z)
                         Floor.EVENTS.add_event(
-                            Event(type=Event.FLOOR, name=Event.TELEPORT, description="Teleporting {0}".format(selected_player.character.name)))
+                            Event(type=Event.FLOOR, name=Event.TELEPORT,
+                                  description="Teleporting {0}".format(selected_player.character.name)))
 
                 # Check what the player is standing on...
-                base_tile = self.get_floor_tile(selected_player.rect.x, selected_player.rect.y, selected_player.layer - 1)
+                base_tile = self.get_floor_tile(selected_player.rect.x, selected_player.rect.y,
+                                                selected_player.layer - 1)
 
                 # If standing on nothing move back
                 if base_tile is None or base_tile.is_solid is False:
@@ -752,7 +755,7 @@ class FloorObjectLoader():
 
             # For each row in the file....
             for row in reader:
-                #print("loading {0}".format(row))
+                # print("loading {0}".format(row))
 
                 object_code = row.get("Code")
 
@@ -809,13 +812,12 @@ class Attack:
     INTELLIGENCE = "Intelligence"
     WISDOM = "Wisdom"
 
-    #Attack Stats
+    # Attack Stats
     NUMBER_OF_DICE = "Number of Dice"
     DICE_SIDES = "Dice Sides"
     BONUS = "Attack Bonus"
     RANGE = "Range"
     AP = "AP"
-
 
     ATTACK_ATTRIBUTES = {STRENGTH: "STR", DEXTERITY: "DEX", INTELLIGENCE: "INT", WISDOM: "WIS"}
 
@@ -851,7 +853,7 @@ class Attack:
     def add_stat(self, new_stat: trpg.BaseStat):
         self.stats[new_stat.name] = copy.copy(new_stat)
 
-    def get_stat(self, stat_name : str):
+    def get_stat(self, stat_name: str):
         if stat_name not in self.stats.keys():
             raise Exception("Stat {0} is not set for attack {1}:{2}".format(stat_name, self.name, self.description))
 
@@ -1036,9 +1038,11 @@ class Battle:
                     else:
 
                         attacker_attack_bonus = current_player.get_stat(attack.attack_attribute + " Attack Bonus")
+                        attacker_attack_modifier  = current_player.get_stat(attack.attack_attribute + " Modifier")
                         opponent_defence = opponent.get_stat(attack.defence_attribute + " Defence")
 
-                        attack_roll = random.randint(1, 24) + attacker_attack_bonus
+                        dice_roll = random.randint(1, 20)
+                        attack_roll = dice_roll + attacker_attack_bonus
 
                         print("{0} ({1} v {2}): attack roll = {3} v defence {4}".format(attack.name,
                                                                                         attack.attack_attribute,
@@ -1048,18 +1052,25 @@ class Battle:
 
                         if attack_roll > opponent_defence:
 
-                            damage = random.randint(number_of_dice, number_of_dice * dice_sides) + attack_bonus
+                            if dice_roll == 20:
+                                print("critical hit!")
+                                damage = (number_of_dice * dice_sides) + attack_bonus + attacker_attack_modifier
+                            else:
+                                damage = random.randint(number_of_dice, number_of_dice * dice_sides) + attack_bonus + attacker_attack_modifier
 
-                            print("{0} ({1} v {2}): {3:.0f}d{4:.0f}+{5} did {6} damage".format(attack.name,attack.attack_attribute, attack.defence_attribute,
-                                                                                 number_of_dice,
-                                                                                 dice_sides,
-                                                                                 attack_bonus,
-                                                                                 damage))
+                            print("{0} ({1} v {2}): {3:.0f}d{4:.0f}+{5:.0f}+{6:.0f} did {7:.0f} damage".format(attack.name,
+                                                                                               attack.attack_attribute,
+                                                                                               attack.defence_attribute,
+                                                                                               number_of_dice,
+                                                                                               dice_sides,
+                                                                                               attack_bonus,
+                                                                                               attacker_attack_modifier,
+                                                                                               damage))
 
                             opponent.do_damage(damage)
                             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                                           name=Event.DAMAGE_OPPONENT,
-                                                          description="{0} did {1} damage to {2} with {3} attack".format(
+                                                          description="{0} did {1:.0f} damage to {2} with {3} attack".format(
                                                               current_player.character.name,
                                                               damage,
                                                               opponent.character.name,
@@ -1071,7 +1082,7 @@ class Battle:
                                                               current_player.character.name,
                                                               opponent.character.name)))
 
-                        current_player.AP -= 1
+                        current_player.AP -= attack_AP
 
                         if opponent.is_dead() is True:
                             current_player.kills += 1
