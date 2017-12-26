@@ -501,7 +501,7 @@ class Floor:
 
         layer = self.floor_plans[layer_id]
         floor_object = layer[x][y]
-        if is_raw is False and floor_object is None:
+        if is_raw is False:
             for player in self.players:
                 if (x, y, layer_id) == (player.rect.x, player.rect.y, player.layer):
                     floor_object = player
@@ -541,92 +541,89 @@ class Floor:
         # Make player's last position the same as their current position
         selected_player.rect = selected_player.rect
 
-        x, y = selected_player.rect.x, selected_player.rect.y
+        x, y, z = selected_player.rect.x, selected_player.rect.y, selected_player.layer
         new_x = x + dx
         new_y = y + dy
 
-        # Is ths new position out of bounds?
+        # Is the new position out of bounds?
         if new_x >= self.rect.width or new_x < 0 or new_y >= self.rect.height or new_y < 0:
+
             Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED, description="You hit an edge!"))
-            raise Exception("{0}:move_player() - out of bounds!".format(__class__, selected_player.character.name))
+            #raise Exception("{0}:move_player() - out of bounds!".format(__class__, selected_player.character.name))
 
-        tile = self.get_floor_tile(new_x, new_y, selected_player.layer, is_raw=False)
-
-        # Is the new position occupied?
-        if tile is not None and tile.name in Objects.SQUOIDS:
-
-            Floor.EVENTS.add_event(
-                Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
-
-        # Else move the player and see what happens next
         else:
 
-            selected_player.move(dx, dy)
-            x, y = selected_player.rect.x, selected_player.rect.y
-            z = selected_player.layer
+            # Look at what tile is in the nbew position
+            tile = self.get_floor_tile(new_x, new_y, z)
 
-            tile = self.get_floor_tile(x, y, selected_player.layer, is_raw=True)
+            # Is the new position filled with a solid object?
+            if tile is not None and tile.is_solid is True:
 
-            if tile is not None:
+                Floor.EVENTS.add_event(
+                    Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
 
-                if tile.is_solid is True:
+            # Else move the player and see what happens next...
+            else:
+
+                selected_player.move(dx, dy)
+                x, y, z = selected_player.rect.x, selected_player.rect.y, selected_player.layer
+
+                tile = self.get_floor_tile(x, y, z, is_raw=True)
+
+                if tile is not None:
+
+                    if tile.name == Objects.SPHERE_GREEN:
+                        selected_player.treasure += 1
+                        self.set_floor_tile(x, y, z, None)
+                        Floor.EVENTS.add_event(
+                            Event(type=Event.FLOOR, name=Event.TREASURE, description="You found a {0}".format(tile.name)))
+
+                    elif tile.name == Objects.SPHERE_BLUE:
+                        selected_player.do_heal(1)
+                        self.set_floor_tile(x, y, z, None)
+                        Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
+                                                     description="You found a {0}".format(tile.name)))
+                    elif tile.name == Objects.KEY:
+                        selected_player.keys += 1
+                        self.set_floor_tile(x, y, z, None)
+                        Floor.EVENTS.add_event(
+                            Event(type=Event.FLOOR, name=Event.KEY, description="You found a {0}".format(tile.name)))
+
+                    elif tile.name == Objects.TELEPORT:
+
+                        while True:
+                            new_position = random.choice(self.teleports)
+                            if new_position != (x, y, z):
+                                break
+                        x, y, z = new_position
+                        selected_player.set_pos(x, y, z)
+                        Floor.EVENTS.add_event(
+                            Event(type=Event.FLOOR, name=Event.TELEPORT, description="Teleporting {0}".format(selected_player.character.name)))
+
+                # Check what the player is standing on...
+                base_tile = self.get_floor_tile(selected_player.rect.x, selected_player.rect.y, selected_player.layer - 1)
+
+                # If standing on nothing move back
+                if base_tile is None or base_tile.is_solid is False:
                     selected_player.back()
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED,
-                                                 description="You are blocked by a {0}".format(tile.name)))
+                                                 description="You can't go that way"))
 
-                elif tile.name == Objects.SPHERE_GREEN:
-                    selected_player.treasure += 1
-                    self.set_floor_tile(x, y, z, None)
-                    Floor.EVENTS.add_event(
-                        Event(type=Event.FLOOR, name=Event.TREASURE, description="You found a {0}".format(tile.name)))
+                # If standing on lava lose health
+                elif base_tile.name == Objects.LAVA:
+                    selected_player.do_damage(1)
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR,
+                                                 name=Event.LOSE_HEALTH,
+                                                 description="{0} stood on {1}".format(selected_player.name,
+                                                                                       base_tile.name)))
 
-                elif tile.name == Objects.SPHERE_BLUE:
-                    selected_player.do_heal(1)
-                    self.set_floor_tile(x, y, z, None)
-                    Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
-                                                 description="You found a {0}".format(tile.name)))
-                elif tile.name == Objects.KEY:
-                    selected_player.keys += 1
-                    self.set_floor_tile(x, y, z, None)
-                    Floor.EVENTS.add_event(
-                        Event(type=Event.FLOOR, name=Event.KEY, description="You found a {0}".format(tile.name)))
-
-                elif tile.name == Objects.TELEPORT:
-                    #print("current loc=({0}), teleports={1}".format((x,y,z), self.teleports))
-                    while True:
-                        new_position = random.choice(self.teleports)
-                        if new_position != (x, y, z):
-                            break
-                    x, y, z = new_position
-                    selected_player.set_pos(x, y, z)
-                    Floor.EVENTS.add_event(
-                        Event(type=Event.FLOOR, name=Event.TELEPORT, description="Teleporting {0}".format(selected_player.character.name)))
-                    #print("Teleporting {0} to ({1},{2},{3})...".format(selected_player.character.name, x, y, z))
-
-            # Check what the player is standing on...
-            base_tile = self.get_floor_tile(selected_player.rect.x, selected_player.rect.y, selected_player.layer - 1)
-
-            # If standing on nothing move back
-            if base_tile is None:
-                selected_player.back()
-                Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED,
-                                             description="You can't go that way"))
-
-            # If standing on lava lose health
-            elif base_tile.name == Objects.LAVA:
-                selected_player.do_damage(1)
-                Floor.EVENTS.add_event(Event(type=Event.FLOOR,
-                                             name=Event.LOSE_HEALTH,
-                                             description="{0} stood on {1}".format(selected_player.name,
-                                                                                   base_tile.name)))
-
-            # If standing on ice lose health
-            elif base_tile.name == Objects.ICE:
-                selected_player.do_damage(1)
-                Floor.EVENTS.add_event(Event(type=Event.FLOOR,
-                                             name=Event.LOSE_HEALTH,
-                                             description="{0} stood on {1}".format(selected_player.name,
-                                                                                   base_tile.name)))
+                # If standing on ice lose health
+                elif base_tile.name == Objects.ICE:
+                    selected_player.do_damage(1)
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR,
+                                                 name=Event.LOSE_HEALTH,
+                                                 description="{0} stood on {1}".format(selected_player.name,
+                                                                                       base_tile.name)))
 
     def tick(self):
 
@@ -812,6 +809,14 @@ class Attack:
     INTELLIGENCE = "Intelligence"
     WISDOM = "Wisdom"
 
+    #Attack Stats
+    NUMBER_OF_DICE = "Number of Dice"
+    DICE_SIDES = "Dice Sides"
+    BONUS = "Attack Bonus"
+    RANGE = "Range"
+    AP = "AP"
+
+
     ATTACK_ATTRIBUTES = {STRENGTH: "STR", DEXTERITY: "DEX", INTELLIGENCE: "INT", WISDOM: "WIS"}
 
     # Defence types
@@ -825,6 +830,7 @@ class Attack:
     def __init__(self, name: str, description: str, type: str, attack_attribute: str, defence_attribute: str):
         self.name = name
         self.description = description
+
         if type in Attack.TYPES:
             self.type = type
         else:
@@ -844,6 +850,12 @@ class Attack:
 
     def add_stat(self, new_stat: trpg.BaseStat):
         self.stats[new_stat.name] = copy.copy(new_stat)
+
+    def get_stat(self, stat_name : str):
+        if stat_name not in self.stats.keys():
+            raise Exception("Stat {0} is not set for attack {1}:{2}".format(stat_name, self.name, self.description))
+
+        return self.stats[stat_name]
 
     def print(self):
         print("{0}:{1} - type({2}) - {3} vs. {4}".format(self.name,
@@ -983,14 +995,6 @@ class Battle:
                                           description="Team {0} are all dead!".format(opposite_team.name)))
             # raise Exception("Team {0} are all dead!".format(opposite_team.name))
 
-        elif current_player.AP <= 0:
-            Battle.EVENTS.add_event(Event(type=Event.BATTLE,
-                                          name=Event.NO_AP,
-                                          description="{0} does not have enough AP to attack!".format(
-                                              current_player.character.name)))
-
-            # raise Exception("Player {0} does not have enough AP ({1})".format(current_player.character.name, current_player.AP))
-
         else:
             opponent = self.get_current_target()
 
@@ -998,20 +1002,11 @@ class Battle:
 
                 attack = current_player.get_attack()
 
-                number_of_dice = 1
-                dice_sides = 3
-                attack_range = 1
-                attack_bonus = 0
-
-                for stat in attack.stats.values():
-                    if stat.name == "Number of Dice":
-                        number_of_dice = stat.value
-                    elif stat.name == "Dice Sides":
-                        dice_sides = stat.value
-                    elif stat.name == "Attack Bonus":
-                        attack_bonus = stat.value
-                    elif stat.name == "Range":
-                        attack_range = stat.value
+                number_of_dice = attack.get_stat(Attack.NUMBER_OF_DICE).value
+                dice_sides = attack.get_stat(Attack.DICE_SIDES).value
+                attack_bonus = attack.get_stat(Attack.BONUS).value
+                attack_range = attack.get_stat(Attack.RANGE).value
+                attack_AP = attack.get_stat(Attack.AP).value
 
                 distance_to_target = current_player.distance_from_point(opponent.rect.x, opponent.rect.y)
 
@@ -1023,6 +1018,11 @@ class Battle:
                     # raise Exception(
                     #     "{0} is too far away (distance={1}), attack range={2}".format(opponent.name, distance_to_target,
                     #                                                                   attack_range))
+                elif current_player.AP < attack_AP:
+                    Battle.EVENTS.add_event(Event(type=Event.BATTLE,
+                                                  name=Event.NO_AP,
+                                                  description="{0} does not have enough AP to attack - {1:.0f} AP required!".format(
+                                                      current_player.character.name, attack_AP)))
                 else:
                     attack_route = Navigator(self.battle_floor)
                     result = attack_route.navigate((current_player.rect.x, current_player.rect.y, current_player.layer),
@@ -1034,16 +1034,23 @@ class Battle:
                                                       description="Target {0} is blocked".format(
                                                           opponent.character.name)))
                     else:
-                        physical_attack_bonus = current_player.get_stat("Melee Attack Bonus")
-                        opponent_defence = opponent.get_stat("Physical Defence")
 
-                        attack_roll = random.randint(1, 24) + physical_attack_bonus
+                        attack_bonus = current_player.get_stat(attack.attack_attribute + " Attack Bonus")
+                        opponent_defence = opponent.get_stat(attack.defence_attribute + " Defence")
+
+                        attack_roll = random.randint(1, 24) + attack_bonus
+
+                        print("{0} ({1} v {2}): attack roll = {3} v defence {4}".format(attack.name,
+                                                                                        attack.attack_attribute,
+                                                                                        attack.defence_attribute,
+                                                                                        attack_roll,
+                                                                                        opponent_defence))
 
                         if attack_roll > opponent_defence:
 
                             damage = random.randint(number_of_dice, number_of_dice * dice_sides) + attack_bonus
 
-                            print("{0} attack {1}d{2}+{3} did {4} damage".format(attack.name,
+                            print("{0} ({1} v {2}): {3:.0f}d{4:.0f}+{5} did {6} damage".format(attack.name,attack.attack_attribute, attack.defence_attribute,
                                                                                  number_of_dice,
                                                                                  dice_sides,
                                                                                  attack_bonus,

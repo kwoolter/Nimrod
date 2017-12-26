@@ -95,7 +95,7 @@ class ImageManager:
                 "SphereGreen1.png"),
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid_warrior2.png",
-            model.Objects.CRAB_GREEN: "crab.png",
+            model.Objects.CRAB_GREEN: "crab_green.png",
             model.Objects.CRAB_RED: "crab_red2.png",
             model.Objects.SKELETON_LEFT: "skeleton_left.png",
             model.Objects.SKELETON_RIGHT: "skeleton_right.png",
@@ -105,7 +105,8 @@ class ImageManager:
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.ICE: "ice3.png",
-            model.Objects.LAVA: ("lava_0.png", "lava_1.png", "lava_2.png", "lava_1.png"),
+            model.Objects.LAVA: ("lava0.png", "lava1.png", "lava2.png", "lava3.png", "lava4.png", "lava5.png",
+                                 "lava4.png", "lava3.png", "lava2.png", "lava1.png"),
             model.Objects.RED_DOT: "red_dot.png",
             model.Objects.GREEN_DOT: "green_dot.png",
             model.Objects.BUBBLES: ("bubbles0.png","bubbles1.png","bubbles2.png","bubbles3.png","bubbles4.png","bubbles5.png","bubbles6.png","bubbles7.png",
@@ -221,6 +222,10 @@ class ImageManager:
         sheet_file_name = "seaweed2.png"
         for i in range(0,3):
             self.sprite_sheets["seaweed{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "lava.png"
+        for i in range(0,6):
+            self.sprite_sheets["lava{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
 
 class View():
@@ -1115,16 +1120,11 @@ class PlayerView(View):
             y += 16
 
         attack = self.player.get_attack()
-        number_of_dice = 1
-        dice_sides = 2
 
-        for stat in attack.stats.values():
-            if stat.name == "Number of Dice":
-                number_of_dice = stat.value
-            elif stat.name == "Dice Sides":
-                dice_sides = stat.value
-            elif stat.name == "Attack Bonus":
-                attack_bonus = stat.value
+        number_of_dice = attack.get_stat(model.Attack.NUMBER_OF_DICE).value
+        dice_sides = attack.get_stat(model.Attack.DICE_SIDES).value
+        attack_bonus = attack.get_stat(model.Attack.BONUS).value
+        attack_range = attack.get_stat(model.Attack.RANGE).value
 
         msg = "{0} ({1:.0f}d{2:.0f})".format(attack.name, number_of_dice, dice_sides)
         if attack_bonus > 0:
