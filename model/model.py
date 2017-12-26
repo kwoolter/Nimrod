@@ -1035,10 +1035,10 @@ class Battle:
                                                           opponent.character.name)))
                     else:
 
-                        attack_bonus = current_player.get_stat(attack.attack_attribute + " Attack Bonus")
+                        attacker_attack_bonus = current_player.get_stat(attack.attack_attribute + " Attack Bonus")
                         opponent_defence = opponent.get_stat(attack.defence_attribute + " Defence")
 
-                        attack_roll = random.randint(1, 24) + attack_bonus
+                        attack_roll = random.randint(1, 24) + attacker_attack_bonus
 
                         print("{0} ({1} v {2}): attack roll = {3} v defence {4}".format(attack.name,
                                                                                         attack.attack_attribute,
