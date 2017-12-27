@@ -116,7 +116,9 @@ class ImageManager:
             "teleport0.png", "teleport1.png", "teleport2.png", "teleport3.png", "teleport4.png", "teleport5.png",
             "teleport6.png", "teleport7.png","teleport6.png", "teleport5.png", "teleport4.png", "teleport3.png", "teleport2.png", "teleport1.png"),
 
-            model.Objects.SEAWEED: ("seaweed0.png","seaweed1.png","seaweed2.png","seaweed1.png")
+            model.Objects.SEAWEED: ("seaweed0.png","seaweed1.png","seaweed2.png","seaweed1.png"),
+            model.Objects.FIRE: ("fire0.png", "fire1.png", "fire2.png", "fire1.png"),
+            model.Objects.POISON: ("poison0.png", "poison1.png", "poison2.png","poison3.png","poison4.png","poison5.png","poison6.png")
 
         })
 
@@ -222,6 +224,14 @@ class ImageManager:
         sheet_file_name = "seaweed2.png"
         for i in range(0,3):
             self.sprite_sheets["seaweed{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "fire.png"
+        for i in range(0,3):
+            self.sprite_sheets["fire{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "poison.png"
+        for i in range(0,7):
+            self.sprite_sheets["poison{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "lava.png"
         for i in range(0,6):
@@ -886,7 +896,7 @@ class BattleView(View):
 
                             surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
-                        elif isinstance(view_object, model.Player) is True:
+                        if isinstance(view_object, model.Player) is True:
 
                             image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
                                                                       tick=self.tick_count,
@@ -897,6 +907,19 @@ class BattleView(View):
                             image.set_alpha(150)
 
                             surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                            if view_object.is_effect(model.Player.BURNED) is True:
+                                image = View.image_manager.get_skin_image(model.Objects.FIRE,
+                                                                          tick=self.tick_count,
+                                                                          width=BattleView.TILE_WIDTH,
+                                                                          height=BattleView.TILE_HEIGHT,
+                                                                          skin_name=skin_name)
+
+                                image.set_alpha(150)
+
+                                surface.blit(image,
+                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
 
                         image = View.image_manager.get_skin_image(view_object.name,
                                                                   tick=self.tick_count,
@@ -917,6 +940,32 @@ class BattleView(View):
 
                             view_x, view_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
                             surface.blit(image, (view_x, view_y - y_offset))
+
+                        if isinstance(view_object, model.Player) is True:
+
+                            if view_object.is_effect(model.Player.BURNED) is True:
+                                image = View.image_manager.get_skin_image(model.Objects.FIRE,
+                                                                          tick=self.tick_count,
+                                                                          width=BattleView.TILE_WIDTH,
+                                                                          height=BattleView.TILE_HEIGHT,
+                                                                          skin_name=skin_name)
+
+                                image.set_alpha(100)
+
+                                surface.blit(image,
+                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                            if view_object.is_effect(model.Player.POISONED) is True:
+                                image = View.image_manager.get_skin_image(model.Objects.POISON,
+                                                                          tick=self.tick_count,
+                                                                          width=BattleView.TILE_WIDTH,
+                                                                          height=BattleView.TILE_HEIGHT,
+                                                                          skin_name=skin_name)
+
+                                image.set_alpha(100)
+
+                                surface.blit(image,
+                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
         return surface
 

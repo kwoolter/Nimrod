@@ -114,6 +114,8 @@ class Objects:
     BUBBLES = "bubbles"
     TELEPORT = "teleport"
     SEAWEED = "seaweed"
+    FIRE = "fire"
+    POISON = "poison"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -214,13 +216,13 @@ class Player(FloorObject):
 
     # Effects
     EVERGREEN = -999
-    EFFECT_LIFETIME = 5
+    EFFECT_LIFETIME = 40
     HIT = "hit"
     DEAD = "dead"
     POISONED = "poisoned"
     ASLEEP = "asleep"
-
-
+    BURNED = "burned"
+    FROZEN = "frozen"
 
 
     def __init__(self, name: str,
@@ -241,9 +243,10 @@ class Player(FloorObject):
         self.effects = {}
 
     def __str__(self):
-        return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
+        return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}, Effects={7}".format(self.name, self.HP, self.AP,
                                                                           self.rect.x, self.rect.y, self.layer,
-                                                                          self.is_dead()))
+                                                                          self.is_dead(),
+                                                                                       len(self.effects)))
 
     @property
     def name(self):
@@ -282,6 +285,8 @@ class Player(FloorObject):
     def do_damage(self, new_value):
         self.character.increment_stat("Damage", new_value)
         self.do_effect(Player.HIT)
+        if self.HP <= 0:
+            self.do_effect(Player.DEAD)
 
     def do_heal(self, new_value):
         self.character.increment_stat("Damage", new_value * -1)
@@ -316,13 +321,17 @@ class Player(FloorObject):
         self.effects[effect_name] = Player.EFFECT_LIFETIME
 
     def tick(self):
+        expired_effects = []
         for effect in self.effects.keys():
             count = self.effects[effect]
-            if count == 0:
-                del self.effects[effect]
+            if count <= 0:
+                expired_effects.append(effect)
             elif count != Player.EVERGREEN:
                 self.effects[effect] = count - 1
 
+        for effect in expired_effects:
+            print("Effect {0} on player {1} expired.".format(effect, self.character.name))
+            del self.effects[effect]
 
 class Monster(FloorObject):
     def __init__(self, name: str,
@@ -644,6 +653,7 @@ class Floor:
                 # If standing on lava lose health
                 elif base_tile.name == Objects.LAVA:
                     selected_player.do_damage(1)
+                    selected_player.do_effect(Player.BURNED)
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                                  name=Event.LOSE_HEALTH,
                                                  description="{0} stood on {1}".format(selected_player.name,
@@ -652,6 +662,7 @@ class Floor:
                 # If standing on ice lose health
                 elif base_tile.name == Objects.ICE:
                     selected_player.do_damage(1)
+                    selected_player.do_effect(Player.POISONED)
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                                  name=Event.LOSE_HEALTH,
                                                  description="{0} stood on {1}".format(selected_player.name,
@@ -661,6 +672,8 @@ class Floor:
 
         # For each player...
         for selected_player in self.players:
+
+            selected_player.tick()
 
             x, y, layer = selected_player.rect.x, selected_player.rect.y, selected_player.layer
 
@@ -1258,16 +1271,14 @@ class Game():
 
     def tick(self):
 
-        if self.state != Game.PLAYING:
-            return
-
         self.tick_count += 1
+        #self.events.add_event(Event(Event.TICK, "Tick", Event.GAME))
 
         if self.state == Game.BATTLE:
             self.battle.tick()
-        else:
+        elif self.state == Game.PLAYING:
             if self.tick_count % 4 == 0:
-                self.events.add_event(Event(Event.TICK, "Tick", Event.GAME))
+
                 self.current_floor.tick()
 
 
