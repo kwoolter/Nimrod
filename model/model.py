@@ -211,7 +211,17 @@ class FloorObject(object):
 
 
 class Player(FloorObject):
-    MAX_AP = 2
+
+    # Effects
+    EVERGREEN = -999
+    EFFECT_LIFETIME = 5
+    HIT = "hit"
+    DEAD = "dead"
+    POISONED = "poisoned"
+    ASLEEP = "asleep"
+
+
+
 
     def __init__(self, name: str,
                  rect: pygame.Rect,
@@ -228,6 +238,7 @@ class Player(FloorObject):
         self.character = character
         self.AP = self.MaxAP
         self._attacks = {}
+        self.effects = {}
 
     def __str__(self):
         return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}".format(self.name, self.HP, self.AP,
@@ -270,6 +281,7 @@ class Player(FloorObject):
 
     def do_damage(self, new_value):
         self.character.increment_stat("Damage", new_value)
+        self.do_effect(Player.HIT)
 
     def do_heal(self, new_value):
         self.character.increment_stat("Damage", new_value * -1)
@@ -293,6 +305,23 @@ class Player(FloorObject):
         attack_name = list(self._attacks.keys())[0]
 
         return self._attacks[attack_name]
+
+    def is_effect(self, effect_name : str):
+        if effect_name in self.effects.keys():
+            return True
+        else:
+            return False
+
+    def do_effect(self, effect_name : str):
+        self.effects[effect_name] = Player.EFFECT_LIFETIME
+
+    def tick(self):
+        for effect in self.effects.keys():
+            count = self.effects[effect]
+            if count == 0:
+                del self.effects[effect]
+            elif count != Player.EVERGREEN:
+                self.effects[effect] = count - 1
 
 
 class Monster(FloorObject):
@@ -930,6 +959,10 @@ class Battle:
 
         self.set_current_target(tactic=Team.TACTIC_NEAREST)
 
+    def tick(self):
+        for player in self.order_of_play:
+            player.tick()
+
     def get_current_player(self):
 
         return self.order_of_play[0]
@@ -1230,9 +1263,13 @@ class Game():
 
         self.tick_count += 1
 
-        if self.tick_count % 4 == 0:
-            self.events.add_event(Event(Event.TICK, "Tick", Event.GAME))
-            self.current_floor.tick()
+        if self.state == Game.BATTLE:
+            self.battle.tick()
+        else:
+            if self.tick_count % 4 == 0:
+                self.events.add_event(Event(Event.TICK, "Tick", Event.GAME))
+                self.current_floor.tick()
+
 
     def get_next_event(self):
 
