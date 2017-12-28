@@ -118,6 +118,7 @@ class Objects:
     POISON = "poison"
     INK = "ink"
     HIT = "hit"
+    SHOCK = "shock"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -225,6 +226,7 @@ class Player(FloorObject):
     BURNED = "burned"
     FROZEN = "frozen"
     INKED = "inked"
+    SHOCKED = "shocked"
 
     def __init__(self, name: str,
                  rect: pygame.Rect,

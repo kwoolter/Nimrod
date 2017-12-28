@@ -121,7 +121,8 @@ class ImageManager:
             model.Objects.POISON: ("poison0.png", "poison1.png", "poison2.png","poison3.png","poison4.png","poison5.png","poison6.png"),
             model.Objects.INK: (
             "ink0.png", "ink1.png", "ink2.png", "ink3.png", "ink4.png", "ink5.png", "ink6.png"),
-            model.Objects.HIT: ("hit0.png", "hit1.png", "hit2.png")
+            model.Objects.HIT: ("hit0.png", "hit1.png", "hit2.png"),
+            model.Objects.SHOCK: ("electric0.png", "electric1.png", "electric0.png", "electric2.png")
 
         })
 
@@ -247,6 +248,10 @@ class ImageManager:
         sheet_file_name = "lava.png"
         for i in range(0,6):
             self.sprite_sheets["lava{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "electric.png"
+        for i in range(0,4):
+            self.sprite_sheets["electric{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
 
 class View():
@@ -979,6 +984,18 @@ class BattleView(View):
 
                             elif view_object.is_effect(model.Player.INKED) is True:
                                 image = View.image_manager.get_skin_image(model.Objects.INK,
+                                                                          tick=self.tick_count,
+                                                                          width=BattleView.TILE_WIDTH,
+                                                                          height=BattleView.TILE_HEIGHT,
+                                                                          skin_name=skin_name)
+
+                                image.set_alpha(255)
+
+                                surface.blit(image,
+                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                            elif view_object.is_effect(model.Player.SHOCKED) is True:
+                                image = View.image_manager.get_skin_image(model.Objects.SHOCK,
                                                                           tick=self.tick_count,
                                                                           width=BattleView.TILE_WIDTH,
                                                                           height=BattleView.TILE_HEIGHT,
