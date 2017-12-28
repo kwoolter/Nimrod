@@ -118,7 +118,10 @@ class ImageManager:
 
             model.Objects.SEAWEED: ("seaweed0.png","seaweed1.png","seaweed2.png","seaweed1.png"),
             model.Objects.FIRE: ("fire0.png", "fire1.png", "fire2.png", "fire1.png"),
-            model.Objects.POISON: ("poison0.png", "poison1.png", "poison2.png","poison3.png","poison4.png","poison5.png","poison6.png")
+            model.Objects.POISON: ("poison0.png", "poison1.png", "poison2.png","poison3.png","poison4.png","poison5.png","poison6.png"),
+            model.Objects.INK: (
+            "ink0.png", "ink1.png", "ink2.png", "ink3.png", "ink4.png", "ink5.png", "ink6.png"),
+            model.Objects.HIT: ("hit0.png", "hit1.png", "hit2.png")
 
         })
 
@@ -232,6 +235,14 @@ class ImageManager:
         sheet_file_name = "poison.png"
         for i in range(0,7):
             self.sprite_sheets["poison{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "ink.png"
+        for i in range(0,7):
+            self.sprite_sheets["ink{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "birds2.png"
+        for i in range(0,3):
+            self.sprite_sheets["hit{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "lava.png"
         for i in range(0,6):
@@ -866,7 +877,6 @@ class BattleView(View):
         current_player = self.game.battle.get_current_player()
         current_target = self.game.battle.get_current_target()
 
-
         for x in range(0, floor.rect.width):
             for y in range(0, floor.rect.height):
                 for layer_id in sorted(floor.layers.keys()):
@@ -955,7 +965,7 @@ class BattleView(View):
                                 surface.blit(image,
                                              self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
-                            if view_object.is_effect(model.Player.POISONED) is True:
+                            elif view_object.is_effect(model.Player.POISONED) is True:
                                 image = View.image_manager.get_skin_image(model.Objects.POISON,
                                                                           tick=self.tick_count,
                                                                           width=BattleView.TILE_WIDTH,
@@ -963,6 +973,30 @@ class BattleView(View):
                                                                           skin_name=skin_name)
 
                                 image.set_alpha(100)
+
+                                surface.blit(image,
+                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                            elif view_object.is_effect(model.Player.INKED) is True:
+                                image = View.image_manager.get_skin_image(model.Objects.INK,
+                                                                          tick=self.tick_count,
+                                                                          width=BattleView.TILE_WIDTH,
+                                                                          height=BattleView.TILE_HEIGHT,
+                                                                          skin_name=skin_name)
+
+                                image.set_alpha(255)
+
+                                surface.blit(image,
+                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+
+                            elif view_object.is_effect(model.Player.HIT) is True:
+                                image = View.image_manager.get_skin_image(model.Objects.HIT,
+                                                                          tick=self.tick_count,
+                                                                          width=BattleView.TILE_WIDTH,
+                                                                          height=BattleView.TILE_HEIGHT,
+                                                                          skin_name=skin_name)
+
+                                image.set_alpha(255)
 
                                 surface.blit(image,
                                              self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))

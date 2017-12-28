@@ -116,6 +116,8 @@ class Objects:
     SEAWEED = "seaweed"
     FIRE = "fire"
     POISON = "poison"
+    INK = "ink"
+    HIT = "hit"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -213,7 +215,6 @@ class FloorObject(object):
 
 
 class Player(FloorObject):
-
     # Effects
     EVERGREEN = -999
     EFFECT_LIFETIME = 40
@@ -223,7 +224,7 @@ class Player(FloorObject):
     ASLEEP = "asleep"
     BURNED = "burned"
     FROZEN = "frozen"
-
+    INKED = "inked"
 
     def __init__(self, name: str,
                  rect: pygame.Rect,
@@ -244,8 +245,9 @@ class Player(FloorObject):
 
     def __str__(self):
         return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}, Effects={7}".format(self.name, self.HP, self.AP,
-                                                                          self.rect.x, self.rect.y, self.layer,
-                                                                          self.is_dead(),
+                                                                                       self.rect.x, self.rect.y,
+                                                                                       self.layer,
+                                                                                       self.is_dead(),
                                                                                        len(self.effects)))
 
     @property
@@ -284,7 +286,7 @@ class Player(FloorObject):
 
     def do_damage(self, new_value):
         self.character.increment_stat("Damage", new_value)
-        self.do_effect(Player.HIT)
+        #self.do_effect(Player.HIT)
         if self.HP <= 0:
             self.do_effect(Player.DEAD)
 
@@ -311,13 +313,13 @@ class Player(FloorObject):
 
         return self._attacks[attack_name]
 
-    def is_effect(self, effect_name : str):
+    def is_effect(self, effect_name: str):
         if effect_name in self.effects.keys():
             return True
         else:
             return False
 
-    def do_effect(self, effect_name : str):
+    def do_effect(self, effect_name: str):
         self.effects[effect_name] = Player.EFFECT_LIFETIME
 
     def tick(self):
@@ -332,6 +334,7 @@ class Player(FloorObject):
         for effect in expired_effects:
             print("Effect {0} on player {1} expired.".format(effect, self.character.name))
             del self.effects[effect]
+
 
 class Monster(FloorObject):
     def __init__(self, name: str,
@@ -860,6 +863,7 @@ class Attack:
     BONUS = "Attack Bonus"
     RANGE = "Range"
     AP = "AP"
+    EFFECT = "Effect"
 
     ATTACK_ATTRIBUTES = {STRENGTH: "STR", DEXTERITY: "DEX", INTELLIGENCE: "INT", WISDOM: "WIS"}
 
@@ -871,9 +875,11 @@ class Attack:
 
     DEFENCE_TYPES = {AC: "AC", FORTITIUDE: "FORT", REFLEX: "REF", WILL: "WILL"}
 
-    def __init__(self, name: str, description: str, type: str, attack_attribute: str, defence_attribute: str):
+    def __init__(self, name: str, description: str, type: str, attack_attribute: str, defence_attribute: str,
+                 effect: str):
         self.name = name
         self.description = description
+        self.effect = effect
 
         if type in Attack.TYPES:
             self.type = type
@@ -1055,6 +1061,7 @@ class Battle:
                 attack_bonus = attack.get_stat(Attack.BONUS).value
                 attack_range = attack.get_stat(Attack.RANGE).value
                 attack_AP = attack.get_stat(Attack.AP).value
+                attack_effect = attack.effect
 
                 distance_to_target = current_player.distance_from_point(opponent.rect.x, opponent.rect.y)
 
@@ -1084,7 +1091,7 @@ class Battle:
                     else:
 
                         attacker_attack_bonus = current_player.get_stat(attack.attack_attribute + " Attack Bonus")
-                        attacker_attack_modifier  = current_player.get_stat(attack.attack_attribute + " Modifier")
+                        attacker_attack_modifier = current_player.get_stat(attack.attack_attribute + " Modifier")
                         opponent_defence = opponent.get_stat(attack.defence_attribute + " Defence")
 
                         dice_roll = random.randint(1, 20)
@@ -1102,18 +1109,22 @@ class Battle:
                                 print("critical hit!")
                                 damage = (number_of_dice * dice_sides) + attack_bonus + attacker_attack_modifier
                             else:
-                                damage = random.randint(number_of_dice, number_of_dice * dice_sides) + attack_bonus + attacker_attack_modifier
+                                damage = random.randint(number_of_dice,
+                                                        number_of_dice * dice_sides) + attack_bonus + attacker_attack_modifier
 
-                            print("{0} ({1} v {2}): {3:.0f}d{4:.0f}+{5:.0f}+{6:.0f} did {7:.0f} damage".format(attack.name,
-                                                                                               attack.attack_attribute,
-                                                                                               attack.defence_attribute,
-                                                                                               number_of_dice,
-                                                                                               dice_sides,
-                                                                                               attack_bonus,
-                                                                                               attacker_attack_modifier,
-                                                                                               damage))
+                            print("{0} ({1} v {2}): {3:.0f}d{4:.0f}+{5:.0f}+{6:.0f} did {7:.0f} damage".format(
+                                attack.name,
+                                attack.attack_attribute,
+                                attack.defence_attribute,
+                                number_of_dice,
+                                dice_sides,
+                                attack_bonus,
+                                attacker_attack_modifier,
+                                damage))
 
                             opponent.do_damage(damage)
+                            opponent.do_effect(attack_effect)
+
                             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                                           name=Event.DAMAGE_OPPONENT,
                                                           description="{0} did {1:.0f} damage to {2} with {3} attack".format(
@@ -1272,15 +1283,13 @@ class Game():
     def tick(self):
 
         self.tick_count += 1
-        #self.events.add_event(Event(Event.TICK, "Tick", Event.GAME))
+        # self.events.add_event(Event(Event.TICK, "Tick", Event.GAME))
 
         if self.state == Game.BATTLE:
             self.battle.tick()
         elif self.state == Game.PLAYING:
             if self.tick_count % 4 == 0:
-
                 self.current_floor.tick()
-
 
     def get_next_event(self):
 
@@ -1373,7 +1382,8 @@ class Game():
                                     description=attributes["Description"],
                                     type=attributes["Type"],
                                     attack_attribute=attributes["Attack Attribute"],
-                                    defence_attribute=attributes["Defence Attribute"])
+                                    defence_attribute=attributes["Defence Attribute"],
+                                    effect=attributes["Effect"])
 
             stats = attack_data.get_stats_by_name(attack)
             # rint("Stats for attack {0}:".format(attack))
