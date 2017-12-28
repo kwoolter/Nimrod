@@ -1258,22 +1258,21 @@ class Game():
         team2 = Team("Red")
 
         characters = list(self._npcs.get_characters())
-        attacks = list(self._attacks.keys())
 
         for i in range(0, 4):
             new_char = random.choice(characters)
             new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN, Objects.SKELETON_LEFT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
-            random_attack_name = random.choice(attacks)
-            new_player.add_attack(random_attack_name, self._attacks[random_attack_name])
+            attack_name = new_char.get_attribute("Attack")
+            new_player.add_attack(attack_name, self._attacks[attack_name])
             characters.remove(new_char)
             team1.add_player(new_player)
 
             new_char = random.choice(characters)
             new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON_RIGHT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 11, 32, 32), character=new_char)
-            random_attack_name = random.choice(attacks)
-            new_player.add_attack(random_attack_name, self._attacks[random_attack_name])
+            attack_name = new_char.get_attribute("Attack")
+            new_player.add_attack(attack_name, self._attacks[attack_name])
             characters.remove(new_char)
             team2.add_player(new_player)
 
