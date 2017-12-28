@@ -19,4 +19,12 @@ Nimrod
 <img height=300 width=300 src="https://github.com/kwoolter/Nimrod/blob/master/screenshots/Capture4.PNG" alt="game2">
 </td>
 </tr>
+<tr>
+<td>
+<img height=300 width=300 src="https://github.com/kwoolter/Nimrod/blob/master/screenshots/Capture3.PNG" alt="game1">
+</td>
+<td>
+<img height=300 width=300 src="https://github.com/kwoolter/Nimrod/blob/master/screenshots/Capture5.PNG" alt="game2">
+</td>
+</tr>
 </table>
