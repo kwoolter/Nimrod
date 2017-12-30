@@ -1,6 +1,7 @@
 import logging
-import os
 import math
+import os
+
 import pygame
 from pygame.locals import *
 
@@ -43,7 +44,8 @@ class ImageManager:
             else:
                 filename = ImageManager.RESOURCES_DIR + image_file_name
                 logging.info("Loading image {0}...".format(filename))
-                original_image = utils.spritesheet(filename).image_at((0,0,width,height))
+                image_sheet = utils.spritesheet(filename)
+                original_image = image_sheet.image_at()
 
             try:
 
@@ -51,6 +53,7 @@ class ImageManager:
 
                 ImageManager.image_cache[image_file_name] = image
                 logging.info("Image {0} loaded and scaled to {1}x{2} and cached.".format(filename, width, height))
+                print("Image {0} loaded and scaled to {1}x{2} and cached.".format(filename, width, height))
 
             except Exception as err:
                 print(str(err))
@@ -109,20 +112,26 @@ class ImageManager:
                                  "lava4.png", "lava3.png", "lava2.png", "lava1.png"),
             model.Objects.RED_DOT: "red_dot.png",
             model.Objects.GREEN_DOT: "green_dot.png",
-            model.Objects.BUBBLES: ("bubbles0.png","bubbles1.png","bubbles2.png","bubbles3.png","bubbles4.png","bubbles5.png","bubbles6.png","bubbles7.png",
-                                    "bubbles8.png", "bubbles9.png", "bubbles10.png", "bubbles11.png", "bubbles12.png",
-                                    "bubbles13.png", "bubbles14.png", "bubbles15.png"),
+            model.Objects.BUBBLES: (
+                "bubbles0.png", "bubbles1.png", "bubbles2.png", "bubbles3.png", "bubbles4.png", "bubbles5.png",
+                "bubbles6.png", "bubbles7.png",
+                "bubbles8.png", "bubbles9.png", "bubbles10.png", "bubbles11.png", "bubbles12.png",
+                "bubbles13.png", "bubbles14.png", "bubbles15.png"),
             model.Objects.TELEPORT: (
-            "teleport0.png", "teleport1.png", "teleport2.png", "teleport3.png", "teleport4.png", "teleport5.png",
-            "teleport6.png", "teleport7.png","teleport6.png", "teleport5.png", "teleport4.png", "teleport3.png", "teleport2.png", "teleport1.png"),
+                "teleport0.png", "teleport1.png", "teleport2.png", "teleport3.png", "teleport4.png", "teleport5.png",
+                "teleport6.png", "teleport7.png", "teleport6.png", "teleport5.png", "teleport4.png", "teleport3.png",
+                "teleport2.png", "teleport1.png"),
 
-            model.Objects.SEAWEED: ("seaweed0.png","seaweed1.png","seaweed2.png","seaweed1.png"),
+            model.Objects.SEAWEED: ("seaweed0.png", "seaweed1.png", "seaweed2.png", "seaweed1.png"),
             model.Objects.FIRE: ("fire0.png", "fire1.png", "fire2.png", "fire1.png"),
-            model.Objects.POISON: ("poison0.png", "poison1.png", "poison2.png","poison3.png","poison4.png","poison5.png","poison6.png"),
+            model.Objects.POISON: (
+                "poison0.png", "poison1.png", "poison2.png", "poison3.png", "poison4.png", "poison5.png",
+                "poison6.png"),
             model.Objects.INK: (
-            "ink0.png", "ink1.png", "ink2.png", "ink3.png", "ink4.png", "ink5.png", "ink6.png"),
+                "ink0.png", "ink1.png", "ink2.png", "ink3.png", "ink4.png", "ink5.png", "ink6.png"),
             model.Objects.HIT: ("hit0.png", "hit1.png", "hit2.png"),
-            model.Objects.SHOCK: ("electric0.png", "electric1.png", "electric0.png", "electric2.png")
+            model.Objects.ASLEEP: ("zzzz0.png", "zzzz1.png", "zzzz2.png"),
+            model.Objects.SHOCK: ("electric0.png", "electric1.png", "electric0.png", "electric1.png", "electric2.png")
 
         })
 
@@ -196,7 +205,6 @@ class ImageManager:
 
         self.sprite_sheets["SphereBlue.png"] = (sheet_file_name, (96, 0, 32, 32))
 
-
         sheet_file_name = "blocks_sheet_green.png"
         self.sprite_sheets["SphereGreen.png"] = (sheet_file_name, (96, 0, 32, 32))
 
@@ -218,40 +226,44 @@ class ImageManager:
         self.sprite_sheets["SphereGreen3.png"] = (sheet_file_name, (96, 0, 32, 32))
 
         sheet_file_name = "bubbles3.png"
-        for i in range(0,16):
+        for i in range(0, 16):
             self.sprite_sheets["bubbles{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "teleport2.png"
-        for i in range(0,8):
+        for i in range(0, 8):
             self.sprite_sheets["teleport{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "seaweed2.png"
-        for i in range(0,3):
+        for i in range(0, 3):
             self.sprite_sheets["seaweed{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "fire.png"
-        for i in range(0,3):
+        for i in range(0, 3):
             self.sprite_sheets["fire{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "poison.png"
-        for i in range(0,7):
+        for i in range(0, 7):
             self.sprite_sheets["poison{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "ink.png"
-        for i in range(0,7):
+        for i in range(0, 7):
             self.sprite_sheets["ink{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "birds2.png"
-        for i in range(0,3):
+        for i in range(0, 3):
             self.sprite_sheets["hit{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "lava.png"
-        for i in range(0,6):
+        for i in range(0, 6):
             self.sprite_sheets["lava{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "electric.png"
-        for i in range(0,4):
+        for i in range(0, 4):
             self.sprite_sheets["electric{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "zzzz.png"
+        for i in range(0, 3):
+            self.sprite_sheets["zzzz{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
 
 class View():
@@ -478,7 +490,7 @@ class StatusBar(View):
 
     def process_event(self, new_event: model.Event):
         if new_event.type == model.Event.BATTLE:
-            self.status_messages.append((new_event.description,StatusBar.MESSAGE_TICK_LIFE ))
+            self.status_messages.append((new_event.description, StatusBar.MESSAGE_TICK_LIFE))
 
     def tick(self):
 
@@ -488,7 +500,7 @@ class StatusBar(View):
 
             msg, count = self.status_messages[self.current_message_number]
             if count > 1:
-                self.status_messages[self.current_message_number] = (msg, count-1)
+                self.status_messages[self.current_message_number] = (msg, count - 1)
             else:
                 del self.status_messages[self.current_message_number]
 
@@ -497,7 +509,6 @@ class StatusBar(View):
             self.current_message_number += 1
             if self.current_message_number >= len(self.status_messages):
                 self.current_message_number = 0
-
 
     def draw(self):
 
@@ -763,8 +774,8 @@ class GameOverView(View):
 class GameView(View):
     BG_COLOUR = Colours.BLACK
     FG_COLOUR = Colours.WHITE
-    TILE_WIDTH = 32
-    TILE_HEIGHT = 32
+    TILE_WIDTH = 64
+    TILE_HEIGHT = 64
     TRANSPARENT = Colours.TRANSPARENT
 
     def __init__(self, width: int, height: int):
@@ -790,8 +801,6 @@ class GameView(View):
             raise ("No Floor to view!")
 
         skin_name = self.floor.skin_name
-
-        # print("drawing layer for floor {0}".format(layer_id))
 
         for x in range(0, self.floor.rect.width):
             for y in range(0, self.floor.rect.height):
@@ -837,10 +846,10 @@ class GameView(View):
 class BattleView(View):
     BG_COLOUR = Colours.DARK_GREY
     FG_COLOUR = Colours.WHITE
-    TILE_WIDTH = 32
-    TILE_HEIGHT = 32
-    LINE_UP_WIDTH = 34
-    LINE_UP_HEIGHT = 34
+    TILE_WIDTH = 64
+    TILE_HEIGHT = 64
+    LINE_UP_WIDTH = 68
+    LINE_UP_HEIGHT = 68
     LAYER_ALPHA_MULTIPLIER = 15
 
     TRANSPARENT = Colours.TRANSPARENT
@@ -890,6 +899,17 @@ class BattleView(View):
 
                     if view_object is not None:
 
+                        # Calculate where on the surface to draw the object
+                        view_x, view_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
+
+                        # Add 'floating' offset if object is a player
+                        if isinstance(view_object, model.Player):
+                            y_offset = 2 * (1 + math.sin(self.tick_count / 2))
+                        else:
+                            y_offset = 0
+
+                        # Draw any base graphics before we draw the actual object
+                        # If this is the current player then highlight base in yellow
                         if view_object == current_player:
 
                             image = View.image_manager.get_skin_image(model.Objects.BASE_YELLOW,
@@ -899,9 +919,11 @@ class BattleView(View):
                                                                       skin_name=skin_name)
                             image.set_alpha(100)
 
-                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                            surface.blit(image, (view_x, view_y))
 
+                        # If this is the current target then highlight base in red
                         elif view_object == current_target:
+
                             image = View.image_manager.get_skin_image(model.Objects.BASE_RED,
                                                                       tick=self.tick_count,
                                                                       width=BattleView.TILE_WIDTH,
@@ -909,10 +931,10 @@ class BattleView(View):
                                                                       skin_name=skin_name)
                             image.set_alpha(100)
 
-                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                            surface.blit(image, (view_x, view_y))
 
+                        # If this is a player then give them a shadow
                         if isinstance(view_object, model.Player) is True:
-
                             image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
                                                                       tick=self.tick_count,
                                                                       width=BattleView.TILE_WIDTH,
@@ -921,26 +943,15 @@ class BattleView(View):
 
                             image.set_alpha(150)
 
-                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                            surface.blit(image, (view_x, view_y))
 
-                            if view_object.is_effect(model.Player.BURNED) is True:
-                                image = View.image_manager.get_skin_image(model.Objects.FIRE,
-                                                                          tick=self.tick_count,
-                                                                          width=BattleView.TILE_WIDTH,
-                                                                          height=BattleView.TILE_HEIGHT,
-                                                                          skin_name=skin_name)
-
-                                image.set_alpha(150)
-
-                                surface.blit(image,
-                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
-
-
+                        # Get the image for the actual object at this position
                         image = View.image_manager.get_skin_image(view_object.name,
                                                                   tick=self.tick_count,
                                                                   width=BattleView.TILE_WIDTH,
                                                                   height=BattleView.TILE_HEIGHT,
                                                                   skin_name=skin_name)
+                        # If the image can be loaded...
                         if image is not None:
 
                             if layer_id > 1:
@@ -948,16 +959,12 @@ class BattleView(View):
                             else:
                                 image.set_alpha(255)
 
-                            if isinstance(view_object, model.Player):
-                                y_offset = 2*(1+math.sin(self.tick_count/2))
-                            else:
-                                y_offset = 0
-
-                            view_x, view_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
                             surface.blit(image, (view_x, view_y - y_offset))
 
+                        # If the object is a player draw any status effects
                         if isinstance(view_object, model.Player) is True:
 
+                            # Burned
                             if view_object.is_effect(model.Player.BURNED) is True:
                                 image = View.image_manager.get_skin_image(model.Objects.FIRE,
                                                                           tick=self.tick_count,
@@ -967,9 +974,9 @@ class BattleView(View):
 
                                 image.set_alpha(100)
 
-                                surface.blit(image,
-                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                                surface.blit(image, (view_x, view_y))
 
+                            # Poisoned
                             elif view_object.is_effect(model.Player.POISONED) is True:
                                 image = View.image_manager.get_skin_image(model.Objects.POISON,
                                                                           tick=self.tick_count,
@@ -977,11 +984,11 @@ class BattleView(View):
                                                                           height=BattleView.TILE_HEIGHT,
                                                                           skin_name=skin_name)
 
-                                image.set_alpha(100)
+                                image.set_alpha(200)
 
-                                surface.blit(image,
-                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                                surface.blit(image, (view_x, view_y))
 
+                            # Inked
                             elif view_object.is_effect(model.Player.INKED) is True:
                                 image = View.image_manager.get_skin_image(model.Objects.INK,
                                                                           tick=self.tick_count,
@@ -991,9 +998,9 @@ class BattleView(View):
 
                                 image.set_alpha(255)
 
-                                surface.blit(image,
-                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                                surface.blit(image, (view_x, view_y))
 
+                            # Shocked
                             elif view_object.is_effect(model.Player.SHOCKED) is True:
                                 image = View.image_manager.get_skin_image(model.Objects.SHOCK,
                                                                           tick=self.tick_count,
@@ -1003,9 +1010,9 @@ class BattleView(View):
 
                                 image.set_alpha(255)
 
-                                surface.blit(image,
-                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                                surface.blit(image, (view_x, view_y))
 
+                            # Hit
                             elif view_object.is_effect(model.Player.HIT) is True:
                                 image = View.image_manager.get_skin_image(model.Objects.HIT,
                                                                           tick=self.tick_count,
@@ -1015,12 +1022,24 @@ class BattleView(View):
 
                                 image.set_alpha(255)
 
-                                surface.blit(image,
-                                             self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                                surface.blit(image, (view_x, view_y - y_offset))
+
+                            # Asleep
+                            elif view_object.is_effect(model.Player.ASLEEP) is True:
+                                image = View.image_manager.get_skin_image(model.Objects.ASLEEP,
+                                                                          tick=self.tick_count,
+                                                                          width=BattleView.TILE_WIDTH,
+                                                                          height=BattleView.TILE_HEIGHT,
+                                                                          skin_name=skin_name)
+
+                                image.set_alpha(255)
+
+                                surface.blit(image, (view_x, view_y - y_offset))
 
         return surface
 
     def draw(self):
+
         self.surface.fill(BattleView.BG_COLOUR)
 
         if self.game.battle is None:
@@ -1097,14 +1116,16 @@ class BattleView(View):
                       fg_colour=BattleView.FG_COLOUR,
                       bg_colour=BattleView.BG_COLOUR)
 
+
     def end(self):
         super(BattleView, self).end()
         self.opponent_view.end()
         self.attacker_view.end()
 
+
     def model_to_view(self, x, y, layer_id):
         origin_x = (self.surface.get_rect().width / 2) - (BattleView.TILE_WIDTH / 2)
-        origin_y = 128
+        origin_y = 170
         view_x = int(origin_x + (BattleView.TILE_WIDTH * x / 2) - (BattleView.TILE_WIDTH * y / 2))
         view_y = int(origin_y + (BattleView.TILE_HEIGHT * x / 4) + (BattleView.TILE_HEIGHT * y / 4) - (
             layer_id * BattleView.TILE_HEIGHT / 2))
@@ -1228,7 +1249,7 @@ class PlayerView(View):
 
         msg = "{0} ({1:.0f}d{2:.0f})".format(attack.name, number_of_dice, dice_sides)
         if attack_bonus > 0:
-            msg+= "+{0:.0f}".format(attack_bonus)
+            msg += "+{0:.0f}".format(attack_bonus)
 
         draw_text(self.surface,
                   msg=msg,

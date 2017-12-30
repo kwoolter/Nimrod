@@ -119,6 +119,7 @@ class Objects:
     INK = "ink"
     HIT = "hit"
     SHOCK = "shock"
+    ASLEEP = "asleep"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -227,6 +228,7 @@ class Player(FloorObject):
     FROZEN = "frozen"
     INKED = "inked"
     SHOCKED = "shocked"
+    ASLEEP = "asleep"
 
     def __init__(self, name: str,
                  rect: pygame.Rect,

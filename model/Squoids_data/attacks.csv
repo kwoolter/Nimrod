@@ -1,9 +1,10 @@
 Name,Description,Type,Attack Attribute,Defence Attribute,Number of Dice,Dice Sides,Attack Bonus,Range,AP,Effect
-Sword,Sword Attack,Melee,Strength,AC,1,6,0,1,2,burned
-Dagger,Dagger Attack,Melee,Strength,AC,1,3,0,1,2,shocked
+Sword,Sword Attack,Melee,Strength,AC,1,6,0,1,2,hit
+Dagger,Dagger Attack,Melee,Strength,AC,1,3,0,1,2,asleep
 Bow,Bow Attack,Ranged,Dexterity,AC,1,4,0,8,2,hit
-Hammer,Hammer Attack,Melee,Strength,AC,2,4,1,1,2,poisoned
+Hammer,Hammer Attack,Melee,Strength,AC,2,4,1,1,2,asleep
 Fish Bone,Fish Bone Spear,Melee,Dexterity,AC,1,3,0,1.5,2,poisoned
-Slingshot,Slingshot,Ranged,Dexterity,AC,1,4,0,5,2,burned
+Slingshot,Slingshot,Ranged,Dexterity,AC,1,4,0,5,2,hit
 Shock,Electric Shock,Magic,Intelligence,Reflex,1,4,0,4,2,shocked
 Ink Jet,Ink Jet,Magic,Dexterity,Reflex,1,4,0,4,2,inked
+Stun,Stun,Magic,Inettligence,Reflex,1,4,0,4,2,asleep

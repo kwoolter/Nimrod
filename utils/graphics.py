@@ -89,7 +89,9 @@ class spritesheet(object):
             raise err
 
     # Load a specific image from a specific rectangle
-    def image_at(self, rectangle, colorkey = None):
+    def image_at(self, rectangle = None, colorkey = None):
+        if rectangle is None:
+            rectangle = self.sheet.get_rect()
         "Loads image from x,y,x+offset,y+offset"
         rect = pygame.Rect(rectangle)
         image = pygame.Surface(rect.size, depth=24)
