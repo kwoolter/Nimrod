@@ -7,4 +7,5 @@ Fish Bone,Fish Bone Spear,Melee,Dexterity,AC,1,3,0,1.5,2,poisoned
 Slingshot,Slingshot,Ranged,Dexterity,AC,1,4,0,5,2,hit
 Shock,Electric Shock,Magic,Intelligence,Reflex,1,4,0,4,2,shocked
 Ink Jet,Ink Jet,Magic,Dexterity,Reflex,1,4,0,4,2,inked
-Stun,Stun,Magic,Inettligence,Reflex,1,4,0,4,2,asleep
+Stun,Stun,Magic,Intelligence,Reflex,1,4,0,4,2,asleep
+Pollution,Pollution,Magic,Intelligence,Reflex,1,4,0,4,2,poisoned

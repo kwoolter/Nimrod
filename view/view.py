@@ -904,9 +904,11 @@ class BattleView(View):
 
                         # Add y offset if object is a player to provide floating animation
                         if isinstance(view_object, model.Player):
-                            y_offset = 2 * (1 + math.sin(self.tick_count / 2))
+                            if view_object.is_effect(model.Player.ASLEEP) is False or view_object.is_dead() is False :
+                                y_offset = 2 * (1 + math.sin(self.tick_count / 2))
+
                             if view_object.is_effect(model.Player.ATTACKING) is True:
-                                x_offset = 4 * ((self.tick_count % 3)-1)
+                                x_offset = 8 * ((self.tick_count % 3)-1)
                         else:
                             y_offset = 0
                             x_offset = 0
@@ -1040,7 +1042,7 @@ class BattleView(View):
 
                                 image.set_alpha(255)
 
-                                surface.blit(image, (view_x, view_y - y_offset))
+                                surface.blit(image, (view_x, view_y))
 
         return surface
 
@@ -1094,7 +1096,7 @@ class BattleView(View):
 
         if self.next_event is not None:
             x = pane_rect.centerx
-            y = 500
+            y = 560
 
             msg = self.next_event.description
 

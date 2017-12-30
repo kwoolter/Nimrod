@@ -1044,23 +1044,28 @@ class Battle:
         if self._state != Battle.PLAYING:
             raise Exception("Battle in state '{0}' - not playing so can't do attack!".format(self._state))
 
+        # Find out who is ttacking who
         current_player = self.get_current_player()
         current_team = self.get_player_team(current_player)
         opposite_team = self.get_opposite_team(current_team)
 
+        # If the opposition are all already dead then stop here
         if opposite_team.is_dead() is True:
             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                           name=Event.VICTORY,
                                           description="Team {0} are all dead!".format(opposite_team.name)))
-            # raise Exception("Team {0} are all dead!".format(opposite_team.name))
 
+        # Otherwise...
         else:
+
+            # Get the current target opponent
             opponent = self.get_current_target()
 
             if opponent is not None:
 
                 attack = current_player.get_attack()
 
+                # Get a load of stats about the selected attack that the attacker is going to use
                 number_of_dice = attack.get_stat(Attack.NUMBER_OF_DICE).value
                 dice_sides = attack.get_stat(Attack.DICE_SIDES).value
                 attack_bonus = attack.get_stat(Attack.BONUS).value
@@ -1068,6 +1073,7 @@ class Battle:
                 attack_AP = attack.get_stat(Attack.AP).value
                 attack_effect = attack.effect
 
+                # Is the target too far away based on the range to the attack?
                 distance_to_target = current_player.distance_from_point(opponent.rect.x, opponent.rect.y)
 
                 if distance_to_target > attack_range:
@@ -1075,32 +1081,40 @@ class Battle:
                                                   name=Event.MISSED_OPPONENT,
                                                   description="{0} is too far away (distance={1:.1f}), attack range={2:.1f}".format(
                                                       opponent.character.name, distance_to_target, attack_range)))
-                    # raise Exception(
-                    #     "{0} is too far away (distance={1}), attack range={2}".format(opponent.name, distance_to_target,
-                    #                                                                   attack_range))
+
+                # Does the attacker have too few AP to execute the attack?
                 elif current_player.AP < attack_AP:
                     Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                                   name=Event.NO_AP,
                                                   description="{0} does not have enough AP to attack - {1:.0f} AP required!".format(
                                                       current_player.character.name, attack_AP)))
+
+                # OK we are good to attempt an attack
                 else:
+
+                    #  Is there a clear path to the target?
                     attack_route = Navigator(self.battle_floor)
                     result = attack_route.navigate((current_player.rect.x, current_player.rect.y, current_player.layer),
                                                    (opponent.rect.x, opponent.rect.y, opponent.layer), direct=True)
 
+                    # If path is not clear then we cannot proceed
                     if result is False:
                         Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                                       name=Event.MISSED_OPPONENT,
                                                       description="Target {0} is blocked".format(
                                                           opponent.character.name)))
+
                     else:
 
+                        # Set the attacker's status
                         current_player.do_effect(Player.ATTACKING)
 
+                        # Get some attacker and opponent stats
                         attacker_attack_bonus = current_player.get_stat(attack.attack_attribute + " Attack Bonus")
                         attacker_attack_modifier = current_player.get_stat(attack.attack_attribute + " Modifier")
                         opponent_defence = opponent.get_stat(attack.defence_attribute + " Defence")
 
+                        # Roll a 20 sided dice and add and attacker bonuses to the roll
                         dice_roll = random.randint(1, 20)
                         attack_roll = dice_roll + attacker_attack_bonus
 
@@ -1110,11 +1124,15 @@ class Battle:
                                                                                         attack_roll,
                                                                                         opponent_defence))
 
+                        # Compare the attack roll to the opponent's defense stats to see if the attack was successful
                         if attack_roll > opponent_defence:
 
+                            # If the dice roll was a natural 20 then this is a critical hit and does maximum damage
                             if dice_roll == 20:
                                 print("critical hit!")
                                 damage = (number_of_dice * dice_sides) + attack_bonus + attacker_attack_modifier
+
+                            # Else roll the dice associated with the attack and calculate the damage
                             else:
                                 damage = random.randint(number_of_dice,
                                                         number_of_dice * dice_sides) + attack_bonus + attacker_attack_modifier
@@ -1129,6 +1147,7 @@ class Battle:
                                 attacker_attack_modifier,
                                 damage))
 
+                            # Apply the damage to the opponent and also the effect associated with the attack
                             opponent.do_damage(damage)
                             opponent.do_effect(attack_effect)
 
@@ -1139,6 +1158,8 @@ class Battle:
                                                               damage,
                                                               opponent.character.name,
                                                               attack.name)))
+
+                        # If the attack was not successful the log the event that the attack missed
                         else:
                             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                                           name=Event.MISSED_OPPONENT,
@@ -1146,9 +1167,13 @@ class Battle:
                                                               current_player.character.name,
                                                               opponent.character.name)))
 
+                        # Deduct the AP required to perform the attack
                         current_player.AP -= attack_AP
 
+                        # if the opponent was killed...
                         if opponent.is_dead() is True:
+
+                            # Update the attackers kills and XP stats
                             current_player.kills += 1
                             xp_gained = opponent.get_stat("XPReward")
                             if xp_gained is None:
@@ -1162,18 +1187,22 @@ class Battle:
                                                               current_player.character.name,
                                                               opponent.character.name, xp_gained)))
 
+                            # If the whole opponent's team is dead then end the battle
                             if opposite_team.is_dead() is True:
                                 self._state = Battle.END
                                 Battle.EVENTS.add_event(Event(type=Event.BATTLE, name=Event.VICTORY,
                                                               description="Team {0} are all dead!".format(
                                                                   opposite_team.name)))
+
+                            # Otherwise just remove the deaqd player from the order of play
                             else:
                                 self.order_of_play.remove(opponent)
                                 self.set_current_target(tactic=Team.TACTIC_NEAREST)
 
     def move_player(self, dx: int, dy: int):
+
         current_player = self.get_current_player()
-        # d = current_player.distance_from_origin()
+
         if current_player.AP > 0:
             self.battle_floor.move_player(current_player, dx, dy)
             if current_player.has_moved() is True:
@@ -1185,6 +1214,7 @@ class Battle:
                                               current_player.character.name)))
 
     def get_winning_team(self):
+
         winning_team = None
 
         if self.state == Battle.END:
@@ -1264,7 +1294,7 @@ class Game():
 
         characters = list(self._npcs.get_characters())
 
-        for i in range(0, 4):
+        for i in range(0, 5):
             new_char = random.choice(characters)
             new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN, Objects.SKELETON_LEFT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
