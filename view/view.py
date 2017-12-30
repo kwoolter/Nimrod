@@ -902,11 +902,14 @@ class BattleView(View):
                         # Calculate where on the surface to draw the object
                         view_x, view_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
 
-                        # Add 'floating' offset if object is a player
+                        # Add y offset if object is a player to provide floating animation
                         if isinstance(view_object, model.Player):
                             y_offset = 2 * (1 + math.sin(self.tick_count / 2))
+                            if view_object.is_effect(model.Player.ATTACKING) is True:
+                                x_offset = 4 * ((self.tick_count % 3)-1)
                         else:
                             y_offset = 0
+                            x_offset = 0
 
                         # Draw any base graphics before we draw the actual object
                         # If this is the current player then highlight base in yellow
@@ -935,6 +938,7 @@ class BattleView(View):
 
                         # If this is a player then give them a shadow
                         if isinstance(view_object, model.Player) is True:
+
                             image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
                                                                       tick=self.tick_count,
                                                                       width=BattleView.TILE_WIDTH,
@@ -945,7 +949,7 @@ class BattleView(View):
 
                             surface.blit(image, (view_x, view_y))
 
-                        # Get the image for the actual object at this position
+                        # Get the image for the actual object to draw at this position
                         image = View.image_manager.get_skin_image(view_object.name,
                                                                   tick=self.tick_count,
                                                                   width=BattleView.TILE_WIDTH,
@@ -954,12 +958,14 @@ class BattleView(View):
                         # If the image can be loaded...
                         if image is not None:
 
+                            # Set the image alpha based on the layer so that higher layers are more transparent
                             if layer_id > 1:
                                 image.set_alpha(255 - (layer_id * BattleView.LAYER_ALPHA_MULTIPLIER))
                             else:
                                 image.set_alpha(255)
 
-                            surface.blit(image, (view_x, view_y - y_offset))
+                            # Draw the object
+                            surface.blit(image, (view_x - x_offset, view_y - y_offset))
 
                         # If the object is a player draw any status effects
                         if isinstance(view_object, model.Player) is True:

@@ -229,6 +229,7 @@ class Player(FloorObject):
     INKED = "inked"
     SHOCKED = "shocked"
     ASLEEP = "asleep"
+    ATTACKING = "attacking"
 
     def __init__(self, name: str,
                  rect: pygame.Rect,
@@ -1093,6 +1094,8 @@ class Battle:
                                                       description="Target {0} is blocked".format(
                                                           opponent.character.name)))
                     else:
+
+                        current_player.do_effect(Player.ATTACKING)
 
                         attacker_attack_bonus = current_player.get_stat(attack.attack_attribute + " Attack Bonus")
                         attacker_attack_modifier = current_player.get_stat(attack.attack_attribute + " Modifier")
