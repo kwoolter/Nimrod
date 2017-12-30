@@ -905,14 +905,14 @@ class BattleView(View):
 
                         # Add y offset if object is a player to provide floating animation
                         if isinstance(view_object, model.Player):
-                            if view_object.is_effect(model.Player.ASLEEP) is False or \
-                                view_object.is_effect(model.Player.FROZEN) is False or \
-                                view_object.is_dead() is False :
+                            if view_object.is_effect(model.Player.ASLEEP) is False and \
+                                            view_object.is_effect(model.Player.FROZEN) is False and \
+                                            view_object.is_dead() is False:
 
                                 y_offset = 2 * (1 + math.sin(self.tick_count / 2))
 
                             if view_object.is_effect(model.Player.ATTACKING) is True:
-                                x_offset = 8 * ((self.tick_count % 3)-1)
+                                x_offset = 8 * ((self.tick_count % 3) - 1)
                         else:
                             y_offset = 0
                             x_offset = 0
@@ -944,7 +944,6 @@ class BattleView(View):
 
                         # If this is a player then give them a shadow
                         if isinstance(view_object, model.Player) is True:
-
                             image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
                                                                       tick=self.tick_count,
                                                                       width=BattleView.TILE_WIDTH,
@@ -1141,12 +1140,10 @@ class BattleView(View):
                       fg_colour=BattleView.FG_COLOUR,
                       bg_colour=BattleView.BG_COLOUR)
 
-
     def end(self):
         super(BattleView, self).end()
         self.opponent_view.end()
         self.attacker_view.end()
-
 
     def model_to_view(self, x, y, layer_id):
         origin_x = (self.surface.get_rect().width / 2) - (BattleView.TILE_WIDTH / 2)
