@@ -131,7 +131,8 @@ class ImageManager:
                 "ink0.png", "ink1.png", "ink2.png", "ink3.png", "ink4.png", "ink5.png", "ink6.png"),
             model.Objects.HIT: ("hit0.png", "hit1.png", "hit2.png"),
             model.Objects.ASLEEP: ("zzzz0.png", "zzzz1.png", "zzzz2.png"),
-            model.Objects.SHOCK: ("electric0.png", "electric1.png", "electric0.png", "electric1.png", "electric2.png")
+            model.Objects.SHOCK: ("electric0.png", "electric1.png", "electric0.png", "electric1.png", "electric2.png"),
+            model.Objects.FROZEN: "Block32x32Blue2.png"
 
         })
 
@@ -904,7 +905,10 @@ class BattleView(View):
 
                         # Add y offset if object is a player to provide floating animation
                         if isinstance(view_object, model.Player):
-                            if view_object.is_effect(model.Player.ASLEEP) is False or view_object.is_dead() is False :
+                            if view_object.is_effect(model.Player.ASLEEP) is False or \
+                                view_object.is_effect(model.Player.FROZEN) is False or \
+                                view_object.is_dead() is False :
+
                                 y_offset = 2 * (1 + math.sin(self.tick_count / 2))
 
                             if view_object.is_effect(model.Player.ATTACKING) is True:
@@ -1041,6 +1045,19 @@ class BattleView(View):
                                                                           skin_name=skin_name)
 
                                 image.set_alpha(255)
+
+                                surface.blit(image, (view_x, view_y))
+
+
+                            # Frozen
+                            elif view_object.is_effect(model.Player.FROZEN) is True:
+                                image = View.image_manager.get_skin_image(model.Objects.FROZEN,
+                                                                          tick=self.tick_count,
+                                                                          width=BattleView.TILE_WIDTH,
+                                                                          height=BattleView.TILE_HEIGHT,
+                                                                          skin_name=skin_name)
+
+                                image.set_alpha(150)
 
                                 surface.blit(image, (view_x, view_y))
 

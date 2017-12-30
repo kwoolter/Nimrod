@@ -120,6 +120,7 @@ class Objects:
     HIT = "hit"
     SHOCK = "shock"
     ASLEEP = "asleep"
+    FROZEN = "frozen"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -229,6 +230,7 @@ class Player(FloorObject):
     INKED = "inked"
     SHOCKED = "shocked"
     ASLEEP = "asleep"
+    FROZEN = "frozen"
     ATTACKING = "attacking"
 
     def __init__(self, name: str,
@@ -599,7 +601,7 @@ class Floor:
 
         else:
 
-            # Look at what tile is in the nbew position
+            # Look at what tile is in the new position
             tile = self.get_floor_tile(new_x, new_y, z)
 
             # Is the new position filled with a solid object?
@@ -664,16 +666,16 @@ class Floor:
                     selected_player.do_effect(Player.BURNED)
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                                  name=Event.LOSE_HEALTH,
-                                                 description="{0} stood on {1}".format(selected_player.name,
+                                                 description="{0} stood on {1}".format(selected_player.character.name,
                                                                                        base_tile.name)))
 
                 # If standing on ice lose health
                 elif base_tile.name == Objects.ICE:
                     selected_player.do_damage(1)
-                    selected_player.do_effect(Player.POISONED)
+                    selected_player.do_effect(Player.FROZEN)
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                                  name=Event.LOSE_HEALTH,
-                                                 description="{0} stood on {1}".format(selected_player.name,
+                                                 description="{0} stood on {1}".format(selected_player.character.name,
                                                                                        base_tile.name)))
 
     def tick(self):
