@@ -132,7 +132,7 @@ class ImageManager:
             model.Objects.HIT: ("hit0.png", "hit1.png", "hit2.png"),
             model.Objects.ASLEEP: ("zzzz0.png", "zzzz1.png", "zzzz2.png"),
             model.Objects.SHOCK: ("electric0.png", "electric1.png", "electric0.png", "electric1.png", "electric2.png"),
-            model.Objects.FROZEN: "Block32x32Blue2.png"
+            model.Objects.FROZEN: "ice_block.png"
 
         })
 
@@ -900,7 +900,7 @@ class BattleView(View):
 
                     if view_object is not None:
 
-                        # Calculate where on the surface to draw the object
+                        # Calculate where on the view's surface to draw the object
                         view_x, view_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
 
                         # Add y offset if object is a player to provide floating animation

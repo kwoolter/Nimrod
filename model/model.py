@@ -293,8 +293,8 @@ class Player(FloorObject):
 
     def do_damage(self, new_value):
         self.character.increment_stat("Damage", new_value)
-        #self.do_effect(Player.HIT)
         if self.HP <= 0:
+            self.effects = {}
             self.do_effect(Player.DEAD)
 
     def do_heal(self, new_value):
