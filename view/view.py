@@ -106,6 +106,7 @@ class ImageManager:
             model.Objects.SQUOID_RED: "Squoid_warrior_red.png",
             model.Objects.SQUOID2: "Squoid_warrior_green.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
+            model.Objects.CHEST: "chest.png",
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.ICE: "ice3.png",
             model.Objects.LAVA: ("lava0.png", "lava1.png", "lava2.png", "lava3.png", "lava4.png", "lava5.png",
@@ -672,10 +673,12 @@ class GameReadyView(View):
                   fg_colour=GameReadyView.FG_COLOUR,
                   bg_colour=GameReadyView.BG_COLOUR)
 
-        image = View.image_manager.get_skin_image(model.Objects.SQUOID, tick=self.tick_count)
-
         image_width = 200
         image_height = 200
+
+        image = View.image_manager.get_skin_image(model.Objects.SQUOID, width=64, height=64, tick=self.tick_count)
+
+
 
         x = pane_rect.centerx - int(image_width / 2)
         y += 40
@@ -862,8 +865,8 @@ class BattleView(View):
 
         self.game = None
 
-        self.attacker_view = PlayerView(110, 300)
-        self.opponent_view = PlayerView(110, 300)
+        self.attacker_view = PlayerView(120, 250)
+        self.opponent_view = PlayerView(130, 250)
 
         self.next_event = None
 

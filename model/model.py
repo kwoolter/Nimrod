@@ -15,6 +15,80 @@ import utils.trpg as trpg
 from .derived_stats import *
 
 
+class Attack:
+    # Attack Types
+    MELEE = "Melee"
+    RANGED = "Ranged"
+    MAGIC = "Magic"
+    UNKNOWN = "UNKNOWN"
+
+    TYPES = (MELEE, RANGED, MAGIC)
+
+    # Attack attributes
+    STRENGTH = "Strength"
+    DEXTERITY = "Dexterity"
+    INTELLIGENCE = "Intelligence"
+    WISDOM = "Wisdom"
+
+    # Attack Stats
+    NUMBER_OF_DICE = "Number of Dice"
+    DICE_SIDES = "Dice Sides"
+    BONUS = "Attack Bonus"
+    RANGE = "Range"
+    AP = "AP"
+    EFFECT = "Effect"
+
+    ATTACK_ATTRIBUTES = {STRENGTH: "STR", DEXTERITY: "DEX", INTELLIGENCE: "INT", WISDOM: "WIS"}
+
+    # Defence types
+    AC = "AC"
+    FORTITIUDE = "Fortitude"
+    REFLEX = "Reflex"
+    WILL = "Will"
+
+    DEFENCE_TYPES = {AC: "AC", FORTITIUDE: "FORT", REFLEX: "REF", WILL: "WILL"}
+
+    def __init__(self, name: str, description: str, type: str, attack_attribute: str, defence_attribute: str,
+                 effect: str):
+        self.name = name
+        self.description = description
+        self.effect = effect
+
+        if type in Attack.TYPES:
+            self.type = type
+        else:
+            self.type = Attack.UNKNOWN
+
+        if attack_attribute in Attack.ATTACK_ATTRIBUTES.keys():
+            self.attack_attribute = attack_attribute
+        else:
+            self.attack_attribute = Attack.UNKNOWN
+
+        if defence_attribute in Attack.DEFENCE_TYPES:
+            self.defence_attribute = defence_attribute
+        else:
+            self.defence_attribute = Attack.UNKNOWN
+
+        self.stats = {}
+
+    def add_stat(self, new_stat: trpg.BaseStat):
+        self.stats[new_stat.name] = copy.copy(new_stat)
+
+    def get_stat(self, stat_name: str):
+        if stat_name not in self.stats.keys():
+            raise Exception("Stat {0} is not set for attack {1}:{2}".format(stat_name, self.name, self.description))
+
+        return self.stats[stat_name]
+
+    def print(self):
+        print("{0}:{1} - type({2}) - {3} vs. {4}".format(self.name,
+                                                         self.description,
+                                                         self.type,
+                                                         self.attack_attribute,
+                                                         self.defence_attribute))
+        for stat in self.stats.values():
+            print("\t{0}={1}".format(stat.name, stat.value))
+
 class Character(trpg.RPGCharacter):
     def __init__(self, name: str, rpg_race: str, rpg_class: str,
                  x: int = 1, y: int = 1, width: int = 1, height: int = 1, HP: int = 20):
@@ -106,6 +180,7 @@ class Objects:
     SKELETON_LEFT = "skeleton_left"
     SKELETON_RIGHT = "skeleton_right"
     KEY = "key1"
+    CHEST = "chest"
     LAVA = "lava"
     ICE = "ice"
     CYLINDER = "cylinder"
@@ -312,8 +387,8 @@ class Player(FloorObject):
 
         return self.HP <= 0
 
-    def add_attack(self, attack_name: str, attack_stats: list):
-        self._attacks[attack_name] = copy.deepcopy(attack_stats)
+    def add_attack(self, attack : Attack):
+        self._attacks[attack.name] = copy.deepcopy(attack)
 
     def get_attack(self):
         attack_name = list(self._attacks.keys())[0]
@@ -849,79 +924,6 @@ class FloorObjectLoader():
         return FloorObjectLoader.get_object_copy_by_code(object_code)
 
 
-class Attack:
-    # Attack Types
-    MELEE = "Melee"
-    RANGED = "Ranged"
-    MAGIC = "Magic"
-    UNKNOWN = "UNKNOWN"
-
-    TYPES = (MELEE, RANGED, MAGIC)
-
-    # Attack attributes
-    STRENGTH = "Strength"
-    DEXTERITY = "Dexterity"
-    INTELLIGENCE = "Intelligence"
-    WISDOM = "Wisdom"
-
-    # Attack Stats
-    NUMBER_OF_DICE = "Number of Dice"
-    DICE_SIDES = "Dice Sides"
-    BONUS = "Attack Bonus"
-    RANGE = "Range"
-    AP = "AP"
-    EFFECT = "Effect"
-
-    ATTACK_ATTRIBUTES = {STRENGTH: "STR", DEXTERITY: "DEX", INTELLIGENCE: "INT", WISDOM: "WIS"}
-
-    # Defence types
-    AC = "AC"
-    FORTITIUDE = "Fortitude"
-    REFLEX = "Reflex"
-    WILL = "Will"
-
-    DEFENCE_TYPES = {AC: "AC", FORTITIUDE: "FORT", REFLEX: "REF", WILL: "WILL"}
-
-    def __init__(self, name: str, description: str, type: str, attack_attribute: str, defence_attribute: str,
-                 effect: str):
-        self.name = name
-        self.description = description
-        self.effect = effect
-
-        if type in Attack.TYPES:
-            self.type = type
-        else:
-            self.type = Attack.UNKNOWN
-
-        if attack_attribute in Attack.ATTACK_ATTRIBUTES.keys():
-            self.attack_attribute = attack_attribute
-        else:
-            self.attack_attribute = Attack.UNKNOWN
-
-        if defence_attribute in Attack.DEFENCE_TYPES:
-            self.defence_attribute = defence_attribute
-        else:
-            self.defence_attribute = Attack.UNKNOWN
-
-        self.stats = {}
-
-    def add_stat(self, new_stat: trpg.BaseStat):
-        self.stats[new_stat.name] = copy.copy(new_stat)
-
-    def get_stat(self, stat_name: str):
-        if stat_name not in self.stats.keys():
-            raise Exception("Stat {0} is not set for attack {1}:{2}".format(stat_name, self.name, self.description))
-
-        return self.stats[stat_name]
-
-    def print(self):
-        print("{0}:{1} - type({2}) - {3} vs. {4}".format(self.name,
-                                                         self.description,
-                                                         self.type,
-                                                         self.attack_attribute,
-                                                         self.defence_attribute))
-        for stat in self.stats.values():
-            print("\t{0}={1}".format(stat.name, stat.value))
 
 
 class Battle:
@@ -1301,7 +1303,7 @@ class Game():
             new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN, Objects.SKELETON_LEFT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
             attack_name = new_char.get_attribute("Attack")
-            new_player.add_attack(attack_name, self._attacks[attack_name])
+            new_player.add_attack(self._attacks[attack_name])
             characters.remove(new_char)
             team1.add_player(new_player)
 
@@ -1309,7 +1311,7 @@ class Game():
             new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON_RIGHT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 11, 32, 32), character=new_char)
             attack_name = new_char.get_attribute("Attack")
-            new_player.add_attack(attack_name, self._attacks[attack_name])
+            new_player.add_attack(self._attacks[attack_name])
             characters.remove(new_char)
             team2.add_player(new_player)
 
@@ -1424,9 +1426,8 @@ class Game():
                                     effect=attributes["Effect"])
 
             stats = attack_data.get_stats_by_name(attack)
-            # rint("Stats for attack {0}:".format(attack))
+
             for stat in stats:
-                # print("\t{0}".format(stat))
 
                 new_attack.add_stat(stat)
 
