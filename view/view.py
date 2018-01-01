@@ -71,7 +71,7 @@ class ImageManager:
             model.Objects.BASE: "Base_yellow.png",
             model.Objects.BASE_YELLOW: "Base_yellow.png",
             model.Objects.BASE_RED: "Base_red.png",
-            model.Objects.BASE_SHADOW: "Base_shadow.png",
+            model.Objects.BASE_SHADOW: "Base_shadow2.png",
             model.Objects.BLOCK: "Block32x32.png",
             model.Objects.BLOCK: "Brick32x32.png",
             model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
@@ -865,8 +865,8 @@ class BattleView(View):
 
         self.game = None
 
-        self.attacker_view = PlayerView(120, 250)
-        self.opponent_view = PlayerView(130, 250)
+        self.attacker_view = PlayerView(130, 300)
+        self.opponent_view = PlayerView(130, 300)
 
         self.next_event = None
 
@@ -912,7 +912,7 @@ class BattleView(View):
                                             view_object.is_effect(model.Player.FROZEN) is False and \
                                             view_object.is_dead() is False:
 
-                                y_offset = 2 * (1 + math.sin(self.tick_count / 2))
+                                y_offset = 4 * (1 + math.sin(self.tick_count / 2))
 
                             if view_object.is_effect(model.Player.ATTACKING) is True:
                                 x_offset = 8 * ((self.tick_count % 3) - 1)
@@ -1238,10 +1238,12 @@ class PlayerView(View):
         x = pane_rect.centerx
         y += 68
 
-        stat_order = ("HP", "Strength", "Dexterity", "Intelligence", "Level")
+        stat_order = ("HP", "Strength", "Dexterity", "Intelligence", "Level", "AC Defence", "Reflex Defence",
+                      "Will Defence", "Fortitude Defence")
         stats_with_modifiers = ("Strength", "Dexterity", "Intelligence")
-        stats = {"HP": "HP", "Physical Defence": "DEF", "Level": "LVL", "Strength": "STR", "Dexterity": "DEX",
-                 "Intelligence": "INT", "XP": "XP", "Kills": "Kills", "Physical Attack Bonus": "ATK"}
+        stats = {"HP": "HP", "Level": "LVL", "Strength": "STR", "Dexterity": "DEX",
+                 "Intelligence": "INT", "XP": "XP", "Kills": "Kills", "Physical Attack Bonus": "ATK",
+                 "AC Defence" : "AC", "Reflex Defence" : "REF", "Will Defence" : "WILL", "Fortitude Defence": "FORT"}
 
         for stat in stat_order:
 

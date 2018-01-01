@@ -1309,7 +1309,7 @@ class Game():
 
             new_char = random.choice(characters)
             new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON_RIGHT))
-            new_player = Player(name=new_char_type, rect=(i * 2 + 3, 11, 32, 32), character=new_char)
+            new_player = Player(name=new_char_type, rect=(i * 2 + 3, 14, 32, 32), character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])
             characters.remove(new_char)
@@ -1390,7 +1390,7 @@ class Game():
 
         for character_name in character_names:
             character = self._npcs.get_character_by_name(character_name)
-            character.roll()
+            #character.roll()
             character.load_stats(rpg_classes.get_stats_by_name(character.rpg_class), overwrite=False)
             character.load_stats(rpg_races.get_stats_by_name(character.race), overwrite=False)
             add_core_stats(character)

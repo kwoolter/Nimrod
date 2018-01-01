@@ -9,6 +9,6 @@ Shock,Electric Shock,Magic,Intelligence,Reflex,1,4,0,4,2,shocked
 Ink Jet,Ink Jet,Magic,Dexterity,Reflex,1,4,0,4,2,inked
 Stun,Stun,Magic,Intelligence,Reflex,1,4,0,4,2,asleep
 Pollution,Pollution,Magic,Intelligence,Reflex,1,4,0,4,2,poisoned
-Chill,Chill,Magic,Intelligence,Reflex,1,4,0,4,2,frozen
+Chill,Chill,Magic,Dexterity,Reflex,1,4,0,4,2,frozen
 Hot Water,Hot Water,Magic,Intelligence,Reflex,1,4,0,4,2,burned
 Ice Bow,Bow Attack,Ranged,Dexterity,AC,1,4,0,8,2,frozen
