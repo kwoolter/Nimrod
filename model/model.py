@@ -149,6 +149,7 @@ class Objects:
     BASE = "base"
     BASE_RED = "base_red"
     BASE_YELLOW = "base_yellow"
+    BASE_GREEN = "base_green"
     BASE_SHADOW = "base_shadow"
     BLOCK = "block"
     BLOCK_ORNATE = "block_ornate"
@@ -432,8 +433,9 @@ class Team:
     TACTIC_NEAREST = "nearest"
     TACTIC_FURTHEST = "furthest"
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, colour = (255,0,0)):
         self.name = name
+        self.colour = colour
         self.players = []
 
     def add_player(self, new_player: Player):
@@ -1293,8 +1295,12 @@ class Game():
         self.state = Game.BATTLE
         self._battle_floor_id = 0
 
-        team1 = Team("Blue")
-        team2 = Team("Red")
+        RED = (237, 28, 36)
+        GREEN = (34, 177, 76)
+        BLUE = (63, 72, 204)
+
+        team1 = Team("Blue", BLUE)
+        team2 = Team("Red", RED)
 
         characters = list(self._npcs.get_characters())
 
