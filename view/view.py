@@ -1115,7 +1115,7 @@ class BattleView(View):
 
         if self.next_event is not None:
             x = pane_rect.centerx
-            y = 560
+            y = pane_rect.bottom - 20
 
             msg = self.next_event.description
 

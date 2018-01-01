@@ -165,6 +165,7 @@ class Controller:
 
             FPSCLOCK.tick(75)
 
-        self.game.end()
         self.view.end()
         self.audio.end()
+        self.game.end()
+
