@@ -679,8 +679,6 @@ class GameReadyView(View):
 
         image = View.image_manager.get_skin_image(model.Objects.SQUOID, width=64, height=64, tick=self.tick_count)
 
-
-
         x = pane_rect.centerx - int(image_width / 2)
         y += 40
         image = pygame.transform.scale(image, (image_width, image_height))
@@ -849,7 +847,6 @@ class GameView(View):
 
 
 class BattleView(View):
-
     BG_COLOUR = Colours.DARK_GREY
     FG_COLOUR = Colours.WHITE
     TILE_WIDTH = 64
@@ -868,8 +865,8 @@ class BattleView(View):
 
         self.game = None
 
-        self.attacker_view = PlayerView(130, 300)
-        self.opponent_view = PlayerView(130, 300)
+        self.attacker_view = PlayerView(150, 300)
+        self.opponent_view = PlayerView(150, 300)
 
         self.next_event = None
 
@@ -914,7 +911,6 @@ class BattleView(View):
                             if view_object.is_effect(model.Player.ASLEEP) is False and \
                                             view_object.is_effect(model.Player.FROZEN) is False and \
                                             view_object.is_dead() is False:
-
                                 y_offset = 4 * (1 + math.sin(self.tick_count / 2))
 
                             if view_object.is_effect(model.Player.ATTACKING) is True:
@@ -944,7 +940,7 @@ class BattleView(View):
                                                                       width=BattleView.TILE_WIDTH,
                                                                       height=BattleView.TILE_HEIGHT,
                                                                       skin_name=skin_name)
-                            image.set_alpha(160)
+                            image.set_alpha(200)
 
                             surface.blit(image, (view_x, view_y))
 
@@ -1093,24 +1089,25 @@ class BattleView(View):
             if player != current_player:
 
                 if player == current_target:
-                    pygame.draw.rect(self.surface, current_target_team.colour, ((x, y-2, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT)),0)
+                    pygame.draw.rect(self.surface, current_target_team.colour,
+                                     ((x, y - 2, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT)), 0)
                     pygame.draw.rect(self.surface, Colours.YELLOW,
-                                     (x, y-2, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), 6)
+                                     (x, y - 2, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), 6)
                     image.set_alpha(255)
                 else:
                     team = self.game.battle.get_player_team(player)
-                    r,g,b = team.colour
+                    r, g, b = team.colour
 
-                    s = pygame.Surface(( BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), pygame.SRCALPHA)
-                    s.fill((r,g,b,BattleView.NON_ACTIVE_PLAYER_ALPHA))
-                    self.surface.blit(s, (x, y-2))
+                    s = pygame.Surface((BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), pygame.SRCALPHA)
+                    s.fill((r, g, b, BattleView.NON_ACTIVE_PLAYER_ALPHA))
+                    self.surface.blit(s, (x, y - 2))
 
                     image.set_alpha(BattleView.NON_ACTIVE_PLAYER_ALPHA)
             else:
                 pygame.draw.rect(self.surface, current_player_team.colour,
                                  ((x, y - 2, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT)), 0)
                 pygame.draw.rect(self.surface, Colours.GREEN,
-                                 (x, y-2, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), 6)
+                                 (x, y - 2, BattleView.LINE_UP_WIDTH, BattleView.LINE_UP_HEIGHT), 6)
                 image.set_alpha(255)
 
             self.surface.blit(image, (x, y))
@@ -1192,7 +1189,7 @@ class PlayerView(View):
         self.player = None
         self.team_colour = None
 
-    def initialise(self, player: model.Player, team_colour = Colours.BLACK, border_colour = Colours.WHITE):
+    def initialise(self, player: model.Player, team_colour=Colours.BLACK, border_colour=Colours.WHITE):
         super(PlayerView, self).initialise()
 
         self.player = player
@@ -1210,10 +1207,10 @@ class PlayerView(View):
         pane_rect = self.surface.get_rect()
         pygame.draw.rect(self.surface, self.team_colour, (0, PlayerView.BORDER_WIDTH, pane_rect.width, 38), 0)
         pygame.draw.rect(self.surface, self.border_colour, (1,
-                                                            int(PlayerView.BORDER_WIDTH/2),
-                                                            pane_rect.width-PlayerView.BORDER_WIDTH,
-                                                            pane_rect.height-PlayerView.BORDER_WIDTH),
-                                                            PlayerView.BORDER_WIDTH)
+                                                            int(PlayerView.BORDER_WIDTH / 2),
+                                                            pane_rect.width - PlayerView.BORDER_WIDTH,
+                                                            pane_rect.height - PlayerView.BORDER_WIDTH),
+                         PlayerView.BORDER_WIDTH)
 
         # Draw the player's name
         x = pane_rect.centerx
@@ -1259,10 +1256,12 @@ class PlayerView(View):
 
         for i in range(0, int(max_ap)):
             if (max_ap - i) <= self.player.AP:
-                draw_icon(self.surface, x=6 + PlayerView.BORDER_WIDTH, y=y + (i * 20), icon_name=model.Objects.GREEN_DOT, tick=self.tick_count,
+                draw_icon(self.surface, x=6 + PlayerView.BORDER_WIDTH, y=y + (i * 20),
+                          icon_name=model.Objects.GREEN_DOT, tick=self.tick_count,
                           width=16, height=16)
             else:
-                draw_icon(self.surface, x=6 + PlayerView.BORDER_WIDTH, y=y + (i * 20), icon_name=model.Objects.RED_DOT, tick=self.tick_count,
+                draw_icon(self.surface, x=6 + PlayerView.BORDER_WIDTH, y=y + (i * 20), icon_name=model.Objects.RED_DOT,
+                          tick=self.tick_count,
                           width=16, height=16)
 
         # draw_icon(self.surface, x=0, y=0, icon_name=model.Objects.HEART, count=self.player.HP,
@@ -1270,14 +1269,14 @@ class PlayerView(View):
 
         # Draw the player's stats
         x = pane_rect.centerx
-        y += 68
+        y += 74
 
         stat_order = ("HP", "Strength", "Dexterity", "Intelligence", "Level", "AC Defence", "Reflex Defence",
                       "Will Defence", "Fortitude Defence")
         stats_with_modifiers = ("Strength", "Dexterity", "Intelligence")
         stats = {"HP": "HP", "Level": "LVL", "Strength": "STR", "Dexterity": "DEX",
                  "Intelligence": "INT", "XP": "XP", "Kills": "Kills", "Physical Attack Bonus": "ATK",
-                 "AC Defence" : "AC", "Reflex Defence" : "REF", "Will Defence" : "WILL", "Fortitude Defence": "FORT"}
+                 "AC Defence": "AC", "Reflex Defence": "REF", "Will Defence": "WILL", "Fortitude Defence": "FORT"}
 
         for stat in stat_order:
 
@@ -1303,7 +1302,7 @@ class PlayerView(View):
             y += 16
 
         # Draw player's attack details
-        y+=4
+        y += 4
         attack = self.player.get_attack()
 
         number_of_dice = attack.get_stat(model.Attack.NUMBER_OF_DICE).value
@@ -1339,7 +1338,7 @@ class PlayerView(View):
 
         return self.surface
 
-    def draw_player(self, width = AVATAR_WIDTH, height = AVATAR_HEIGHT):
+    def draw_player(self, width=AVATAR_WIDTH, height=AVATAR_HEIGHT):
 
         surface = pygame.Surface((width, height))
 
@@ -1390,7 +1389,6 @@ class PlayerView(View):
 
         # If there is an active effect then add thi to the image of the player
         if effect_name is not None:
-
             image = View.image_manager.get_skin_image(effect_name,
                                                       tick=self.tick_count,
                                                       width=width,
@@ -1398,10 +1396,9 @@ class PlayerView(View):
 
             image.set_alpha(effect_alpha)
 
-            surface.blit(image, (0,0))
+            surface.blit(image, (0, 0))
 
         return surface
-
 
     def end(self):
         super(PlayerView, self).end()
