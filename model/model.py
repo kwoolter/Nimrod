@@ -1306,7 +1306,7 @@ class Game():
 
         for i in range(0, 5):
             new_char = random.choice(characters)
-            new_char_type = random.choice((Objects.SQUOID, Objects.CRAB_GREEN, Objects.SKELETON_LEFT))
+            new_char_type = random.choice((Objects.SQUOID_GREEN, Objects.CRAB_GREEN, Objects.SKELETON_LEFT))
             new_player = Player(name=new_char_type, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])

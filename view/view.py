@@ -1208,7 +1208,7 @@ class PlayerView(View):
             raise Exception("No Player to view!")
 
         pane_rect = self.surface.get_rect()
-        pygame.draw.rect(self.surface, self.team_colour, (0, PlayerView.BORDER_WIDTH, pane_rect.width, 36), 0)
+        pygame.draw.rect(self.surface, self.team_colour, (0, PlayerView.BORDER_WIDTH, pane_rect.width, 38), 0)
         pygame.draw.rect(self.surface, self.border_colour, (1,
                                                             int(PlayerView.BORDER_WIDTH/2),
                                                             pane_rect.width-PlayerView.BORDER_WIDTH,
@@ -1217,7 +1217,7 @@ class PlayerView(View):
 
         # Draw the player's name
         x = pane_rect.centerx
-        y = 12 + PlayerView.BORDER_WIDTH
+        y = 14 + PlayerView.BORDER_WIDTH
 
         msg = self.player.character.name
 
@@ -1243,16 +1243,16 @@ class PlayerView(View):
                   bg_colour=self.team_colour)
 
         # Draw the player's image
-        image = View.image_manager.get_skin_image(self.player.name, tick=self.tick_count)
-        image.set_alpha(255)
-
-        image_width = PlayerView.AVATAR_WIDTH
-        image_height = PlayerView.AVATAR_HEIGHT
-
-        x = pane_rect.centerx - int(image_width / 2)
+        # image = View.image_manager.get_skin_image(self.player.name, tick=self.tick_count)
+        # image.set_alpha(255)
+        #
+        # image_width = PlayerView.AVATAR_WIDTH
+        # image_height = PlayerView.AVATAR_HEIGHT
+        #
+        x = pane_rect.centerx - int(PlayerView.AVATAR_WIDTH / 2)
         y += 12
-        image = pygame.transform.scale(image, (image_width, image_height))
-        self.surface.blit(image, (x, y))
+        player_image = self.draw_player(width=PlayerView.AVATAR_WIDTH, height=PlayerView.AVATAR_HEIGHT)
+        self.surface.blit(player_image, (x, y))
 
         # Draw the amount of AP that the player has using green and red dots
         max_ap = self.player.get_stat("MaxAP")
@@ -1338,6 +1338,70 @@ class PlayerView(View):
                   bg_colour=PlayerView.BG_COLOUR)
 
         return self.surface
+
+    def draw_player(self, width = AVATAR_WIDTH, height = AVATAR_HEIGHT):
+
+        surface = pygame.Surface((width, height))
+
+        # Draw the basic image of the player
+        image = View.image_manager.get_skin_image(self.player.name, tick=self.tick_count, width=width, height=height)
+        image.set_alpha(255)
+
+        image = pygame.transform.scale(image, (width, height))
+        surface.blit(image, (0, 0))
+
+        #  now see if there are any active effects to add to the basic image...
+        effect_name = None
+
+        # Burned
+        if self.player.is_effect(model.Player.BURNED) is True:
+            effect_name = model.Objects.FIRE
+            effect_alpha = 150
+
+        # Asleep
+        elif self.player.is_effect(model.Player.ASLEEP) is True:
+            effect_name = model.Objects.ASLEEP
+            effect_alpha = 200
+
+        # Frozen
+        elif self.player.is_effect(model.Player.FROZEN) is True:
+            effect_name = model.Objects.FROZEN
+            effect_alpha = 150
+
+        # Hit
+        elif self.player.is_effect(model.Player.HIT) is True:
+            effect_name = model.Objects.HIT
+            effect_alpha = 200
+
+        # Inked
+        elif self.player.is_effect(model.Player.INKED) is True:
+            effect_name = model.Objects.INK
+            effect_alpha = 200
+
+        # Poisoned
+        elif self.player.is_effect(model.Player.POISONED) is True:
+            effect_name = model.Objects.POISON
+            effect_alpha = 200
+
+        # Shocked
+        elif self.player.is_effect(model.Player.SHOCKED) is True:
+            effect_name = model.Objects.SHOCK
+            effect_alpha = 200
+
+        # If there is an active effect then add thi to the image of the player
+        if effect_name is not None:
+
+            image = View.image_manager.get_skin_image(effect_name,
+                                                      tick=self.tick_count,
+                                                      width=width,
+                                                      height=height)
+
+            image.set_alpha(effect_alpha)
+
+            surface.blit(image, (0,0))
+
+        return surface
+
 
     def end(self):
         super(PlayerView, self).end()
