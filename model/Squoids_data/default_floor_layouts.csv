@@ -1,9 +1,9 @@
 ID,Name,Skin,Layer,Layout
+0,Floor0,default,0,~~~~~~~~~~~~~~~~~   
+0,Floor0,default,0,~~~~~~~~~~~~~~~~~~  
 0,Floor0,default,0,~~~~~~~~~~~~~~~~~~  
 0,Floor0,default,0,~~~~~~~~~~~~~~~~~~~ 
-0,Floor0,default,0,~~~~~~~~~~~~~~~~~~~ 
-0,Floor0,default,0,~~~~~~~~~~~~~~~~~~~ 
-0,Floor0,default,0,~~~~~~~~~~~~ ~~~l~~~
+0,Floor0,default,0,~~~~~~~~~~~~ ~~~l~~ 
 0,Floor0,default,0,~~~~~~~~~~~~~~~~ll~~
 0,Floor0,default,0,~~~~~~~~~~~~~~~~~l~~
 0,Floor0,default,0,~~~~~~~~~~~~~~~~~l~~
@@ -17,8 +17,8 @@ ID,Name,Skin,Layer,Layout
 0,Floor0,default,0,~~~~~l~~~iiii~~~~~  
 0,Floor0,default,0,~~~~~~~~~~~~~~~~~~  
 0,Floor0,default,0, ~~~ ~~~~~~~~~~~    
-0,Floor0,default,0, ~~~~~~~~~~~~~      
-0,Floor0,default,0,  ~~~~~~~~~~~       
+0,Floor0,default,0,   ~~~~~~~~~~~      
+0,Floor0,default,0,     ~~~~~~~~       
 0,Floor0,default,1,###########i#i#i#   
 0,Floor0,default,1,#                   
 0,Floor0,default,1,i              T    
@@ -59,23 +59,23 @@ ID,Name,Skin,Layer,Layout
 0,Floor0,default,2,    b               
 0,Floor0,default,2,                    
 0,Floor0,default,2,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,            b       
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
-0,Floor0,default,3,                    
+0,Floor0,default,3,###########i#i#i#   
+0,Floor0,default,3,#                   
+0,Floor0,default,3,i                   
+0,Floor0,default,3,#                   
+0,Floor0,default,3,i           b       
+0,Floor0,default,3,#                   
+0,Floor0,default,3,i                   
+0,Floor0,default,3,i                   
+0,Floor0,default,3,i                   
+0,Floor0,default,3,#                   
+0,Floor0,default,3,#                   
+0,Floor0,default,3,i                   
+0,Floor0,default,3,i                   
+0,Floor0,default,3,#                   
+0,Floor0,default,3,i                   
+0,Floor0,default,3,#                   
+0,Floor0,default,3,#                   
 0,Floor0,default,3,    b               
 0,Floor0,default,3,                    
 0,Floor0,default,3,                    
