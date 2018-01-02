@@ -108,6 +108,8 @@ class ImageManager:
             model.Objects.SQUOID2: "Squoid_warrior_green.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CHEST: "chest.png",
+            model.Objects.POTION: "potion.png",
+            model.Objects.SWORD_SMALL: "sword_small.png",
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.ICE: "ice3.png",
             model.Objects.LAVA: ("lava0.png", "lava1.png", "lava2.png", "lava3.png", "lava4.png", "lava5.png",
@@ -787,6 +789,7 @@ class GameView(View):
         self.surface = pygame.Surface((width, height))
 
         self.game = None
+        self.player_view = PlayerView(GameView.TILE_WIDTH, GameView.TILE_HEIGHT)
 
     def initialise(self, game: model.Game):
         super(GameView, self).initialise()
@@ -795,6 +798,7 @@ class GameView(View):
 
     def tick(self):
         super(GameView, self).tick()
+        self.player_view.tick()
 
     def draw_floor(self, surface):
 
@@ -810,11 +814,20 @@ class GameView(View):
                 for layer_id in sorted(self.floor.layers.keys()):
                     view_object = self.floor.get_floor_tile(x, y, layer_id)
                     if view_object is not None:
-                        image = View.image_manager.get_skin_image(view_object.name,
-                                                                  tick=self.tick_count,
-                                                                  width=GameView.TILE_WIDTH,
-                                                                  height=GameView.TILE_HEIGHT,
-                                                                  skin_name=skin_name)
+
+
+                        if isinstance(view_object, model.Player):
+                            self.player_view.initialise(view_object)
+                            image = self.player_view.draw_player(GameView.TILE_WIDTH, GameView.TILE_HEIGHT)
+
+                        else:
+
+                            image = View.image_manager.get_skin_image(view_object.name,
+                                                                      tick=self.tick_count,
+                                                                      width=GameView.TILE_WIDTH,
+                                                                      height=GameView.TILE_HEIGHT,
+                                                                      skin_name=skin_name)
+
                         if image is not None:
 
                             if layer_id > 1:
@@ -822,7 +835,7 @@ class GameView(View):
                             else:
                                 image.set_alpha(255)
 
-                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
         return surface
 
@@ -867,6 +880,7 @@ class BattleView(View):
 
         self.attacker_view = PlayerView(150, 300)
         self.opponent_view = PlayerView(150, 300)
+        self.player_view = PlayerView(BattleView.TILE_WIDTH, BattleView.TILE_HEIGHT)
 
         self.next_event = None
 
@@ -879,6 +893,7 @@ class BattleView(View):
         super(BattleView, self).tick()
         self.attacker_view.tick()
         self.opponent_view.tick()
+        self.player_view.tick()
 
     def process_event(self, new_event: model.Event):
         self.next_event = new_event
@@ -956,111 +971,32 @@ class BattleView(View):
 
                             surface.blit(image, (view_x, view_y))
 
-                        # Get the image for the actual object to draw at this position
-                        image = View.image_manager.get_skin_image(view_object.name,
-                                                                  tick=self.tick_count,
-                                                                  width=BattleView.TILE_WIDTH,
-                                                                  height=BattleView.TILE_HEIGHT,
-                                                                  skin_name=skin_name)
-                        # If the image can be loaded...
-                        if image is not None:
-
-                            # Set the image alpha based on the layer so that higher layers are more transparent
-                            if layer_id > 1:
-                                image.set_alpha(255 - (layer_id * BattleView.LAYER_ALPHA_MULTIPLIER))
-                            else:
-                                image.set_alpha(255)
-
-                            # Draw the object
-                            surface.blit(image, (view_x - x_offset, view_y - y_offset))
-
-                        # If the object is a player draw any status effects
+                        # If the object is a player draw the player plus any status effects
                         if isinstance(view_object, model.Player) is True:
 
-                            # Burned
-                            if view_object.is_effect(model.Player.BURNED) is True:
-                                image = View.image_manager.get_skin_image(model.Objects.FIRE,
-                                                                          tick=self.tick_count,
-                                                                          width=BattleView.TILE_WIDTH,
-                                                                          height=BattleView.TILE_HEIGHT,
-                                                                          skin_name=skin_name)
+                            self.player_view.initialise(view_object)
+                            image = self.player_view.draw_player()
+                            surface.blit(image, (view_x - x_offset, view_y - y_offset))
 
-                                image.set_alpha(100)
+                        else:
+                            # Get the image for the actual object to draw at this position
+                            image = View.image_manager.get_skin_image(view_object.name,
+                                                                      tick=self.tick_count,
+                                                                      width=BattleView.TILE_WIDTH,
+                                                                      height=BattleView.TILE_HEIGHT,
+                                                                      skin_name=skin_name)
+                            # If the image can be loaded...
+                            if image is not None:
 
-                                surface.blit(image, (view_x, view_y))
+                                # Set the image alpha based on the layer so that higher layers are more transparent
+                                if layer_id > 1:
+                                    image.set_alpha(255 - (layer_id * BattleView.LAYER_ALPHA_MULTIPLIER))
+                                else:
+                                    image.set_alpha(255)
 
-                            # Poisoned
-                            elif view_object.is_effect(model.Player.POISONED) is True:
-                                image = View.image_manager.get_skin_image(model.Objects.POISON,
-                                                                          tick=self.tick_count,
-                                                                          width=BattleView.TILE_WIDTH,
-                                                                          height=BattleView.TILE_HEIGHT,
-                                                                          skin_name=skin_name)
+                                # Draw the object
+                                surface.blit(image, (view_x - x_offset, view_y - y_offset))
 
-                                image.set_alpha(200)
-
-                                surface.blit(image, (view_x, view_y))
-
-                            # Inked
-                            elif view_object.is_effect(model.Player.INKED) is True:
-                                image = View.image_manager.get_skin_image(model.Objects.INK,
-                                                                          tick=self.tick_count,
-                                                                          width=BattleView.TILE_WIDTH,
-                                                                          height=BattleView.TILE_HEIGHT,
-                                                                          skin_name=skin_name)
-
-                                image.set_alpha(255)
-
-                                surface.blit(image, (view_x, view_y))
-
-                            # Shocked
-                            elif view_object.is_effect(model.Player.SHOCKED) is True:
-                                image = View.image_manager.get_skin_image(model.Objects.SHOCK,
-                                                                          tick=self.tick_count,
-                                                                          width=BattleView.TILE_WIDTH,
-                                                                          height=BattleView.TILE_HEIGHT,
-                                                                          skin_name=skin_name)
-
-                                image.set_alpha(255)
-
-                                surface.blit(image, (view_x, view_y))
-
-                            # Hit
-                            elif view_object.is_effect(model.Player.HIT) is True:
-                                image = View.image_manager.get_skin_image(model.Objects.HIT,
-                                                                          tick=self.tick_count,
-                                                                          width=BattleView.TILE_WIDTH,
-                                                                          height=BattleView.TILE_HEIGHT,
-                                                                          skin_name=skin_name)
-
-                                image.set_alpha(255)
-
-                                surface.blit(image, (view_x, view_y - y_offset))
-
-                            # Asleep
-                            elif view_object.is_effect(model.Player.ASLEEP) is True:
-                                image = View.image_manager.get_skin_image(model.Objects.ASLEEP,
-                                                                          tick=self.tick_count,
-                                                                          width=BattleView.TILE_WIDTH,
-                                                                          height=BattleView.TILE_HEIGHT,
-                                                                          skin_name=skin_name)
-
-                                image.set_alpha(255)
-
-                                surface.blit(image, (view_x, view_y))
-
-
-                            # Frozen
-                            elif view_object.is_effect(model.Player.FROZEN) is True:
-                                image = View.image_manager.get_skin_image(model.Objects.FROZEN,
-                                                                          tick=self.tick_count,
-                                                                          width=BattleView.TILE_WIDTH,
-                                                                          height=BattleView.TILE_HEIGHT,
-                                                                          skin_name=skin_name)
-
-                                image.set_alpha(150)
-
-                                surface.blit(image, (view_x, view_y))
 
         return surface
 
@@ -1340,14 +1276,27 @@ class PlayerView(View):
 
     def draw_player(self, width=AVATAR_WIDTH, height=AVATAR_HEIGHT):
 
-        surface = pygame.Surface((width, height))
+        surface1 = pygame.Surface((width, height), depth=24)
+        surface2 = pygame.Surface((width, height), depth=24)
+        key = (1, 255, 1)
+        surface1.fill(key)
+        surface1.set_colorkey(key)
 
         # Draw the basic image of the player
-        image = View.image_manager.get_skin_image(self.player.name, tick=self.tick_count, width=width, height=height)
+        if self.player.is_dead():
+            image_name = model.Objects.SKULL
+        else:
+            image_name = self.player.name
+
+        image = View.image_manager.get_skin_image(image_name, tick=self.tick_count, width=width, height=height)
         image.set_alpha(255)
 
         image = pygame.transform.scale(image, (width, height))
-        surface.blit(image, (0, 0))
+        surface1.blit(image, (0, 0))
+        key = (2, 2, 2)
+        surface2.fill(key)
+        surface2.set_colorkey(key)
+        surface2.blit(surface1,(0,0))
 
         #  now see if there are any active effects to add to the basic image...
         effect_name = None
@@ -1355,7 +1304,7 @@ class PlayerView(View):
         # Burned
         if self.player.is_effect(model.Player.BURNED) is True:
             effect_name = model.Objects.FIRE
-            effect_alpha = 150
+            effect_alpha = 200
 
         # Asleep
         elif self.player.is_effect(model.Player.ASLEEP) is True:
@@ -1387,7 +1336,12 @@ class PlayerView(View):
             effect_name = model.Objects.SHOCK
             effect_alpha = 200
 
-        # If there is an active effect then add thi to the image of the player
+        # Sword Attacking
+        elif self.player.is_effect(model.Player.ATTACKING) is True:
+            effect_name = model.Objects.SWORD_SMALL
+            effect_alpha = 200
+
+        # If there is an active effect then add this to the image of the player
         if effect_name is not None:
             image = View.image_manager.get_skin_image(effect_name,
                                                       tick=self.tick_count,
@@ -1396,9 +1350,9 @@ class PlayerView(View):
 
             image.set_alpha(effect_alpha)
 
-            surface.blit(image, (0, 0))
+            surface2.blit(image, (0, 0))
 
-        return surface
+        return surface2
 
     def end(self):
         super(PlayerView, self).end()

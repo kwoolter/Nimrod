@@ -197,6 +197,8 @@ class Objects:
     SHOCK = "shock"
     ASLEEP = "asleep"
     FROZEN = "frozen"
+    SWORD_SMALL = "sword_small"
+    POTION = "potion"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -335,10 +337,7 @@ class Player(FloorObject):
 
     @property
     def name(self):
-        if self.is_dead():
-            return Objects.SKULL
-        else:
-            return self._name
+        return self._name
 
     @name.setter
     def name(self, new_name: str):
