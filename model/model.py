@@ -637,6 +637,11 @@ class Floor:
 
     def set_floor_tile(self, x: int, y: int, layer_id: int, new_object: FloorObject = None):
 
+        if new_object is not None:
+            new_object.rect.x = x
+            new_object.rect.y = y
+            new_object.layer = layer_id
+
         layer = self.floor_plans[layer_id]
         layer[x][y] = new_object
 
@@ -690,7 +695,11 @@ class Floor:
                         Event(type=Event.FLOOR, name=Event.INTERACT, description="You interact with a {0}".format(tile.name)))
 
                     if tile.name == Objects.CHEST:
-                        self.set_floor_tile(new_x, new_y, z, None)
+                        reward = random.choice((Objects.KEY, Objects.POTION, Objects.SPHERE_GREEN))
+                        reward_object = FloorObjectLoader.get_object_copy_by_name(reward)
+                        self.set_floor_tile(new_x, new_y, z, reward_object)
+                        Floor.EVENTS.add_event(
+                            Event(type=Event.FLOOR, name=Event.TREASURE, description="You find a {0}".format(reward)))
 
                 else:
                     Floor.EVENTS.add_event(
