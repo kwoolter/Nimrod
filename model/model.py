@@ -685,8 +685,17 @@ class Floor:
             # Is the new position filled with a solid object?
             if tile is not None and tile.is_solid is True:
 
-                Floor.EVENTS.add_event(
-                    Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
+                if tile.is_interactable is True:
+                    Floor.EVENTS.add_event(
+                        Event(type=Event.FLOOR, name=Event.INTERACT, description="You interact with a {0}".format(tile.name)))
+
+                    if tile.name == Objects.CHEST:
+                        self.set_floor_tile(new_x, new_y, z, None)
+
+                else:
+                    Floor.EVENTS.add_event(
+                        Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
+
 
             # Else move the player and see what happens next...
             else:
@@ -707,6 +716,11 @@ class Floor:
 
                     elif tile.name == Objects.SPHERE_BLUE:
                         selected_player.do_heal(1)
+                        self.set_floor_tile(x, y, z, None)
+                        Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
+                                                     description="You found a {0}".format(tile.name)))
+                    elif tile.name == Objects.POTION:
+                        selected_player.do_heal(random.randint(1,3))
                         self.set_floor_tile(x, y, z, None)
                         Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
                                                      description="You found a {0}".format(tile.name)))
@@ -1513,6 +1527,7 @@ class Event():
     TICK = "Tick"
     PLAYING = "playing"
     COLLIDE = "collide"
+    INTERACT = "interact"
     BLOCKED = "blocked"
     TREASURE = "treasure"
     KEY = "key"
