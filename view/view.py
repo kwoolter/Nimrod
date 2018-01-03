@@ -74,7 +74,7 @@ class ImageManager:
             model.Objects.BASE_GREEN: "Base_green.png",
             model.Objects.BASE_SHADOW: "Base_shadow2.png",
             model.Objects.BLOCK: "Block32x32.png",
-            model.Objects.BLOCK: "Brick32x32.png",
+            model.Objects.BRICK: "Brick32x32.png",
             model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
             model.Objects.BLOCK_HEXAGON: "Hexagon.png",
             model.Objects.BLOCK_TOP: "BlockFront.png",
@@ -878,8 +878,8 @@ class BattleView(View):
 
         self.game = None
 
-        self.attacker_view = PlayerView(150, 300)
-        self.opponent_view = PlayerView(150, 300)
+        self.attacker_view = PlayerView(150, 320)
+        self.opponent_view = PlayerView(150, 320)
         self.player_view = PlayerView(BattleView.TILE_WIDTH, BattleView.TILE_HEIGHT)
 
         self.next_event = None
@@ -989,7 +989,7 @@ class BattleView(View):
                             if image is not None:
 
                                 # Set the image alpha based on the layer so that higher layers are more transparent
-                                if layer_id > 1:
+                                if layer_id > current_player.layer:
                                     image.set_alpha(255 - (layer_id * BattleView.LAYER_ALPHA_MULTIPLIER))
                                 else:
                                     image.set_alpha(255)
@@ -1208,7 +1208,7 @@ class PlayerView(View):
         y += 74
 
         stat_order = ("HP", "Strength", "Dexterity", "Intelligence", "Level", "AC Defence", "Reflex Defence",
-                      "Will Defence", "Fortitude Defence")
+                      "Will Defence", "Fortitude Defence", "XP")
         stats_with_modifiers = ("Strength", "Dexterity", "Intelligence")
         stats = {"HP": "HP", "Level": "LVL", "Strength": "STR", "Dexterity": "DEX",
                  "Intelligence": "INT", "XP": "XP", "Kills": "Kills", "Physical Attack Bonus": "ATK",

@@ -152,6 +152,7 @@ class Objects:
     BASE_GREEN = "base_green"
     BASE_SHADOW = "base_shadow"
     BLOCK = "block"
+    BRICK = "brick"
     BLOCK_ORNATE = "block_ornate"
     BLOCK_HEXAGON = "block_hexagon"
     BLOCK_TOP = "block_top"
@@ -313,6 +314,7 @@ class Player(FloorObject):
 
     def __init__(self, name: str,
                  rect: pygame.Rect,
+                 layer = 1,
                  height: int = 40,
                  character: Character = None):
         super(Player, self).__init__(name=name, rect=rect, height=height)
@@ -320,7 +322,7 @@ class Player(FloorObject):
         self.treasure = 0
         self.keys = 0
         self.boss_keys = 0
-        self.layer = 1
+        self.layer = layer
 
         self._name = name
         self.character = character
@@ -1049,7 +1051,7 @@ class Battle:
         if self._state != Battle.PLAYING:
             raise Exception("Battle in state '{0}' - not playing so can't do attack!".format(self._state))
 
-        # Find out who is ttacking who
+        # Find out who is attacking who
         current_player = self.get_current_player()
         current_team = self.get_player_team(current_player)
         opposite_team = self.get_opposite_team(current_team)
@@ -1292,7 +1294,7 @@ class Game():
 
     def start_battle(self):
         self.state = Game.BATTLE
-        self._battle_floor_id = 0
+        self._battle_floor_id = 2
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
@@ -1306,7 +1308,7 @@ class Game():
         for i in range(0, 5):
             new_char = random.choice(characters)
             new_char_type = random.choice((Objects.SQUOID_GREEN, Objects.CRAB_GREEN, Objects.SKELETON_LEFT))
-            new_player = Player(name=new_char_type, rect=(i * 2 + 3, 3, 32, 32), character=new_char)
+            new_player = Player(name=new_char_type, rect=(i * 2 + 8, 2, 32, 32), layer = 3, character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])
             characters.remove(new_char)
@@ -1314,7 +1316,7 @@ class Game():
 
             new_char = random.choice(characters)
             new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON_RIGHT))
-            new_player = Player(name=new_char_type, rect=(i * 2 + 3, 14, 32, 32), character=new_char)
+            new_player = Player(name=new_char_type, rect=(i * 2 + 8, 17, 32, 32), layer = 3, character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])
             characters.remove(new_char)
