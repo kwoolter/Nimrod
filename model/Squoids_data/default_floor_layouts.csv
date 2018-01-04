@@ -20,25 +20,25 @@ ID,Name,Skin,Layer,Layout
 0,Floor0,default,0,   ~~~~~~~~~~~      
 0,Floor0,default,0,     ~~~~~~~~       
 0,Floor0,default,1,###########i#i#i#   
-0,Floor0,default,1,##    1
+0,Floor0,default,1,#                   
 0,Floor0,default,1,i              T    
 0,Floor0,default,1,#                   
 0,Floor0,default,1,i           bw      
 0,Floor0,default,1,#           w       
 0,Floor0,default,1,i  p   p            
 0,Floor0,default,1,i                   
-0,Floor0,default,1,i+   p              
+0,Floor0,default,1,i    p              
 0,Floor0,default,1,#         p         
 0,Floor0,default,1,#                   
 0,Floor0,default,1,i                   
-0,Floor0,default,1,i           H       
+0,Floor0,default,1,i           p       
 0,Floor0,default,1,#                   
 0,Floor0,default,1,i                   
-0,Floor0,default,1,##                  
-0,Floor0,default,1,##         +        
+0,Floor0,default,1,#                   
+0,Floor0,default,1,#                   
 0,Floor0,default,1,    bw              
 0,Floor0,default,1,    w   T           
-0,Floor0,default,1,1
+0,Floor0,default,1,                    
 0,Floor0,default,2,###########i#i#i#   
 0,Floor0,default,2,#                   
 0,Floor0,default,2,i                   
@@ -239,23 +239,23 @@ ID,Name,Skin,Layer,Layout
 2,Floor2,default,2, *******************
 2,Floor2,default,2,  ****************  
 2,Floor2,default,2,    *************   
-2,Floor2,default,3,################H   
-2,Floor2,default,3,#1                  
+2,Floor2,default,3,#################   
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#                   
-2,Floor2,default,3,#                  T
-2,Floor2,default,3,+        p    p     
+2,Floor2,default,3,#                   
+2,Floor2,default,3,#                   
+2,Floor2,default,3,#        p    p     
 2,Floor2,default,3,                    
 2,Floor2,default,3,                    
 2,Floor2,default,3,         p    p     
-2,Floor2,default,3,+        c    c     
+2,Floor2,default,3,#                   
 2,Floor2,default,3,#        p    p     
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#        p    p     
-2,Floor2,default,3,#1                  
-2,Floor2,default,3,H                   
-2,Floor2,default,3,                   T
+2,Floor2,default,3,#                   
+2,Floor2,default,3,#                   
+2,Floor2,default,3,#                   
 2,Floor2,default,3,                    
 2,Floor2,default,3,                    
 2,Floor2,default,3,                    

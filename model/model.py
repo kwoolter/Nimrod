@@ -549,11 +549,16 @@ class Floor:
         self.floor_plans = {}
         self.exits = {}
         self.teleports = []
+        self.details = None
+        self.start_positions = [None, None]
+        self.start_layer = 1
+        self.potions = 0
+        self.chests = 0
 
     def __str__(self):
-        return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}".format(self.name, self.rect, self.object_count,
+        return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}, potions={4}, chests={5}".format(self.name, self.rect, self.object_count,
                                                                                 len(self.monsters),
-                                                                                len(self.floor_plans.keys()))
+                                                                                self.potions, self.chests)
 
     @property
     def object_count(self):
@@ -562,11 +567,58 @@ class Floor:
             count += len(layer)
         return count
 
-    def add_player(self, new_player: Player, position: str = None):
+    def add_player(self, new_player: Player, auto_position : bool = False, team : int = 0):
+
+        if auto_position is True:
+            min_x, min_y, max_x, max_y = self.start_positions[team]
+            placed = False
+            for i in range(1,20):
+                x = random.randint(min_x, max_x)
+                y = random.randint(min_y, max_y)
+
+                if self.get_floor_tile(x, y, self.start_layer) is None:
+                    base_tile = self.get_floor_tile(x, y, self.start_layer - 1)
+                    if base_tile is not None and base_tile.is_solid is True:
+                        new_player.set_pos(x,y,self.start_layer)
+                        # new_player.rect.x = x
+                        # new_player.rect.y = y
+                        placed = True
+                        break
+
+            if placed is False:
+                print("Failed to auto position player {0}".format(new_player.character.name))
 
         self.players.append(new_player)
 
         print("Adding player at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
+
+    def add_items(self, item_type, item_count : int = 1):
+
+        print("Adding {0} {1} items into rect {2}".format(item_count, item_type, self.rect))
+
+        new_object = FloorObjectLoader.get_object_copy_by_name(item_type)
+        if new_object is not None:
+
+            for i in range(0, item_count):
+                placed = False
+                for tries in range(0,10):
+                    x = random.randint(self.rect.x, self.rect.width-1)
+                    y = random.randint(self.rect.y, self.rect.height-1)
+                    if self.get_floor_tile(x, y, self.start_layer) is None:
+                        base_tile = self.get_floor_tile(x, y, self.start_layer - 1)
+                        if base_tile is not None and base_tile.is_solid is True:
+
+                            new_object.set_pos(x, y, self.start_layer)
+                            self.add_object(new_object)
+                            placed = True
+                            print("Added {0} item at {1},{2},{3}".format(item_type, x,y,self.start_layer))
+                            break
+                if placed is False:
+                    print("Failed to place item {0}".format(new_object.name))
+
+
+        else:
+            raise Exception("add_items: Could not find object {0}".format(item_type))
 
     def add_object(self, new_object: FloorObject):
 
@@ -594,6 +646,18 @@ class Floor:
                 floor_plan[floor_object.rect.x][floor_object.rect.y] = floor_object
                 if floor_object.name == Objects.TELEPORT:
                     self.teleports.append((floor_object.rect.x, floor_object.rect.y, floor_object.layer))
+
+
+
+    def set_details(self, floor_details):
+
+        self.details = floor_details
+        self.name, self.start_layer, self.start_positions[0], self.start_positions[1], self.potions, self.chests = floor_details
+
+        self.add_items(Objects.POTION, self.potions)
+        self.add_items(Objects.CHEST, self.chests)
+        self.build_floor_plan()
+
 
     def remove_object(self, object: FloorObject):
         objects = self.layers[object.layer]
@@ -805,8 +869,11 @@ class FloorBuilder():
     def __init__(self, data_file_directory: str):
         self.data_file_directory = data_file_directory
         self.floors = {}
+        self.floor_details = {}
 
     def initialise(self, file_prefix: str = "default"):
+
+        self.load_floor_details()
 
         self.floor_objects = FloorObjectLoader(
             self.data_file_directory + file_prefix + FloorBuilder.FLOOR_OBJECT_FILE_NAME)
@@ -819,10 +886,36 @@ class FloorBuilder():
     def load_floors(self):
 
         for floor_id, new_floor in FloorLayoutLoader.floor_layouts.items():
-            self.floors[floor_id] = new_floor
+           if floor_id in self.floor_details.keys():
+               new_floor.build_floor_plan()
+               new_floor.set_details(self.floor_details[floor_id])
+           self.floors[floor_id] = new_floor
 
         for floor in self.floors.values():
+            #floor.build_floor_plan()
             print(str(floor))
+
+    def load_floor_details(self):
+
+        # Floor Details:-
+        # - name
+        # - player start layer
+        # - team1 start locations rect
+        # - team2 start locations rect
+        # - potions
+        # - chests
+
+        new_floor_id = 0
+        new_floor_details = ("The Trial", 1, (6,1,16,3),(5,16,14,18), 4, 4)
+        self.floor_details[new_floor_id] = new_floor_details
+
+        new_floor_id = 1
+        new_floor_details = ("The Maze", 1, (6,1,16,3),(5,16,14,18), 1, 1)
+        self.floor_details[new_floor_id] = new_floor_details
+
+        new_floor_id = 2
+        new_floor_details = ("The Bridge", 3, (1,2,12,3),(2,16,14,18), 4, 4)
+        self.floor_details[new_floor_id] = new_floor_details
 
 
 class FloorLayoutLoader():
@@ -883,8 +976,6 @@ class FloorLayoutLoader():
 
                 y += FloorLayoutLoader.DEFAULT_OBJECT_DEPTH
 
-        for floor in self.floor_layouts.values():
-            floor.build_floor_plan()
 
 
 class FloorObjectLoader():
@@ -1001,12 +1092,12 @@ class Battle:
             if len(t1) > 0:
                 new_player = t1.pop(0)
                 self.order_of_play.append(new_player)
-                self.battle_floor.add_player(new_player)
+                self.battle_floor.add_player(new_player, auto_position=True, team=0)
 
             if len(t2) > 0:
                 new_player = t2.pop(0)
                 self.order_of_play.append(new_player)
-                self.battle_floor.add_player(new_player)
+                self.battle_floor.add_player(new_player, auto_position=True, team=1)
 
             if len(t1) + len(t2) == 0:
                 loop = False
@@ -1317,6 +1408,8 @@ class Game():
 
     def start_battle(self):
         self.state = Game.BATTLE
+        self._battle_floor_id = random.choice((0,2))
+
         self._battle_floor_id = 2
 
         RED = (237, 28, 36)

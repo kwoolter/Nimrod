@@ -108,7 +108,7 @@ class ImageManager:
             model.Objects.SQUOID2: "Squoid_warrior_green.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CHEST: "chest.png",
-            model.Objects.POTION: "potion.png",
+            model.Objects.POTION: "red_potion2.png",
             model.Objects.SWORD_SMALL: "sword_small.png",
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.ICE: "ice3.png",
@@ -921,13 +921,16 @@ class BattleView(View):
                         # Calculate where on the view's surface to draw the object
                         view_x, view_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
 
-                        # Add y offset if object is a player to provide floating animation
+
                         if isinstance(view_object, model.Player):
+
+                            # Add y offset if object is an awake player to provide floating animation
                             if view_object.is_effect(model.Player.ASLEEP) is False and \
                                             view_object.is_effect(model.Player.FROZEN) is False and \
                                             view_object.is_dead() is False:
                                 y_offset = 4 * (1 + math.sin(self.tick_count / 2))
 
+                            # Add x offset if object is a player who is attacking to provide animation
                             if view_object.is_effect(model.Player.ATTACKING) is True:
                                 x_offset = 8 * ((self.tick_count % 3) - 1)
                         else:
