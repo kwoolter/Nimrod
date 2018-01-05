@@ -184,7 +184,7 @@ ID,Name,Skin,Layer,Layout
 2,Floor2,default,0,                  * 
 2,Floor2,default,0,*******            *
 2,Floor2,default,0,**llll****    ******
-2,Floor2,default,0,**llll*ll******lll**
+2,Floor2,default,0,**llll*lll****llll**
 2,Floor2,default,0,llllll*lllllllllll**
 2,Floor2,default,0,llllllllllllllllllll
 2,Floor2,default,0,llllllllllllllllllll
@@ -192,7 +192,7 @@ ID,Name,Skin,Layer,Layout
 2,Floor2,default,0, *llllllllllllllllll
 2,Floor2,default,0,  *ll*lllllllllllll*
 2,Floor2,default,0,  *ll*lllllllllllll*
-2,Floor2,default,0,  *ll*lll******lll**
+2,Floor2,default,0,  *ll*llll****llll**
 2,Floor2,default,0,  ********    ******
 2,Floor2,default,0,*                  *
 2,Floor2,default,0, *                 *
@@ -204,15 +204,15 @@ ID,Name,Skin,Layer,Layout
 2,Floor2,default,1,                  * 
 2,Floor2,default,1,  *****            *
 2,Floor2,default,1, *    ****    ******
-2,Floor2,default,1,#*    *  #****#   **
+2,Floor2,default,1,#*    *  +****+   **
 2,Floor2,default,1,      *           **
 2,Floor2,default,1,                    
-2,Floor2,default,1,         #    #      
-2,Floor2,default,1,#*       #    #     
-2,Floor2,default,1,#*       #    #     
+2,Floor2,default,1,         +    +     
+2,Floor2,default,1,#*                  
+2,Floor2,default,1,#*       +    +     
 2,Floor2,default,1,  *  *             *
 2,Floor2,default,1,  *  *             *
-2,Floor2,default,1,  *  *   #****#   **
+2,Floor2,default,1,  *  *   +****+   **
 2,Floor2,default,1,  ********    ******
 2,Floor2,default,1,*                  *
 2,Floor2,default,1, *                 *
@@ -224,38 +224,38 @@ ID,Name,Skin,Layer,Layout
 2,Floor2,default,2,******************* 
 2,Floor2,default,2,********************
 2,Floor2,default,2,**    **************
-2,Floor2,default,2,#*    *  #****#   **
+2,Floor2,default,2,#*    *  +****+   **
 2,Floor2,default,2, i    *   ####    **
 2,Floor2,default,2, i        ####     i
-2,Floor2,default,2, i       ######    i
-2,Floor2,default,2,#*       ######    i
-2,Floor2,default,2,**       ######    i
+2,Floor2,default,2, i       +####+    i
+2,Floor2,default,2,#*       #####]    i
+2,Floor2,default,2,**       +####+    i
 2,Floor2,default,2,***  *    ####     *
 2,Floor2,default,2,***  *    ####     *
-2,Floor2,default,2,***  *   #****#   **
+2,Floor2,default,2,***  *   +****+   **
 2,Floor2,default,2,********************
 2,Floor2,default,2,********************
 2,Floor2,default,2, *******************
 2,Floor2,default,2, *******************
 2,Floor2,default,2,  ****************  
 2,Floor2,default,2,    *************   
-2,Floor2,default,3,#################   
+2,Floor2,default,3,H###############+   
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#                   
-2,Floor2,default,3,#        p    p     
+2,Floor2,default,3,+        p    p     
 2,Floor2,default,3,                    
 2,Floor2,default,3,                    
 2,Floor2,default,3,         p    p     
-2,Floor2,default,3,#                   
+2,Floor2,default,3,+        c    c     
 2,Floor2,default,3,#        p    p     
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#        p    p     
 2,Floor2,default,3,#                   
-2,Floor2,default,3,#                   
-2,Floor2,default,3,#                   
+2,Floor2,default,3,+
+2,Floor2,default,3, 
 2,Floor2,default,3,                    
 2,Floor2,default,3,                    
 2,Floor2,default,3,                    

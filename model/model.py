@@ -173,6 +173,7 @@ class Objects:
     SPHERE = "sphere"
     SPHERE_GREEN = "sphere_green"
     SPHERE_BLUE = "sphere_blue"
+    SPHERE_RED = "sphere_red"
     SQUOID = "squoid"
     CRAB_GREEN = "crab"
     CRAB_RED = "crab_red"
@@ -610,9 +611,11 @@ class Floor:
 
                             new_object.set_pos(x, y, self.start_layer)
                             self.add_object(new_object)
+                            new_object = FloorObjectLoader.get_object_copy_by_name(item_type)
                             placed = True
                             print("Added {0} item at {1},{2},{3}".format(item_type, x,y,self.start_layer))
                             break
+
                 if placed is False:
                     print("Failed to place item {0}".format(new_object.name))
 
@@ -654,7 +657,7 @@ class Floor:
         self.details = floor_details
         self.name, self.start_layer, self.start_positions[0], self.start_positions[1], self.potions, self.chests = floor_details
 
-        self.add_items(Objects.POTION, self.potions)
+        self.add_items(Objects.SPHERE_RED, self.potions)
         self.add_items(Objects.CHEST, self.chests)
         self.build_floor_plan()
 
@@ -892,7 +895,7 @@ class FloorBuilder():
            self.floors[floor_id] = new_floor
 
         for floor in self.floors.values():
-            #floor.build_floor_plan()
+            floor.build_floor_plan()
             print(str(floor))
 
     def load_floor_details(self):
@@ -914,7 +917,7 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 2
-        new_floor_details = ("The Bridge", 3, (1,2,12,3),(2,16,14,18), 4, 4)
+        new_floor_details = ("The Bridge", 3, (5,2,12,3),(5,16,14,18), 4, 4)
         self.floor_details[new_floor_id] = new_floor_details
 
 

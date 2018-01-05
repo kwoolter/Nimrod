@@ -97,6 +97,9 @@ class ImageManager:
             model.Objects.SPHERE_GREEN: (
                 "SphereGreen0.png", "SphereGreen1.png", "SphereGreen2.png", "SphereGreen3.png", "SphereGreen2.png",
                 "SphereGreen1.png"),
+            model.Objects.SPHERE_RED: (
+                "SphereRed0.png", "SphereRed1.png", "SphereRed2.png", "SphereRed3.png", "SphereRed2.png",
+                "SphereRed1.png"),
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid_warrior2.png",
             model.Objects.CRAB_GREEN: "crab_green.png",
@@ -229,6 +232,10 @@ class ImageManager:
         self.sprite_sheets["SphereGreen1.png"] = (sheet_file_name, (32, 0, 32, 32))
         self.sprite_sheets["SphereGreen2.png"] = (sheet_file_name, (64, 0, 32, 32))
         self.sprite_sheets["SphereGreen3.png"] = (sheet_file_name, (96, 0, 32, 32))
+
+        sheet_file_name = "Sphere_sheet_red.png"
+        for i in range(0, 4):
+            self.sprite_sheets["SphereRed{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "bubbles3.png"
         for i in range(0, 16):
