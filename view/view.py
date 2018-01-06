@@ -118,7 +118,7 @@ class ImageManager:
             model.Objects.SQUOID_BLUE: "squoid_warrior2.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CHEST: "chest.png",
-            model.Objects.POTION: "red_potion3.png",
+            model.Objects.POTION: "red_potion4.png",
             model.Objects.SWORD_SMALL: "sword_small.png",
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.ICE: "ice3.png",

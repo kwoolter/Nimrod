@@ -948,7 +948,7 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 3
-        new_floor_details = ("The Whale Grave Yard", 1, (2, 0, 17, 2), (3, 17, 17, 19), 2, 2)
+        new_floor_details = ("The Whale Grave Yard", 1, (2, 0, 16, 2), (3, 17, 16, 19), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
 
@@ -1079,6 +1079,8 @@ class Battle:
     READY = "ready"
     PLAYING = "playing"
     END = "end"
+
+    TACTIC_NEXT = "nexdt opponent"
 
     def __init__(self, team1: Team, team2: Team, battle_floor: Floor = None):
         self.teams = [team1, team2]
