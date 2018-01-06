@@ -89,6 +89,7 @@ class Attack:
         for stat in self.stats.values():
             print("\t{0}={1}".format(stat.name, stat.value))
 
+
 class Character(trpg.RPGCharacter):
     def __init__(self, name: str, rpg_race: str, rpg_class: str,
                  x: int = 1, y: int = 1, width: int = 1, height: int = 1, HP: int = 20):
@@ -177,6 +178,7 @@ class Objects:
     SQUOID = "squoid"
     CRAB_GREEN = "crab"
     CRAB_RED = "crab_red"
+    CRAB_BLUE = "crab_blue"
     SQUOID_GREEN = "squoid_green"
     SQUOID_RED = "squoid_red"
     SQUOID2 = "squoid2"
@@ -186,6 +188,7 @@ class Objects:
     CHEST = "chest"
     LAVA = "lava"
     ICE = "ice"
+    SPIKE = "spike"
     CYLINDER = "cylinder"
     RED_DOT = "red dot"
     GREEN_DOT = "green_dot"
@@ -315,10 +318,10 @@ class Player(FloorObject):
 
     def __init__(self, name: str,
                  rect: pygame.Rect,
-                 layer = 1,
+                 layer=1,
                  height: int = 40,
                  character: Character = None):
-        super(Player, self).__init__(name=name, rect=rect, height=height)
+        super(Player, self).__init__(name=name, rect=rect, height=height, solid=True, visible=True, interactable=False)
 
         self.treasure = 0
         self.keys = 0
@@ -390,7 +393,7 @@ class Player(FloorObject):
 
         return self.HP <= 0
 
-    def add_attack(self, attack : Attack):
+    def add_attack(self, attack: Attack):
         self._attacks[attack.name] = copy.deepcopy(attack)
 
     def get_attack(self):
@@ -435,7 +438,7 @@ class Team:
     TACTIC_NEAREST = "nearest"
     TACTIC_FURTHEST = "furthest"
 
-    def __init__(self, name: str, colour = (255,0,0)):
+    def __init__(self, name: str, colour=(255, 0, 0)):
         self.name = name
         self.colour = colour
         self.players = []
@@ -556,10 +559,15 @@ class Floor:
         self.potions = 0
         self.chests = 0
 
+
     def __str__(self):
-        return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}, potions={4}, chests={5}".format(self.name, self.rect, self.object_count,
-                                                                                len(self.monsters),
-                                                                                self.potions, self.chests)
+        return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}, potions={4}, chests={5}".format(self.name,
+                                                                                                         self.rect,
+                                                                                                         self.object_count,
+                                                                                                         len(
+                                                                                                             self.monsters),
+                                                                                                         self.potions,
+                                                                                                         self.chests)
 
     @property
     def object_count(self):
@@ -568,19 +576,19 @@ class Floor:
             count += len(layer)
         return count
 
-    def add_player(self, new_player: Player, auto_position : bool = False, team : int = 0):
+    def add_player(self, new_player: Player, auto_position: bool = False, team: int = 0):
 
         if auto_position is True:
             min_x, min_y, max_x, max_y = self.start_positions[team]
             placed = False
-            for i in range(1,20):
+            for i in range(1, 20):
                 x = random.randint(min_x, max_x)
                 y = random.randint(min_y, max_y)
 
                 if self.get_floor_tile(x, y, self.start_layer) is None:
                     base_tile = self.get_floor_tile(x, y, self.start_layer - 1)
                     if base_tile is not None and base_tile.is_solid is True:
-                        new_player.set_pos(x,y,self.start_layer)
+                        new_player.set_pos(x, y, self.start_layer)
                         # new_player.rect.x = x
                         # new_player.rect.y = y
                         placed = True
@@ -593,7 +601,7 @@ class Floor:
 
         print("Adding player at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
 
-    def add_items(self, item_type, item_count : int = 1):
+    def add_items(self, item_type, item_count: int = 1):
 
         print("Adding {0} {1} items into rect {2}".format(item_count, item_type, self.rect))
 
@@ -602,18 +610,17 @@ class Floor:
 
             for i in range(0, item_count):
                 placed = False
-                for tries in range(0,10):
-                    x = random.randint(self.rect.x, self.rect.width-1)
-                    y = random.randint(self.rect.y, self.rect.height-1)
+                for tries in range(0, 10):
+                    x = random.randint(self.rect.x, self.rect.width - 1)
+                    y = random.randint(self.rect.y, self.rect.height - 1)
                     if self.get_floor_tile(x, y, self.start_layer) is None:
                         base_tile = self.get_floor_tile(x, y, self.start_layer - 1)
                         if base_tile is not None and base_tile.is_solid is True:
-
                             new_object.set_pos(x, y, self.start_layer)
                             self.add_object(new_object)
                             new_object = FloorObjectLoader.get_object_copy_by_name(item_type)
                             placed = True
-                            print("Added {0} item at {1},{2},{3}".format(item_type, x,y,self.start_layer))
+                            print("Added {0} item at {1},{2},{3}".format(item_type, x, y, self.start_layer))
                             break
 
                 if placed is False:
@@ -650,17 +657,15 @@ class Floor:
                 if floor_object.name == Objects.TELEPORT:
                     self.teleports.append((floor_object.rect.x, floor_object.rect.y, floor_object.layer))
 
-
-
     def set_details(self, floor_details):
 
         self.details = floor_details
-        self.name, self.start_layer, self.start_positions[0], self.start_positions[1], self.potions, self.chests = floor_details
+        self.name, self.start_layer, self.start_positions[0], self.start_positions[
+            1], self.potions, self.chests = floor_details
 
-        self.add_items(Objects.POTION, self.potions)
+        self.add_items(Objects.SPHERE_RED, self.potions)
         self.add_items(Objects.CHEST, self.chests)
         self.build_floor_plan()
-
 
     def remove_object(self, object: FloorObject):
         objects = self.layers[object.layer]
@@ -759,7 +764,8 @@ class Floor:
 
                 if tile.is_interactable is True:
                     Floor.EVENTS.add_event(
-                        Event(type=Event.FLOOR, name=Event.INTERACT, description="You interact with a {0}".format(tile.name)))
+                        Event(type=Event.FLOOR, name=Event.INTERACT,
+                              description="You interact with a {0}".format(tile.name)))
 
                     if tile.name == Objects.CHEST:
                         reward = random.choice((Objects.KEY, Objects.POTION, Objects.SPHERE_GREEN))
@@ -795,11 +801,25 @@ class Floor:
                         self.set_floor_tile(x, y, z, None)
                         Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
                                                      description="You found a {0}".format(tile.name)))
-                    elif tile.name == Objects.POTION:
-                        selected_player.do_heal(random.randint(1,3))
+
+                    elif tile.name == Objects.SPHERE_RED:
+                        selected_player.do_heal(random.randint(1, 3))
                         self.set_floor_tile(x, y, z, None)
                         Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
                                                      description="You found a {0}".format(tile.name)))
+
+                    elif tile.name == Objects.POTION:
+                        selected_player.do_heal(random.randint(1, 3))
+                        self.set_floor_tile(x, y, z, None)
+                        Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
+                                                     description="You found a {0}".format(tile.name)))
+
+                    elif tile.name == Objects.SPIKE:
+                        selected_player.do_damage(random.randint(1, 3))
+                        self.set_floor_tile(x, y, z, None)
+                        Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.LOSE_HEALTH,
+                                                     description="You hit a {0}".format(tile.name)))
+
                     elif tile.name == Objects.KEY:
                         selected_player.keys += 1
                         self.set_floor_tile(x, y, z, None)
@@ -889,10 +909,10 @@ class FloorBuilder():
     def load_floors(self):
 
         for floor_id, new_floor in FloorLayoutLoader.floor_layouts.items():
-           if floor_id in self.floor_details.keys():
-               new_floor.build_floor_plan()
-               new_floor.set_details(self.floor_details[floor_id])
-           self.floors[floor_id] = new_floor
+            if floor_id in self.floor_details.keys():
+                new_floor.build_floor_plan()
+                new_floor.set_details(self.floor_details[floor_id])
+            self.floors[floor_id] = new_floor
 
         for floor in self.floors.values():
             floor.build_floor_plan()
@@ -909,19 +929,19 @@ class FloorBuilder():
         # - chests
 
         new_floor_id = 0
-        new_floor_details = ("The Trial", 1, (6,1,16,3),(5,16,14,18), 4, 4)
+        new_floor_details = ("The Trial", 1, (6, 1, 16, 3), (5, 16, 14, 18), 4, 4)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 1
-        new_floor_details = ("The Maze", 1, (6,1,16,3),(5,16,14,18), 1, 1)
+        new_floor_details = ("The Maze", 1, (6, 1, 16, 3), (5, 16, 14, 18), 1, 1)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 2
-        new_floor_details = ("The Bridge", 3, (5,2,12,3),(5,16,14,18), 4, 4)
+        new_floor_details = ("The Bridge", 3, (5, 2, 12, 3), (5, 16, 14, 18), 4, 4)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 3
-        new_floor_details = ("The Whale Grave Yard", 1, (0,0,19,2),(0,17,19,19), 2, 2)
+        new_floor_details = ("The Whale Grave Yard", 1, (2, 0, 17, 2), (3, 17, 17, 19), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
 
@@ -982,7 +1002,6 @@ class FloorLayoutLoader():
                     x += FloorLayoutLoader.DEFAULT_OBJECT_WIDTH
 
                 y += FloorLayoutLoader.DEFAULT_OBJECT_DEPTH
-
 
 
 class FloorObjectLoader():
@@ -1046,8 +1065,6 @@ class FloorObjectLoader():
             raise Exception("Can't find object by code '{0}'".format(object_name))
 
         return FloorObjectLoader.get_object_copy_by_code(object_code)
-
-
 
 
 class Battle:
@@ -1415,9 +1432,9 @@ class Game():
 
     def start_battle(self):
         self.state = Game.BATTLE
-        self._battle_floor_id = random.choice((0,3))
+        self._battle_floor_id = random.choice((0, 3))
 
-        self._battle_floor_id = 3
+        #self._battle_floor_id = 0
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
@@ -1430,8 +1447,8 @@ class Game():
 
         for i in range(0, 5):
             new_char = random.choice(characters)
-            new_char_type = random.choice((Objects.SQUOID_GREEN, Objects.CRAB_GREEN, Objects.SKELETON_LEFT))
-            new_player = Player(name=new_char_type, rect=(i * 2 + 8, 2, 32, 32), layer = 3, character=new_char)
+            new_char_type = random.choice((Objects.SQUOID2, Objects.CRAB_BLUE, Objects.SKELETON_LEFT))
+            new_player = Player(name=new_char_type, rect=(i * 2 + 8, 2, 32, 32), layer=3, character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])
             characters.remove(new_char)
@@ -1439,7 +1456,7 @@ class Game():
 
             new_char = random.choice(characters)
             new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON_RIGHT))
-            new_player = Player(name=new_char_type, rect=(i * 2 + 8, 17, 32, 32), layer = 3, character=new_char)
+            new_player = Player(name=new_char_type, rect=(i * 2 + 8, 17, 32, 32), layer=3, character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])
             characters.remove(new_char)
@@ -1520,7 +1537,7 @@ class Game():
 
         for character_name in character_names:
             character = self._npcs.get_character_by_name(character_name)
-            #character.roll()
+            # character.roll()
             character.load_stats(rpg_classes.get_stats_by_name(character.rpg_class), overwrite=False)
             character.load_stats(rpg_races.get_stats_by_name(character.race), overwrite=False)
             add_core_stats(character)
@@ -1558,7 +1575,6 @@ class Game():
             stats = attack_data.get_stats_by_name(attack)
 
             for stat in stats:
-
                 new_attack.add_stat(stat)
 
             self._attacks[attack] = new_attack

@@ -66,7 +66,7 @@ class ImageManager:
         new_skin = (new_skin_name, {
 
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
-            model.Objects.SKULL: "Squoid_warrior_skull.png",
+            model.Objects.SKULL: "Skull.png",
             model.Objects.HEART: "heart.png",
             model.Objects.BASE: "Base_yellow.png",
             model.Objects.BASE_YELLOW: "Base_yellow.png",
@@ -104,11 +104,12 @@ class ImageManager:
             model.Objects.SQUOID: "Squoid_warrior2.png",
             model.Objects.CRAB_GREEN: "crab_green.png",
             model.Objects.CRAB_RED: "crab_red2.png",
-            model.Objects.SKELETON_LEFT: "skeleton_left.png",
-            model.Objects.SKELETON_RIGHT: "skeleton_right.png",
+            model.Objects.CRAB_BLUE: "crab_blue.png",
+            model.Objects.SKELETON_LEFT: "skeleton_left_blue.png",
+            model.Objects.SKELETON_RIGHT: "skeleton_right_red.png",
             model.Objects.SQUOID_GREEN: "Squoid_warrior_green.png",
             model.Objects.SQUOID_RED: "Squoid_warrior_red.png",
-            model.Objects.SQUOID2: "Squoid_warrior_green.png",
+            model.Objects.SQUOID2: "squoid_warrior2.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CHEST: "chest.png",
             model.Objects.POTION: "red_potion2.png",
@@ -134,6 +135,10 @@ class ImageManager:
             model.Objects.POISON: (
                 "poison0.png", "poison1.png", "poison2.png", "poison3.png", "poison4.png", "poison5.png",
                 "poison6.png"),
+
+            model.Objects.SPIKE: (None,None, None,"spike3.png",
+                "spike0.png", "spike1.png", "spike2.png", "spike3.png", "spike4.png", "spike5.png",
+                "spike6.png"),
             model.Objects.INK: (
                 "ink0.png", "ink1.png", "ink2.png", "ink3.png", "ink4.png", "ink5.png", "ink6.png"),
             model.Objects.HIT: ("hit0.png", "hit1.png", "hit2.png"),
@@ -177,9 +182,11 @@ class ImageManager:
             else:
                 tile_file_name = tile_file_names[tick % len(tile_file_names)]
 
-            image = self.get_image(image_file_name=tile_file_name, width=width, height=height)
+            if tile_file_name is not None:
+                image = self.get_image(image_file_name=tile_file_name, width=width, height=height)
 
         else:
+
             image = self.get_image(tile_file_names, width=width, height=height)
 
         return image
@@ -233,7 +240,7 @@ class ImageManager:
         self.sprite_sheets["SphereGreen2.png"] = (sheet_file_name, (64, 0, 32, 32))
         self.sprite_sheets["SphereGreen3.png"] = (sheet_file_name, (96, 0, 32, 32))
 
-        sheet_file_name = "Sphere_sheet_red.png"
+        sheet_file_name = "Sphere_sheet_red2.png"
         for i in range(0, 4):
             self.sprite_sheets["SphereRed{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
@@ -256,6 +263,10 @@ class ImageManager:
         sheet_file_name = "poison.png"
         for i in range(0, 7):
             self.sprite_sheets["poison{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "spike_sheet.png"
+        for i in range(0, 7):
+            self.sprite_sheets["spike{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "ink.png"
         for i in range(0, 7):
@@ -891,6 +902,8 @@ class BattleView(View):
 
         self.next_event = None
 
+        self._show_names = True
+
     def initialise(self, game: model.Game):
         super(BattleView, self).initialise()
 
@@ -904,6 +917,12 @@ class BattleView(View):
 
     def process_event(self, new_event: model.Event):
         self.next_event = new_event
+
+    def toggle_show_names(self):
+        if self._show_names is True:
+            self._show_names = False
+        else:
+            self._show_names = True
 
     def draw_floor(self, surface):
 
@@ -977,7 +996,7 @@ class BattleView(View):
                                                                       height=BattleView.TILE_HEIGHT,
                                                                       skin_name=skin_name)
 
-                            image.set_alpha(150)
+                            image.set_alpha(100)
 
                             surface.blit(image, (view_x, view_y))
 
@@ -987,6 +1006,29 @@ class BattleView(View):
                             self.player_view.initialise(view_object)
                             image = self.player_view.draw_player()
                             surface.blit(image, (view_x - x_offset, view_y - y_offset))
+
+                            if self._show_names is True:
+
+                                if view_object == current_player:
+                                    bg_colour = Colours.GREEN
+                                    fg_colour = Colours.BLACK
+                                elif view_object == current_target:
+                                    bg_colour = Colours.YELLOW
+                                    fg_colour = Colours.BLACK
+                                else:
+                                    team = self.game.battle.get_player_team(view_object)
+                                    fg_colour = Colours.WHITE
+                                    bg_colour = team.colour
+
+                                draw_text(self.surface,
+                                          view_object.character.name,
+                                          x=view_x - x_offset + BattleView.TILE_WIDTH/2,
+                                          y=view_y - y_offset,
+                                          bg_colour=bg_colour,
+                                          fg_colour=fg_colour,
+                                          size=12,
+                                          centre=True,
+                                          alpha=100)
 
                         else:
                             # Get the image for the actual object to draw at this position

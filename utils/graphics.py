@@ -32,7 +32,7 @@ def draw_text(surface, msg, x, y, size=32, fg_colour=Colours.WHITE, bg_colour=Co
 
     textpos.centery = y
     surface.blit(text, textpos)
-    surface.set_alpha(alpha)
+    #surface.set_alpha(alpha)
 
 
 # draw some text into an area of a surface

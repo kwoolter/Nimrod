@@ -125,7 +125,7 @@ class Controller:
                                 self.game.battle.set_current_target(model.Team.TACTIC_STRONGEST)
                             elif event.key == K_5:
                                 self.game.battle.set_current_target(model.Team.TACTIC_WEAKEST)
-                            if event.key == Controller.KEY_LEFT:
+                            elif event.key == Controller.KEY_LEFT:
                                 self.game.battle.move_player(-1, 0)
                             elif event.key == Controller.KEY_RIGHT:
                                 self.game.battle.move_player(1, 0)
@@ -137,6 +137,8 @@ class Controller:
                                 self.game.battle.do_attack()
                             elif event.key == Controller.KEY_END_TURN:
                                 self.game.battle.next_player()
+                            elif event.key == K_F1:
+                                self.view.battle_view.toggle_show_names()
 
                             elif event.key == K_F12:
                                 self.game.battle.print()

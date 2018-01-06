@@ -30,9 +30,9 @@ ID,Name,Skin,Layer,Layout
 0,Floor0,default,1,i    p              
 0,Floor0,default,1,#         p         
 0,Floor0,default,1,#                   
-0,Floor0,default,1,i                   
+0,Floor0,default,1,i      !            
 0,Floor0,default,1,i           p       
-0,Floor0,default,1,#                   
+0,Floor0,default,1,# !                 
 0,Floor0,default,1,i                   
 0,Floor0,default,1,#                   
 0,Floor0,default,1,#                   
@@ -278,27 +278,27 @@ ID,Name,Skin,Layer,Layout
 3,Floor3,default,0,~~~~~~~~~~~~~~~~~~~~
 3,Floor3,default,0,~~~~~~~~~~~~~~~~~~~~
 3,Floor3,default,0, ~~~~~~~~~~~~~~~~~~ 
-3,Floor3,default,0,  ~~~~~~~~~~~~~~~~  
-3,Floor3,default,1,b                   
-3,Floor3,default,1,                    
+3,Floor3,default,0,  ~~~~~~~~~b~~~~~~  
+3,Floor3,default,1,bw                  
+3,Floor3,default,1,w                   
 3,Floor3,default,1,                    
 3,Floor3,default,1,        ***  *** (*\
-3,Floor3,default,1,+#+ (*\             
+3,Floor3,default,1,+H+ w*w             
 3,Floor3,default,1,        ***  *** ***
 3,Floor3,default,1,*** ***             
 3,Floor3,default,1,                    
 3,Floor3,default,1,T       (*\  *** ***
 3,Floor3,default,1,(*\ ***            T
-3,Floor3,default,1,        +#+  *** ***
-3,Floor3,default,1,(*\ ***             
+3,Floor3,default,1,        +H+  *** ***
+3,Floor3,default,1,(*\ w*w             
 3,Floor3,default,1,                    
 3,Floor3,default,1,        ***  *** ***
 3,Floor3,default,1,*** ***             
-3,Floor3,default,1,        (*\  (*\ ***
-3,Floor3,default,1,*** ***             
+3,Floor3,default,1,        (*\  (*\ *+*
+3,Floor3,default,1,*** ***       /     
+3,Floor3,default,1, /                  
 3,Floor3,default,1,                    
-3,Floor3,default,1,                    
-3,Floor3,default,1,                    
+3,Floor3,default,1,          wbw       
 3,Floor3,default,2,b                   
 3,Floor3,default,2,                    
 3,Floor3,default,2,                    
@@ -318,4 +318,24 @@ ID,Name,Skin,Layer,Layout
 3,Floor3,default,2, p   0              
 3,Floor3,default,2,                    
 3,Floor3,default,2,                    
-3,Floor3,default,2,                    
+3,Floor3,default,2,           b        
+3,Floor3,default,3,b                   
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,                  P 
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3, P                  
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,                  P 
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,                    
+3,Floor3,default,3,           b        
