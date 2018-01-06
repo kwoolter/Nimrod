@@ -657,7 +657,7 @@ class Floor:
         self.details = floor_details
         self.name, self.start_layer, self.start_positions[0], self.start_positions[1], self.potions, self.chests = floor_details
 
-        self.add_items(Objects.SPHERE_RED, self.potions)
+        self.add_items(Objects.POTION, self.potions)
         self.add_items(Objects.CHEST, self.chests)
         self.build_floor_plan()
 
@@ -918,6 +918,10 @@ class FloorBuilder():
 
         new_floor_id = 2
         new_floor_details = ("The Bridge", 3, (5,2,12,3),(5,16,14,18), 4, 4)
+        self.floor_details[new_floor_id] = new_floor_details
+
+        new_floor_id = 3
+        new_floor_details = ("The Whale Grave Yard", 1, (0,0,19,2),(0,17,19,19), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
 
@@ -1411,9 +1415,9 @@ class Game():
 
     def start_battle(self):
         self.state = Game.BATTLE
-        self._battle_floor_id = random.choice((0,2))
+        self._battle_floor_id = random.choice((0,3))
 
-        self._battle_floor_id = 2
+        self._battle_floor_id = 3
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
