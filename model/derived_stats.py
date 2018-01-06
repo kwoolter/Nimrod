@@ -309,10 +309,12 @@ class MaxAP(RPGDerivedStat):
     def __init__(self, owner: RPGObject):
         super(MaxAP, self).__init__("MaxAP", "Attributes", owner=owner)
         self.add_dependency("Dexterity")
+        self.add_dependency("Speed")
 
     def calculate(self):
         dex = self.get_dependency_value("Dexterity")
-        return 5 + dex // 12
+        speed = self.get_dependency_value("Speed")
+        return 5 + dex // 11 + (speed - 1)
 
 
 class HP(RPGDerivedStat):

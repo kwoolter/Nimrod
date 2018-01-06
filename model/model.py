@@ -438,6 +438,7 @@ class Monster(FloorObject):
 
 
 class Team:
+
     TACTIC_RANDOM = "random"
     TACTIC_WEAKEST = "weakest"
     TACTIC_STRONGEST = "strongest"
@@ -669,7 +670,7 @@ class Floor:
         self.name, self.start_layer, self.start_positions[0], self.start_positions[
             1], self.potions, self.chests = floor_details
 
-        self.add_items(Objects.SPHERE_RED, self.potions)
+        self.add_items(Objects.POTION, self.potions)
         self.add_items(Objects.CHEST, self.chests)
         self.build_floor_plan()
 
@@ -1440,7 +1441,7 @@ class Game:
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 3))
 
-        #self._battle_floor_id = 3
+        self._battle_floor_id = 3
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)

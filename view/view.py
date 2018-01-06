@@ -72,7 +72,7 @@ class ImageManager:
             model.Objects.BASE_YELLOW: "Base_yellow.png",
             model.Objects.BASE_RED: "Base_red.png",
             model.Objects.BASE_GREEN: "Base_green.png",
-            model.Objects.BASE_SHADOW: "Base_shadow2.png",
+            model.Objects.BASE_SHADOW: "Base_shadow3.png",
             model.Objects.BLOCK: "Block32x32.png",
             model.Objects.BRICK: "Brick32x32.png",
             model.Objects.BLOCK_ORNATE: "Block32x32Ornate.png",
@@ -98,14 +98,14 @@ class ImageManager:
                 "SphereGreen0.png", "SphereGreen1.png", "SphereGreen2.png", "SphereGreen3.png", "SphereGreen2.png",
                 "SphereGreen1.png"),
             model.Objects.SPHERE_RED: (
-                "SphereRed0.png", "SphereRed1.png", "SphereRed2.png", "SphereRed3.png", "SphereRed2.png",
+                "SphereRed0.png", "SphereRed1.png", "SphereRed2.png", "SphereRed3.png", "SphereRed3.png", "SphereRed3.png","SphereRed2.png",
                 "SphereRed1.png"),
             model.Objects.SPHERE_BLUE: "SphereBlue.png",
             model.Objects.SQUOID: "Squoid_warrior2.png",
             model.Objects.CRAB_GREEN: "crab_green.png",
             model.Objects.CRAB_RED: "crab_red2.png",
             model.Objects.CRAB_BLUE: "crab_blue.png",
-            model.Objects.OCTOPUS_RED: "octopus_red2.png",
+            model.Objects.OCTOPUS_RED: "octopus_red.png",
             model.Objects.OCTOPUS_BLUE: "octopus_blue.png",
             model.Objects.POLAR_BEAR_RED: "polar_bear_red.png",
             model.Objects.POLAR_BEAR_BLUE: "polar_bear_blue.png",
@@ -118,7 +118,7 @@ class ImageManager:
             model.Objects.SQUOID_BLUE: "squoid_warrior2.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CHEST: "chest.png",
-            model.Objects.POTION: "red_potion2.png",
+            model.Objects.POTION: "red_potion3.png",
             model.Objects.SWORD_SMALL: "sword_small.png",
             model.Objects.CYLINDER: "Cylinder.png",
             model.Objects.ICE: "ice3.png",
@@ -478,6 +478,8 @@ class TitleBar(View):
 
         if self.game.state == model.Game.PLAYING:
             msg = "Playing"
+        if self.game.state == model.Game.BATTLE:
+            msg = self.game.battle.battle_floor.name
         elif self.title is not None:
             msg = self.title
 
@@ -960,7 +962,7 @@ class BattleView(View):
                             if view_object.is_effect(model.Player.ASLEEP) is False and \
                                             view_object.is_effect(model.Player.FROZEN) is False and \
                                             view_object.is_dead() is False:
-                                y_offset = 4 * (1 + math.sin(self.tick_count / 2))
+                                y_offset = 5 * (1 + math.sin(self.tick_count / 3))
 
                             # Add x offset if object is a player who is attacking to provide animation
                             if view_object.is_effect(model.Player.ATTACKING) is True:
@@ -1169,7 +1171,7 @@ class BattleView(View):
 
 
 class PlayerView(View):
-    BG_COLOUR = Colours.BLACK
+    BG_COLOUR = (60,60,60)
     FG_COLOUR = Colours.WHITE
     BORDER_WIDTH = 4
     AVATAR_WIDTH = 64

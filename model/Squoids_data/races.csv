@@ -1,7 +1,7 @@
 RPGRace,Dexterity,Intelligence,Strength,Constitution,Wisdom,Charisma,Speed,Race AC Bonus,Race Reflex Bonus,Race Will Bonus,Race Fortitude Bonus,Playable,Weight,Image
 Squoid,2,2,0,0,0,0,2,0,2,0,0,1,10,squoid
-Skeleton Pirate,0,2,0,0,2,0,2,2,0,0,0,1,10,skeleton
+Skeleton Pirate,0,2,0,0,2,0,1,2,0,0,0,1,10,skeleton
 Octopus,0,0,2,2,0,0,2,0,0,0,2,1,20,octopus
-Polar Bear,0,0,2,2,0,0,2,0,0,2,0,1,17,polar_bear
+Polar Bear,0,0,2,2,0,0,1,0,0,2,0,1,17,polar_bear
 Shark,2,0,0,0,2,0,2,0,2,0,0,1,8,shark
 Hermit Crab,0,0,2,2,0,0,1,2,0,0,0,1,8,crab
