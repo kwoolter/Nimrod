@@ -175,15 +175,21 @@ class Objects:
     SPHERE_GREEN = "sphere_green"
     SPHERE_BLUE = "sphere_blue"
     SPHERE_RED = "sphere_red"
+    OCTOPUS_RED = "octopus_red"
+    OCTOPUS_BLUE = "octopus_blue"
+    SHARK_RED = "shark_red"
+    SHARK_BLUE = "shark_blue"
     SQUOID = "squoid"
     CRAB_GREEN = "crab"
     CRAB_RED = "crab_red"
     CRAB_BLUE = "crab_blue"
     SQUOID_GREEN = "squoid_green"
     SQUOID_RED = "squoid_red"
-    SQUOID2 = "squoid2"
-    SKELETON_LEFT = "skeleton_left"
-    SKELETON_RIGHT = "skeleton_right"
+    SQUOID_BLUE = "squoid_blue"
+    POLAR_BEAR_RED = "polar_bear_red"
+    POLAR_BEAR_BLUE = "polar_bear_blue"
+    SKELETON_LEFT = "skeleton_blue"
+    SKELETON_RIGHT = "skeleton_red"
     KEY = "key1"
     CHEST = "chest"
     LAVA = "lava"
@@ -206,7 +212,7 @@ class Objects:
     POTION = "potion"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
-    SQUOIDS = (SQUOID, SQUOID2, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
+    SQUOIDS = (SQUOID, SQUOID_BLUE, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
 
 
 class FloorObject(object):
@@ -1371,7 +1377,7 @@ class Battle:
         return winning_team
 
 
-class Game():
+class Game:
     LOADED = "LOADED"
     READY = "READY"
     PLAYING = "PLAYING"
@@ -1434,7 +1440,7 @@ class Game():
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 3))
 
-        #self._battle_floor_id = 0
+        self._battle_floor_id = 3
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
@@ -1447,7 +1453,7 @@ class Game():
 
         for i in range(0, 5):
             new_char = random.choice(characters)
-            new_char_type = random.choice((Objects.SQUOID2, Objects.CRAB_BLUE, Objects.SKELETON_LEFT))
+            new_char_type = new_char.get_attribute("Image") + "_blue"
             new_player = Player(name=new_char_type, rect=(i * 2 + 8, 2, 32, 32), layer=3, character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])
@@ -1455,7 +1461,7 @@ class Game():
             team1.add_player(new_player)
 
             new_char = random.choice(characters)
-            new_char_type = random.choice((Objects.SQUOID_RED, Objects.CRAB_RED, Objects.SKELETON_RIGHT))
+            new_char_type = new_char.get_attribute("Image") + "_red"
             new_player = Player(name=new_char_type, rect=(i * 2 + 8, 17, 32, 32), layer=3, character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])
@@ -1540,6 +1546,7 @@ class Game():
             # character.roll()
             character.load_stats(rpg_classes.get_stats_by_name(character.rpg_class), overwrite=False)
             character.load_stats(rpg_races.get_stats_by_name(character.race), overwrite=False)
+            character.load_attributes(rpg_races.get_attributes_by_name(character.race))
             add_core_stats(character)
             add_derived_stats(character)
             # character.examine()

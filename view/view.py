@@ -105,11 +105,17 @@ class ImageManager:
             model.Objects.CRAB_GREEN: "crab_green.png",
             model.Objects.CRAB_RED: "crab_red2.png",
             model.Objects.CRAB_BLUE: "crab_blue.png",
+            model.Objects.OCTOPUS_RED: "octopus_red2.png",
+            model.Objects.OCTOPUS_BLUE: "octopus_blue.png",
+            model.Objects.POLAR_BEAR_RED: "polar_bear_red.png",
+            model.Objects.POLAR_BEAR_BLUE: "polar_bear_blue.png",
+            model.Objects.SHARK_RED: "shark_red.png",
+            model.Objects.SHARK_BLUE: "shark_blue.png",
             model.Objects.SKELETON_LEFT: "skeleton_left_blue.png",
             model.Objects.SKELETON_RIGHT: "skeleton_right_red.png",
             model.Objects.SQUOID_GREEN: "Squoid_warrior_green.png",
             model.Objects.SQUOID_RED: "Squoid_warrior_red.png",
-            model.Objects.SQUOID2: "squoid_warrior2.png",
+            model.Objects.SQUOID_BLUE: "squoid_warrior2.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CHEST: "chest.png",
             model.Objects.POTION: "red_potion2.png",
@@ -195,7 +201,7 @@ class ImageManager:
 
         sheet_file_name = "blocks_sheet_blue.png"
 
-        self.sprite_sheets["Block32x32Pyramid2.png"] = (sheet_file_name, (128, 0, 32, 32))
+        self.sprite_sheets["Block32x32Pyramid2.png"] = (sheet_file_name, (127, 0, 32, 32))
         self.sprite_sheets["Block32x32Pyramid4.png"] = (sheet_file_name, (160, 0, 32, 32))
         self.sprite_sheets["Cylinder.png"] = (sheet_file_name, (0, 0, 32, 32))
         self.sprite_sheets["Sphere2.png"] = (sheet_file_name, (96, 0, 32, 32))

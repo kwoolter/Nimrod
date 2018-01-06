@@ -5,10 +5,11 @@ Fred,Skeleton Pirate,Mage,1,,-102,4,Shock
 Bill,Skeleton Pirate,Sword,1,,-103,4,Sword
 Jim,Polar Bear,Shield,1,,-104,4,Hammer
 Alice,Polar Bear,Mage,1,,-105,4,Ink Jet
-Rosie,Whale,Archer,1,,-106,4,Ice Bow
-Arthur,Angler Fish,Ball Thrower,1,,-107,4,Slingshot
-Adam,Angler Fish,Archer,1,,-108,4,Bow
-Wally,Whale,Shield,1,,-109,4,Dagger
+Rosie,Octopus,Archer,1,,-106,4,Ice Bow
+Arthur,Shark,Ball Thrower,1,,-107,4,Slingshot
+Adam,Shark,Archer,1,,-108,4,Bow
+Dave,Shark,Mage,1,,-108,4,Stun
+Wally,Octopus,Shield,1,,-109,4,Dagger
 Henry,Hermit Crab,Ball Thrower,1,,-110,4,Stun
 Hugh,Hermit Crab,Ball Thrower,1,,-110,4,Chill
 Orsus,Skeleton Pirate,Mage,1,,-102,4,Hot Water

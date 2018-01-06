@@ -246,11 +246,11 @@ ID,Name,Skin,Layer,Layout
 2,Floor2,default,3,#                   
 2,Floor2,default,3,+        p    p     
 2,Floor2,default,3,                    
-2,Floor2,default,3,                    
+2,Floor2,default,3,           !        
 2,Floor2,default,3,         p    p     
 2,Floor2,default,3,+        c    c     
 2,Floor2,default,3,#        p    p     
-2,Floor2,default,3,#                   
+2,Floor2,default,3,#           !       
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#        p    p     
 2,Floor2,default,3,#                   
