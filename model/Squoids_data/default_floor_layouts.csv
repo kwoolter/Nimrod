@@ -339,83 +339,83 @@ ID,Name,Skin,Layer,Layout
 3,Floor3,default,3,                    
 3,Floor3,default,3,                    
 3,Floor3,default,3,           b        
-4,Floor4,default,0,************        
-4,Floor4,default,0,************        
-4,Floor4,default,0,************        
-4,Floor4,default,0,************        
-4,Floor4,default,0,************        
-4,Floor4,default,0,****    ****        
-4,Floor4,default,0,****    ****        
-4,Floor4,default,0,****    ****        
-4,Floor4,default,0,************        
-4,Floor4,default,0,************        
-4,Floor4,default,0,************        
-4,Floor4,default,0,************        
-4,Floor4,default,0,************        
-4,Floor4,default,0,************        
-4,Floor4,default,0,***********^        
-4,Floor4,default,0,<*********^         
-4,Floor4,default,0, <*******^          
-4,Floor4,default,0,  <*****^           
-4,Floor4,default,0,   <***^            
-4,Floor4,default,0,    <*^             
-4,Floor4,default,1,************        
-4,Floor4,default,1,************        
-4,Floor4,default,1,************        
-4,Floor4,default,1,************        
-4,Floor4,default,1,************        
-4,Floor4,default,1,****    ****        
-4,Floor4,default,1,****    ****        
-4,Floor4,default,1,****    ****        
-4,Floor4,default,1,************        
-4,Floor4,default,1,************        
-4,Floor4,default,1,************        
-4,Floor4,default,1,************        
-4,Floor4,default,1,************        
-4,Floor4,default,1,************        
-4,Floor4,default,1,***********^        
-4,Floor4,default,1,<*********^         
-4,Floor4,default,1, <*******^          
-4,Floor4,default,1,  <*****^           
-4,Floor4,default,1,   <***^            
-4,Floor4,default,1,    <*^             
-4,Floor4,default,2,************        
-4,Floor4,default,2,*          *        
-4,Floor4,default,2,*          *        
-4,Floor4,default,2,*          *        
-4,Floor4,default,2,*                   
-4,Floor4,default,2,*                   
-4,Floor4,default,2,*                   
-4,Floor4,default,2,*                   
-4,Floor4,default,2,*                   
-4,Floor4,default,2,*          *        
-4,Floor4,default,2,*          *        
-4,Floor4,default,2,*          *        
-4,Floor4,default,2,*          *        
-4,Floor4,default,2,*          *        
-4,Floor4,default,2,*    C              
-4,Floor4,default,2,                    
-4,Floor4,default,2,                    
-4,Floor4,default,2,                    
-4,Floor4,default,2,                    
-4,Floor4,default,2,                    
-4,Floor4,default,3,************        
-4,Floor4,default,3,\          (        
-4,Floor4,default,3,\          (        
-4,Floor4,default,3,\          (        
-4,Floor4,default,3,\                   
-4,Floor4,default,3,\                   
-4,Floor4,default,3,\                   
-4,Floor4,default,3,\                   
-4,Floor4,default,3,\                   
-4,Floor4,default,3,\          (        
-4,Floor4,default,3,\          (        
-4,Floor4,default,3,\          (        
-4,Floor4,default,3,\          (        
-4,Floor4,default,3,\          (        
-4,Floor4,default,3,\    C              
-4,Floor4,default,3,                    
-4,Floor4,default,3,                    
-4,Floor4,default,3,                    
-4,Floor4,default,3,                    
-4,Floor4,default,3,                    
+4,Floor4,green,0,************        
+4,Floor4,green,0,************        
+4,Floor4,green,0,************        
+4,Floor4,green,0,************        
+4,Floor4,green,0,************        
+4,Floor4,green,0,****    ****        
+4,Floor4,green,0,****    ****        
+4,Floor4,green,0,****    ****        
+4,Floor4,green,0,************        
+4,Floor4,green,0,************        
+4,Floor4,green,0,************        
+4,Floor4,green,0,************        
+4,Floor4,green,0,************        
+4,Floor4,green,0,************        
+4,Floor4,green,0,***********^        
+4,Floor4,green,0,<*********^         
+4,Floor4,green,0, <*******^          
+4,Floor4,green,0,  <*****^           
+4,Floor4,green,0,   <***^            
+4,Floor4,green,0,    <*^             
+4,Floor4,green,1,************        
+4,Floor4,green,1,************        
+4,Floor4,green,1,************        
+4,Floor4,green,1,************        
+4,Floor4,green,1,************        
+4,Floor4,green,1,****    ****        
+4,Floor4,green,1,****    ****        
+4,Floor4,green,1,****    ****        
+4,Floor4,green,1,************        
+4,Floor4,green,1,************        
+4,Floor4,green,1,************        
+4,Floor4,green,1,************        
+4,Floor4,green,1,************        
+4,Floor4,green,1,************        
+4,Floor4,green,1,***********^        
+4,Floor4,green,1,<*********^         
+4,Floor4,green,1, <*******^          
+4,Floor4,green,1,  <*****^           
+4,Floor4,green,1,   <***^            
+4,Floor4,green,1,    <*^             
+4,Floor4,green,2,************        
+4,Floor4,green,2,*          *        
+4,Floor4,green,2,*          *        
+4,Floor4,green,2,*          *        
+4,Floor4,green,2,*                   
+4,Floor4,green,2,*                   
+4,Floor4,green,2,*                   
+4,Floor4,green,2,*                   
+4,Floor4,green,2,*                   
+4,Floor4,green,2,*          *        
+4,Floor4,green,2,*          *        
+4,Floor4,green,2,*          *        
+4,Floor4,green,2,*          *        
+4,Floor4,green,2,*          *        
+4,Floor4,green,2,*    C              
+4,Floor4,green,2,                    
+4,Floor4,green,2,                    
+4,Floor4,green,2,                    
+4,Floor4,green,2,                    
+4,Floor4,green,2,                    
+4,Floor4,green,3,************        
+4,Floor4,green,3,\          (        
+4,Floor4,green,3,\          (        
+4,Floor4,green,3,\          (        
+4,Floor4,green,3,\                   
+4,Floor4,green,3,\                   
+4,Floor4,green,3,\                   
+4,Floor4,green,3,\                   
+4,Floor4,green,3,\                   
+4,Floor4,green,3,\          (        
+4,Floor4,green,3,\          (        
+4,Floor4,green,3,\          (        
+4,Floor4,green,3,\          (        
+4,Floor4,green,3,\          (        
+4,Floor4,green,3,\    C              
+4,Floor4,green,3,                    
+4,Floor4,green,3,                    
+4,Floor4,green,3,                    
+4,Floor4,green,3,                    
+4,Floor4,green,3,                    

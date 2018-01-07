@@ -153,6 +153,9 @@ class Objects:
     BASE_GREEN = "base_green"
     BASE_SHADOW = "base_shadow"
     BLOCK = "block"
+    BLOCK1 = "block1"
+    BLOCK2 = "block2"
+    BLOCK3 = "block3"
     BRICK = "brick"
     BLOCK_ORNATE = "block_ornate"
     BLOCK_HEXAGON = "block_hexagon"
@@ -438,7 +441,6 @@ class Monster(FloorObject):
 
 
 class Team:
-
     TACTIC_RANDOM = "random"
     TACTIC_WEAKEST = "weakest"
     TACTIC_STRONGEST = "strongest"
@@ -565,7 +567,6 @@ class Floor:
         self.start_layer = 1
         self.potions = 0
         self.chests = 0
-
 
     def __str__(self):
         return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}, potions={4}, chests={5}".format(self.name,
@@ -952,9 +953,8 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 4
-        new_floor_details = ("Sunken Wreck", 3, (2, 14, 8, 15), (2, 1,9,2), 2, 2)
+        new_floor_details = ("Sunken Wreck", 3, (1, 1, 10, 3), (1, 13, 8, 15), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
-
 
 
 class FloorLayoutLoader():
