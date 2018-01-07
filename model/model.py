@@ -951,6 +951,11 @@ class FloorBuilder():
         new_floor_details = ("The Whale Grave Yard", 1, (2, 0, 16, 2), (3, 17, 16, 19), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
+        new_floor_id = 4
+        new_floor_details = ("Sunken Wreck", 3, (2, 14, 8, 15), (2, 1,9,2), 2, 2)
+        self.floor_details[new_floor_id] = new_floor_details
+
+
 
 class FloorLayoutLoader():
     floor_layouts = {}
@@ -1443,7 +1448,7 @@ class Game:
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 3))
 
-        self._battle_floor_id = 3
+        self._battle_floor_id = 4
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
