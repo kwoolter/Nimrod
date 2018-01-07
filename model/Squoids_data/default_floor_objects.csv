@@ -1,5 +1,8 @@
 Code,Name,width,depth,height,solid,visible,interactable
 *,block,32,32,32,TRUE,TRUE,FALSE
+@,block1,32,32,32,TRUE,TRUE,FALSE
+$,block2,32,32,32,TRUE,TRUE,FALSE
+£,block3,32,32,32,TRUE,TRUE,FALSE
 #,brick,32,32,32,TRUE,TRUE,FALSE
 +,block_ornate,32,32,32,TRUE,TRUE,FALSE
 H,block_hexagon,32,32,32,TRUE,TRUE,FALSE
