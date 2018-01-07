@@ -953,7 +953,7 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 4
-        new_floor_details = ("Sunken Wreck", 3, (1, 1, 10, 3), (1, 13, 8, 15), 2, 2)
+        new_floor_details = ("Sunken Wreck", 2, (1, 1, 10, 3), (1, 13, 8, 15), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
 
