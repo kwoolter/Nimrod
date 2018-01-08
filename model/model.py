@@ -228,7 +228,8 @@ class FloorObject(object):
                  height: int = None,
                  solid: bool = True,
                  visible: bool = True,
-                 interactable: bool = True):
+                 interactable: bool = True,
+                 occupiable : bool = False):
         self._name = name
         self._rect = pygame.Rect(rect)
         self._origin = self._rect.copy()
@@ -241,6 +242,7 @@ class FloorObject(object):
         self.is_solid = solid
         self.is_visible = visible
         self.is_interactable = interactable
+        self._is_occupiable = occupiable
         self.dx = 0
         self.dy = 0
         self.d2x = 0
@@ -284,6 +286,8 @@ class FloorObject(object):
                self.is_interactable and \
                self != other_object and \
                touch_field.colliderect(other_object.rect)
+    def is_occupiable(self):
+        return self._is_occupiable
 
     def has_moved(self):
         return self.rect != self._old_rect
@@ -307,6 +311,9 @@ class FloorObject(object):
 
     def get_pos(self):
         return self._rect.x, self._rect.y, self.layer
+
+    def __str__(self):
+        return "{0}:{1}".format(self.name, self.is_occupiable())
 
 
 class Player(FloorObject):
@@ -623,7 +630,7 @@ class Floor:
                     y = random.randint(self.rect.y, self.rect.height - 1)
                     if self.get_floor_tile(x, y, self.start_layer) is None:
                         base_tile = self.get_floor_tile(x, y, self.start_layer - 1)
-                        if base_tile is not None and base_tile.is_solid is True:
+                        if base_tile is not None and base_tile.is_occupiable() is True:
                             new_object.set_pos(x, y, self.start_layer)
                             self.add_object(new_object)
                             new_object = FloorObjectLoader.get_object_copy_by_name(item_type)
@@ -737,7 +744,7 @@ class Floor:
             tile = self.get_floor_tile(x, y, z)
 
             # Is the new position occupied?
-            if tile is not None and tile.is_solid is True:
+            if tile is not None and tile.is_occupiable() is False:
                 result = False
 
         return result
@@ -850,11 +857,12 @@ class Floor:
                 base_tile = self.get_floor_tile(selected_player.rect.x, selected_player.rect.y,
                                                 selected_player.layer - 1)
 
-                # If standing on nothing move back
-                if base_tile is None or base_tile.is_solid is False:
+                # If standing on nothing move back or standing on a non-occupiable tile
+                if base_tile is None or base_tile.is_occupiable() is False:
                     selected_player.back()
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED,
                                                  description="You can't go that way"))
+                    print(str(base_tile))
 
                 # If standing on lava lose health
                 elif base_tile.name == Objects.LAVA:
@@ -1046,7 +1054,8 @@ class FloorObjectLoader():
                                          height=int(row.get("height")), \
                                          solid=FloorObjectLoader.BOOL_MAP[row.get("solid").upper()], \
                                          visible=FloorObjectLoader.BOOL_MAP[row.get("visible").upper()], \
-                                         interactable=FloorObjectLoader.BOOL_MAP[row.get("interactable").upper()] \
+                                         interactable=FloorObjectLoader.BOOL_MAP[row.get("interactable").upper()], \
+                                         occupiable=FloorObjectLoader.BOOL_MAP[row.get("occupiable").upper()] \
                                          )
 
                 # Store the floor object in the code cache
@@ -1761,6 +1770,16 @@ class Navigator:
             elif starty < finishy:
 
                 option = (startx, starty + 1, startz)
+                options.append((option, self.distance(option, finish)))
+
+            if startz > finishz:
+
+                option = (startx, starty, startz - 1)
+                options.append((option, self.distance(option, finish)))
+
+            elif startz < finishz:
+
+                option = (startx, starty, startz + 1)
                 options.append((option, self.distance(option, finish)))
 
             options.sort(key=itemgetter(1))
