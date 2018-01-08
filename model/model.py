@@ -230,7 +230,7 @@ class FloorObject(object):
                  solid: bool = True,
                  visible: bool = True,
                  interactable: bool = True,
-                 occupiable : bool = False):
+                 occupiable: bool = False):
         self._name = name
         self._rect = pygame.Rect(rect)
         self._origin = self._rect.copy()
@@ -573,6 +573,7 @@ class Floor:
         self.teleports = {}
         self.details = None
         self.start_positions = [None, None]
+        self.start_layers = [None, None]
         self.start_layer = 1
         self.potions = 0
         self.chests = 0
@@ -597,17 +598,16 @@ class Floor:
 
         if auto_position is True:
             min_x, min_y, max_x, max_y = self.start_positions[team]
+            start_layer = self.start_layers[team]
             placed = False
             for i in range(1, 20):
                 x = random.randint(min_x, max_x)
                 y = random.randint(min_y, max_y)
 
-                if self.get_floor_tile(x, y, self.start_layer) is None:
-                    base_tile = self.get_floor_tile(x, y, self.start_layer - 1)
+                if self.get_floor_tile(x, y, start_layer) is None:
+                    base_tile = self.get_floor_tile(x, y, start_layer - 1)
                     if base_tile is not None and base_tile.is_solid is True:
-                        new_player.set_pos(x, y, self.start_layer)
-                        # new_player.rect.x = x
-                        # new_player.rect.y = y
+                        new_player.set_pos(x, y, start_layer)
                         placed = True
                         break
 
@@ -627,17 +627,18 @@ class Floor:
 
             for i in range(0, item_count):
                 placed = False
-                for tries in range(0, 10):
+                for tries in range(0, 20):
                     x = random.randint(self.rect.x, self.rect.width - 1)
                     y = random.randint(self.rect.y, self.rect.height - 1)
-                    if self.get_floor_tile(x, y, self.start_layer) is None:
-                        base_tile = self.get_floor_tile(x, y, self.start_layer - 1)
+                    z = random.choice(self.start_layers)
+                    if self.get_floor_tile(x, y, z) is None:
+                        base_tile = self.get_floor_tile(x, y, z - 1)
                         if base_tile is not None and base_tile.is_occupiable() is True:
-                            new_object.set_pos(x, y, self.start_layer)
+                            new_object.set_pos(x, y, z)
                             self.add_object(new_object)
                             new_object = FloorObjectLoader.get_object_copy_by_name(item_type)
                             placed = True
-                            print("Added {0} item at {1},{2},{3}".format(item_type, x, y, self.start_layer))
+                            print("Added {0} item at {1},{2},{3}".format(item_type, x, y, z))
                             break
 
                 if placed is False:
@@ -674,12 +675,13 @@ class Floor:
                 if floor_object.name in (Objects.TELEPORT, Objects.TELEPORT2):
                     if floor_object.name not in self.teleports.keys():
                         self.teleports[floor_object.name] = []
-                    self.teleports[floor_object.name].append((floor_object.rect.x, floor_object.rect.y, floor_object.layer))
+                    self.teleports[floor_object.name].append(
+                        (floor_object.rect.x, floor_object.rect.y, floor_object.layer))
 
     def set_details(self, floor_details):
 
         self.details = floor_details
-        self.name, self.start_layer, self.start_positions[0], self.start_positions[
+        self.name, self.start_layers[0], self.start_positions[0], self.start_layers[1], self.start_positions[
             1], self.potions, self.chests = floor_details
 
         self.add_items(Objects.POTION, self.potions)
@@ -948,23 +950,27 @@ class FloorBuilder():
         # - chests
 
         new_floor_id = 0
-        new_floor_details = ("The Trial", 1, (6, 1, 16, 3), (5, 16, 14, 18), 4, 4)
+        new_floor_details = ("The Trial", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 4, 4)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 1
-        new_floor_details = ("The Maze", 1, (6, 1, 16, 3), (5, 16, 14, 18), 1, 1)
+        new_floor_details = ("The Maze", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 1, 1)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 2
-        new_floor_details = ("The Bridge", 3, (5, 2, 12, 3), (5, 16, 14, 18), 4, 4)
+        new_floor_details = ("The Bridge", 3, (5, 2, 12, 3), 3, (5, 16, 14, 18), 4, 4)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 3
-        new_floor_details = ("The Whale Grave Yard", 1, (2, 0, 16, 2), (3, 17, 16, 19), 2, 2)
+        new_floor_details = ("The Whale Grave Yard", 1, (2, 0, 16, 2), 1, (3, 17, 16, 19), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 4
-        new_floor_details = ("Sunken Wreck", 2, (1, 1, 10, 3), (1, 13, 8, 15), 2, 2)
+        new_floor_details = ("Sunken Wreck", 2, (1, 1, 10, 3), 2, (1, 13, 8, 15), 2, 2)
+        self.floor_details[new_floor_id] = new_floor_details
+
+        new_floor_id = 5
+        new_floor_details = ("Citadel", 6, (0,0, 5, 5), 2, (14,14, 19, 19), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
 
@@ -1322,16 +1328,17 @@ class Battle:
                             damage *= height_advantage_factor
                             damage = int(damage)
 
-                            print("{0} ({1} v {2}): {3:.0f}d{4:.0f}+{5:.0f}+{6:.0f} did {7:.0f} damage. Height factor={8}".format(
-                                attack.name,
-                                attack.attack_attribute,
-                                attack.defence_attribute,
-                                number_of_dice,
-                                dice_sides,
-                                attack_bonus,
-                                attacker_attack_modifier,
-                                damage,
-                                height_advantage_factor
+                            print(
+                                "{0} ({1} v {2}): {3:.0f}d{4:.0f}+{5:.0f}+{6:.0f} did {7:.0f} damage. Height factor={8}".format(
+                                    attack.name,
+                                    attack.attack_attribute,
+                                    attack.defence_attribute,
+                                    number_of_dice,
+                                    dice_sides,
+                                    attack_bonus,
+                                    attacker_attack_modifier,
+                                    damage,
+                                    height_advantage_factor
                                 ))
 
                             # Apply the damage to the opponent and also the effect associated with the attack
@@ -1476,7 +1483,7 @@ class Game:
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 3))
 
-        self._battle_floor_id = 4
+        self._battle_floor_id = 5
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
@@ -1747,7 +1754,7 @@ class Navigator:
         d = math.sqrt(math.pow(ax - bx, 2) + math.pow(ay - by, 2) + math.pow(az - bz, 2))
         return d
 
-    def navigate(self, start, finish, direct=False, walkable = False, level=0):
+    def navigate(self, start, finish, direct=False, walkable=False, level=0):
 
         if level == 0:
             self.route = []

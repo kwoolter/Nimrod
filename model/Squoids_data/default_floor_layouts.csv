@@ -359,7 +359,7 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,-1, ~      ~b~~~~~~~~  
 4,Floor4,green,-1, ~~~~~~~~~~~~~~~    
 4,Floor4,green,-1,  ~~~~~~~~~~~~~     
-4,Floor4,green,0,           }        
+4,Floor4,green,0,           }    t   
 4,Floor4,green,0,           *        
 4,Floor4,green,0,          *1   c    
 4,Floor4,green,0,           *w  H    
@@ -378,7 +378,7 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,0, <**    *^w     H   
 4,Floor4,green,0,  <** **^b      c   
 4,Floor4,green,0,   <***^w  1        
-4,Floor4,green,0,    [[[c            
+4,Floor4,green,0,    [[[c      t     
 4,Floor4,green,1,************        
 4,Floor4,green,1,************        
 4,Floor4,green,1,************        
@@ -459,3 +459,143 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,4,         b          
 4,Floor4,green,4,                    
 4,Floor4,green,4,                    
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
+5,Floor5,green,1,******        ******
+5,Floor5,green,1,*    *        *    *
+5,Floor5,green,1,*    *        *    *
+5,Floor5,green,1,*    *        *    *
+5,Floor5,green,1,*    *        *    *
+5,Floor5,green,1,******        ******
+5,Floor5,green,1,                    
+5,Floor5,green,1,                    
+5,Floor5,green,1,                    
+5,Floor5,green,1,                    
+5,Floor5,green,1,                    
+5,Floor5,green,1,                    
+5,Floor5,green,1,                    
+5,Floor5,green,1,                    
+5,Floor5,green,1,*    *        ******
+5,Floor5,green,1,              ******
+5,Floor5,green,1,              ******
+5,Floor5,green,1,              ******
+5,Floor5,green,1,              ******
+5,Floor5,green,1,*    *        ******
+5,Floor5,green,2,*    *        *    *
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,*    *        *    *
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,                    
+5,Floor5,green,2,******        p    p
+5,Floor5,green,2,******              
+5,Floor5,green,2,******              
+5,Floor5,green,2,******             T
+5,Floor5,green,2,******              
+5,Floor5,green,2,******        p    p
+5,Floor5,green,3,*    *        *    *
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,*    *        *    *
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,pT   p              
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,p    p              
+5,Floor5,green,4,*    *        ******
+5,Floor5,green,4,              ******
+5,Floor5,green,4,              ******
+5,Floor5,green,4,              ******
+5,Floor5,green,4,              ******
+5,Floor5,green,4,*    *        ******
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,4,                    
+5,Floor5,green,5,******        p t  p
+5,Floor5,green,5,******              
+5,Floor5,green,5,******              
+5,Floor5,green,5,******              
+5,Floor5,green,5,******              
+5,Floor5,green,5,******        p    p
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,5,                    
+5,Floor5,green,6,p t  p              
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,p    p              
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    
+5,Floor5,green,6,                    

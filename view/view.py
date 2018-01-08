@@ -140,9 +140,10 @@ class ImageManager:
                 "teleport2.png", "teleport1.png"),
 
             model.Objects.TELEPORT2: (
-                "teleport0.png", "teleport1.png", "teleport2.png", "teleport3.png", "teleport4.png", "teleport5.png",
-                "teleport6.png", "teleport7.png", "teleport6.png", "teleport5.png", "teleport4.png", "teleport3.png",
-                "teleport2.png", "teleport1.png"),
+                "teleport_blue0.png", "teleport_blue1.png", "teleport_blue2.png", "teleport_blue3.png", "teleport_blue4.png", "teleport_blue5.png",
+                "teleport_blue6.png", "teleport_blue7.png", "teleport_blue6.png", "teleport_blue5.png", "teleport_blue4.png", "teleport_blue3.png",
+                "teleport_blue2.png", "teleport_blue1.png"),
+
 
             model.Objects.SEAWEED: ("seaweed0.png", "seaweed1.png", "seaweed2.png", "seaweed1.png"),
             model.Objects.FIRE: ("fire0.png", "fire1.png", "fire2.png", "fire1.png"),
@@ -285,6 +286,10 @@ class ImageManager:
         sheet_file_name = "teleport2.png"
         for i in range(0, 8):
             self.sprite_sheets["teleport{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "teleport_blue.png"
+        for i in range(0, 8):
+            self.sprite_sheets["teleport_blue{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "seaweed2.png"
         for i in range(0, 3):
