@@ -344,7 +344,7 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,-1,           ~~~~~~~~ 
 4,Floor4,green,-1,            ~~~~~~~~
 4,Floor4,green,-1,            ~~~~~~~~
-4,Floor4,green,-1,    ~~~     ~~~~~~~~
+4,Floor4,green,-1,    ~~~     ~~~~b~~~
 4,Floor4,green,-1,    ~C~    ~~~~~~~~~
 4,Floor4,green,-1,    b~~     ~~~~~~~~
 4,Floor4,green,-1,            ~~~~~~~~
@@ -361,30 +361,30 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,-1,  ~~~~~~~~~~~~~     
 4,Floor4,green,0,           }        
 4,Floor4,green,0,           *        
-4,Floor4,green,0,          *1        
-4,Floor4,green,0,           *   H    
+4,Floor4,green,0,          *1   c    
+4,Floor4,green,0,           *w  H    
 4,Floor4,green,0,   *****   *        
-4,Floor4,green,0,   *   *   *        
+4,Floor4,green,0,   *   *   *    bw  
 4,Floor4,green,0,   * C *  *1        
 4,Floor4,green,0,   *b  *   *        
 4,Floor4,green,0,   *****   *  **>   
 4,Floor4,green,0,           *  *CT   
-4,Floor4,green,0,          **  **^   
-4,Floor4,green,0,          * w       
+4,Floor4,green,0,          **w **^   
+4,Floor4,green,0,          *c        
 4,Floor4,green,0,           *        
 4,Floor4,green,0,    ***   **        
-4,Floor4,green,0,    *C*   *^        
+4,Floor4,green,0,    *C*   *^      w 
 4,Floor4,green,0,<** ***  *^  p      
 4,Floor4,green,0, <**    *^w     H   
-4,Floor4,green,0,  <** **^b          
+4,Floor4,green,0,  <** **^b      c   
 4,Floor4,green,0,   <***^w  1        
-4,Floor4,green,0,    [[[             
+4,Floor4,green,0,    [[[c            
 4,Floor4,green,1,************        
 4,Floor4,green,1,************        
 4,Floor4,green,1,************        
 4,Floor4,green,1,************        
 4,Floor4,green,1,************        
-4,Floor4,green,1,****   *****        
+4,Floor4,green,1,****   *****    b   
 4,Floor4,green,1,**** C *****        
 4,Floor4,green,1,****b  *****        
 4,Floor4,green,1,************        
@@ -404,7 +404,7 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,2,@          @        
 4,Floor4,green,2,@          @        
 4,Floor4,green,2,p                   
-4,Floor4,green,2,                    
+4,Floor4,green,2,                b   
 4,Floor4,green,2,T    C              
 4,Floor4,green,2,    b               
 4,Floor4,green,2,p                   
@@ -424,7 +424,7 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,3,\          (        
 4,Floor4,green,3,\          (        
 4,Floor4,green,3,                    
-4,Floor4,green,3,                    
+4,Floor4,green,3,                b   
 4,Floor4,green,3,     C              
 4,Floor4,green,3,    b               
 4,Floor4,green,3,                    
@@ -444,7 +444,7 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,4,                    
 4,Floor4,green,4,                    
 4,Floor4,green,4,                    
-4,Floor4,green,4,                    
+4,Floor4,green,4,                b   
 4,Floor4,green,4,     C              
 4,Floor4,green,4,    b               
 4,Floor4,green,4,                    

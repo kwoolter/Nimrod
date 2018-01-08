@@ -203,6 +203,7 @@ class Objects:
     GREEN_DOT = "green_dot"
     BUBBLES = "bubbles"
     TELEPORT = "teleport"
+    TELEPORT2 = "teleport2"
     SEAWEED = "seaweed"
     FIRE = "fire"
     POISON = "poison"
@@ -286,6 +287,7 @@ class FloorObject(object):
                self.is_interactable and \
                self != other_object and \
                touch_field.colliderect(other_object.rect)
+
     def is_occupiable(self):
         return self._is_occupiable
 
@@ -568,7 +570,7 @@ class Floor:
         self.layers = {}
         self.floor_plans = {}
         self.exits = {}
-        self.teleports = []
+        self.teleports = {}
         self.details = None
         self.start_positions = [None, None]
         self.start_layer = 1
@@ -669,8 +671,10 @@ class Floor:
             floor_plan = self.floor_plans[layer_id]
             for floor_object in self.layers[layer_id]:
                 floor_plan[floor_object.rect.x][floor_object.rect.y] = floor_object
-                if floor_object.name == Objects.TELEPORT:
-                    self.teleports.append((floor_object.rect.x, floor_object.rect.y, floor_object.layer))
+                if floor_object.name in (Objects.TELEPORT, Objects.TELEPORT2):
+                    if floor_object.name not in self.teleports.keys():
+                        self.teleports[floor_object.name] = []
+                    self.teleports[floor_object.name].append((floor_object.rect.x, floor_object.rect.y, floor_object.layer))
 
     def set_details(self, floor_details):
 
@@ -767,7 +771,6 @@ class Floor:
         if new_x >= self.rect.width or new_x < 0 or new_y >= self.rect.height or new_y < 0:
 
             Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED, description="You hit an edge!"))
-            # raise Exception("{0}:move_player() - out of bounds!".format(__class__, selected_player.character.name))
 
         else:
 
@@ -841,10 +844,10 @@ class Floor:
                         Floor.EVENTS.add_event(
                             Event(type=Event.FLOOR, name=Event.KEY, description="You found a {0}".format(tile.name)))
 
-                    elif tile.name == Objects.TELEPORT:
+                    elif tile.name in (Objects.TELEPORT, Objects.TELEPORT2):
 
                         while True:
-                            new_position = random.choice(self.teleports)
+                            new_position = random.choice(self.teleports[tile.name])
                             if new_position != (x, y, z):
                                 break
                         x, y, z = new_position
@@ -1280,11 +1283,14 @@ class Battle:
                         # Get some attacker and opponent stats
                         attacker_attack_bonus = current_player.get_stat(attack.attack_attribute + " Attack Bonus")
                         attacker_attack_modifier = current_player.get_stat(attack.attack_attribute + " Modifier")
+                        attacker_layer = current_player.layer
                         opponent_defence = opponent.get_stat(attack.defence_attribute + " Defence")
+                        opponent_layer = opponent.layer
 
                         # Roll a 20 sided dice and add and attacker bonuses to the roll
+
                         dice_roll = random.randint(1, 20)
-                        attack_roll = dice_roll + attacker_attack_bonus
+                        attack_roll = (dice_roll + attacker_attack_bonus)
 
                         print("{0} ({1} v {2}): attack roll = {3} v defence {4}".format(attack.name,
                                                                                         attack.attack_attribute,
@@ -1305,7 +1311,18 @@ class Battle:
                                 damage = random.randint(number_of_dice,
                                                         number_of_dice * dice_sides) + attack_bonus + attacker_attack_modifier
 
-                            print("{0} ({1} v {2}): {3:.0f}d{4:.0f}+{5:.0f}+{6:.0f} did {7:.0f} damage".format(
+                            # Add/remove 30% damage depending on height advantage over opponent
+                            if attacker_layer > opponent_layer:
+                                height_advantage_factor = 1.3
+                            elif attacker_layer < opponent_layer:
+                                height_advantage_factor = 0.7
+                            else:
+                                height_advantage_factor = 1.0
+
+                            damage *= height_advantage_factor
+                            damage = int(damage)
+
+                            print("{0} ({1} v {2}): {3:.0f}d{4:.0f}+{5:.0f}+{6:.0f} did {7:.0f} damage. Height factor={8}".format(
                                 attack.name,
                                 attack.attack_attribute,
                                 attack.defence_attribute,
@@ -1313,7 +1330,9 @@ class Battle:
                                 dice_sides,
                                 attack_bonus,
                                 attacker_attack_modifier,
-                                damage))
+                                damage,
+                                height_advantage_factor
+                                ))
 
                             # Apply the damage to the opponent and also the effect associated with the attack
                             opponent.do_damage(damage)
@@ -1728,7 +1747,7 @@ class Navigator:
         d = math.sqrt(math.pow(ax - bx, 2) + math.pow(ay - by, 2) + math.pow(az - bz, 2))
         return d
 
-    def navigate(self, start, finish, direct=False, level=0):
+    def navigate(self, start, finish, direct=False, walkable = False, level=0):
 
         if level == 0:
             self.route = []
@@ -1744,7 +1763,9 @@ class Navigator:
         else:
             startx, starty, startz = start
 
-            if level > 0 and self.floor.is_occupiable(startx, starty, startz) is False:
+            tile = self.floor.get_floor_tile(startx, starty, startz)
+
+            if level > 0 and tile is not None and tile.is_solid is True:
                 print("Hit an obstacle at {0}".format(start))
                 return False
 
@@ -1793,7 +1814,7 @@ class Navigator:
                 if direct is True and d > min_distance:
                     continue
 
-                if self.navigate(direction, finish, direct, level + 1) is True:
+                if self.navigate(direction, finish, direct, walkable, level + 1) is True:
                     self.route.insert(0, start)
                     finished = True
                     break

@@ -139,6 +139,11 @@ class ImageManager:
                 "teleport6.png", "teleport7.png", "teleport6.png", "teleport5.png", "teleport4.png", "teleport3.png",
                 "teleport2.png", "teleport1.png"),
 
+            model.Objects.TELEPORT2: (
+                "teleport0.png", "teleport1.png", "teleport2.png", "teleport3.png", "teleport4.png", "teleport5.png",
+                "teleport6.png", "teleport7.png", "teleport6.png", "teleport5.png", "teleport4.png", "teleport3.png",
+                "teleport2.png", "teleport1.png"),
+
             model.Objects.SEAWEED: ("seaweed0.png", "seaweed1.png", "seaweed2.png", "seaweed1.png"),
             model.Objects.FIRE: ("fire0.png", "fire1.png", "fire2.png", "fire1.png"),
             model.Objects.POISON: (
