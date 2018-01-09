@@ -405,12 +405,12 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,2,@          @        
 4,Floor4,green,2,p                   
 4,Floor4,green,2,                b   
-4,Floor4,green,2,T    C              
+4,Floor4,green,2,T !  C  !           
 4,Floor4,green,2,    b               
 4,Floor4,green,2,p                   
 4,Floor4,green,2,@          @   C    
 4,Floor4,green,2,@          @        
-4,Floor4,green,2,@          @        
+4,Floor4,green,2,@ !     !  @        
 4,Floor4,green,2,@          @        
 4,Floor4,green,2,p          p        
 4,Floor4,green,2,     C              

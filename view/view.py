@@ -367,7 +367,8 @@ class MainFrame(View):
         self.title_bar = TitleBar(width, MainFrame.TITLE_HEIGHT)
         self.status_bar = StatusBar(width, MainFrame.STATUS_HEIGHT)
 
-        play_area_height = height - MainFrame.TITLE_HEIGHT - MainFrame.STATUS_HEIGHT
+        play_area_height = height - MainFrame.TITLE_HEIGHT
+        #- MainFrame.STATUS_HEIGHT
 
         self.battle_view = BattleView(width, play_area_height)
         self.game_view = GameView(width, play_area_height)
@@ -415,9 +416,9 @@ class MainFrame(View):
         x = 0
         y = 0
 
-        self.surface.blit(self.title_bar.surface, (x, y))
-
-        y += MainFrame.TITLE_HEIGHT
+        # self.surface.blit(self.title_bar.surface, (x, y))
+        #
+        # y += MainFrame.TITLE_HEIGHT
 
         if self.game.state == model.Game.READY:
             self.game_ready.draw()
@@ -995,11 +996,12 @@ class BattleView(View):
                             if view_object.is_effect(model.Player.ASLEEP) is False and \
                                             view_object.is_effect(model.Player.FROZEN) is False and \
                                             view_object.is_dead() is False:
-                                y_offset = 5 * (1 + math.sin(self.tick_count / 3))
+                                #y_offset = 5 * (1 + math.sin(self.tick_count / 3))
+                                y_offset = 5 * (1 + math.sin((self.tick_count * math.pi / 7) + (view_object.rect.x * math.pi / 7)))
 
                             # Add x offset if object is a player who is attacking to provide animation
                             if view_object.is_effect(model.Player.ATTACKING) is True:
-                                x_offset = 8 * ((self.tick_count % 3) - 1)
+                                x_offset = 5 * ((self.tick_count % 3) - 1)
                         else:
                             y_offset = 0
                             x_offset = 0
@@ -1196,7 +1198,7 @@ class BattleView(View):
 
     def model_to_view(self, x, y, layer_id):
         origin_x = (self.surface.get_rect().width / 2) - (BattleView.TILE_WIDTH / 2)
-        origin_y = 170
+        origin_y = len(self.game.battle.battle_floor.layers.keys()) * BattleView.TILE_HEIGHT/2
         view_x = int(origin_x + (BattleView.TILE_WIDTH * x / 2) - (BattleView.TILE_WIDTH * y / 2))
         view_y = int(origin_y + (BattleView.TILE_HEIGHT * x / 4) + (BattleView.TILE_HEIGHT * y / 4) - (
             layer_id * BattleView.TILE_HEIGHT / 2))
