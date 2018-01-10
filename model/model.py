@@ -37,6 +37,7 @@ class Attack:
     RANGE = "Range"
     AP = "AP"
     EFFECT = "Effect"
+    IMAGE = "Image"
 
     ATTACK_ATTRIBUTES = {STRENGTH: "STR", DEXTERITY: "DEX", INTELLIGENCE: "INT", WISDOM: "WIS"}
 
@@ -49,10 +50,11 @@ class Attack:
     DEFENCE_TYPES = {AC: "AC", FORTITIUDE: "FORT", REFLEX: "REF", WILL: "WILL"}
 
     def __init__(self, name: str, description: str, type: str, attack_attribute: str, defence_attribute: str,
-                 effect: str):
+                 effect: str, image:str):
         self.name = name
         self.description = description
         self.effect = effect
+        self.image = image
 
         if type in Attack.TYPES:
             self.type = type
@@ -213,7 +215,13 @@ class Objects:
     ASLEEP = "asleep"
     FROZEN = "frozen"
     SWORD_SMALL = "sword_small"
+    DAGGER = "Dagger"
+    SPEAR = "Spear"
+    SWORD = "Sword"
     POTION = "potion"
+    BOW = "Bow"
+    MAGIC = "Magic"
+    HAMMER = "Hammer"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID_BLUE, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -970,7 +978,7 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 5
-        new_floor_details = ("Citadel", 6, (0,0, 5, 5), 2, (14,14, 19, 19), 2, 2)
+        new_floor_details = ("Citadel", 6, (0,0, 6, 6), 2, (11,11, 16, 16), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
 
@@ -1481,9 +1489,9 @@ class Game:
 
     def start_battle(self):
         self.state = Game.BATTLE
-        self._battle_floor_id = random.choice((0, 4))
+        self._battle_floor_id = random.choice((0, 2, 3, 4))
 
-        #self._battle_floor_id = 5
+        self._battle_floor_id = 5
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
@@ -1620,7 +1628,8 @@ class Game:
                                     type=attributes["Type"],
                                     attack_attribute=attributes["Attack Attribute"],
                                     defence_attribute=attributes["Defence Attribute"],
-                                    effect=attributes["Effect"])
+                                    effect=attributes["Effect"],
+                                    image=attributes["Image"])
 
             stats = attack_data.get_stats_by_name(attack)
 

@@ -123,6 +123,12 @@ class ImageManager:
             model.Objects.CHEST: "chest.png",
             model.Objects.POTION: "red_potion4.png",
             model.Objects.SWORD_SMALL: "sword_small.png",
+            model.Objects.SWORD: "weapon0.png",
+            model.Objects.DAGGER: "weapon1.png",
+            model.Objects.BOW: "weapon2.png",
+            model.Objects.SPEAR: "weapon3.png",
+            model.Objects.MAGIC: "weapon4.png",
+            model.Objects.HAMMER: "weapon5.png",
             model.Objects.CYLINDER: "Cylinder_blue.png",
             model.Objects.ICE: "ice3.png",
             model.Objects.LAVA: ("lava0.png", "lava1.png", "lava2.png", "lava3.png", "lava4.png", "lava5.png",
@@ -322,6 +328,10 @@ class ImageManager:
         sheet_file_name = "electric.png"
         for i in range(0, 4):
             self.sprite_sheets["electric{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "weapons.png"
+        for i in range(0, 6):
+            self.sprite_sheets["weapon{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "zzzz.png"
         for i in range(0, 3):
@@ -1235,6 +1245,8 @@ class PlayerView(View):
         if self.player is None:
             raise Exception("No Player to view!")
 
+        attack = self.player.get_attack()
+
         pane_rect = self.surface.get_rect()
         pygame.draw.rect(self.surface, self.team_colour, (0, PlayerView.BORDER_WIDTH, pane_rect.width, 38), 0)
         pygame.draw.rect(self.surface, self.border_colour, (1,
@@ -1288,6 +1300,11 @@ class PlayerView(View):
                           tick=self.tick_count,
                           width=16, height=16)
 
+
+            draw_icon(self.surface, x=pane_rect.width - 50, y=y+8,
+                      icon_name=attack.image, tick=self.tick_count,
+                      width=32, height=32)
+
         # Draw the player's stats
         x = pane_rect.centerx
         y += 74
@@ -1324,7 +1341,7 @@ class PlayerView(View):
 
         # Draw player's attack details
         y += 4
-        attack = self.player.get_attack()
+
 
         number_of_dice = attack.get_stat(model.Attack.NUMBER_OF_DICE).value
         dice_sides = attack.get_stat(model.Attack.DICE_SIDES).value
@@ -1356,6 +1373,9 @@ class PlayerView(View):
                   size=16,
                   fg_colour=PlayerView.FG_COLOUR,
                   bg_colour=PlayerView.BG_COLOUR)
+
+
+
 
         return self.surface
 

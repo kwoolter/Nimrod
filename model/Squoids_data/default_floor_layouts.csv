@@ -459,6 +459,12 @@ ID,Name,Skin,Layer,Layout
 4,Floor4,green,4,         b          
 4,Floor4,green,4,                    
 4,Floor4,green,4,                    
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~  
+5,Floor5,green,0,~lllll~~~~~~~llll~~ 
+5,Floor5,green,0,~lllll~~~~~~~llll~~ 
+5,Floor5,green,0,~lllll~~~~~~~llll~~~
+5,Floor5,green,0,~lllll~~~~~~~llll~~~
+5,Floor5,green,0,~lllll~~~~~~~llll~~~
 5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
 5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
 5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
@@ -470,81 +476,76 @@ ID,Name,Skin,Layer,Layout
 5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
 5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
 5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~~
-5,Floor5,green,1,******        ******
-5,Floor5,green,1,*    *        *    *
-5,Floor5,green,1,*    *        *    *
-5,Floor5,green,1,*    *        *    *
-5,Floor5,green,1,*    *        *    *
-5,Floor5,green,1,******        ******
+5,Floor5,green,0,~~~~~~~~~~~~~~~~~~~ 
+5,Floor5,green,0,  ~~~~~~~~~~~~~~~~~ 
+5,Floor5,green,0,   ~~~~~~~~~~~~~~   
+5,Floor5,green,1,H*****H     H****H  
+5,Floor5,green,1,*     *     *    *  
+5,Floor5,green,1,*     *     *    *  
+5,Floor5,green,1,*     *     *    *  
+5,Floor5,green,1,*     *     *    *  
+5,Floor5,green,1,*     *     *    *  
+5,Floor5,green,1,H*****H     H****H  
 5,Floor5,green,1,                    
 5,Floor5,green,1,                    
 5,Floor5,green,1,                    
 5,Floor5,green,1,                    
+5,Floor5,green,1,     H     H****H   
+5,Floor5,green,1,           *@@@@*   
+5,Floor5,green,1,           *@@@@*   
+5,Floor5,green,1,           *@@@@*   
+5,Floor5,green,1,           *@@@@*   
+5,Floor5,green,1,H    H     H****H   
 5,Floor5,green,1,                    
 5,Floor5,green,1,                    
 5,Floor5,green,1,                    
-5,Floor5,green,1,                    
-5,Floor5,green,1,*    *        ******
-5,Floor5,green,1,              ******
-5,Floor5,green,1,              ******
-5,Floor5,green,1,              ******
-5,Floor5,green,1,              ******
-5,Floor5,green,1,*    *        ******
-5,Floor5,green,2,*    *        *    *
+5,Floor5,green,2,*     *     *    *  
+5,Floor5,green,2,      i             
+5,Floor5,green,2,      i             
+5,Floor5,green,2,      i             
+5,Floor5,green,2,      i             
+5,Floor5,green,2,      i             
+5,Floor5,green,2,*iiiii*     *    *  
 5,Floor5,green,2,                    
 5,Floor5,green,2,                    
 5,Floor5,green,2,                    
 5,Floor5,green,2,                    
-5,Floor5,green,2,*    *        *    *
+5,Floor5,green,2,H****H     p    p   
+5,Floor5,green,2,*@@@@*              
+5,Floor5,green,2,*@@@@*              
+5,Floor5,green,2,*@@@@*              
+5,Floor5,green,2,*@@@@*         T    
+5,Floor5,green,2,H****H     p    p   
 5,Floor5,green,2,                    
 5,Floor5,green,2,                    
 5,Floor5,green,2,                    
-5,Floor5,green,2,                    
-5,Floor5,green,2,                    
-5,Floor5,green,2,                    
-5,Floor5,green,2,                    
-5,Floor5,green,2,                    
-5,Floor5,green,2,******        p    p
-5,Floor5,green,2,******              
-5,Floor5,green,2,******              
-5,Floor5,green,2,******             T
-5,Floor5,green,2,******              
-5,Floor5,green,2,******        p    p
-5,Floor5,green,3,*    *        *    *
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,*    *        *    *
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,                    
-5,Floor5,green,3,pT   p              
+5,Floor5,green,3,*     *     *    *  
+5,Floor5,green,3,      i             
+5,Floor5,green,3,      i             
+5,Floor5,green,3,      i             
+5,Floor5,green,3,      i             
+5,Floor5,green,3,      i             
+5,Floor5,green,3,*iiiii*     *    *  
 5,Floor5,green,3,                    
 5,Floor5,green,3,                    
 5,Floor5,green,3,                    
 5,Floor5,green,3,                    
 5,Floor5,green,3,p    p              
-5,Floor5,green,4,*    *        ******
-5,Floor5,green,4,              ******
-5,Floor5,green,4,              ******
-5,Floor5,green,4,              ******
-5,Floor5,green,4,              ******
-5,Floor5,green,4,*    *        ******
+5,Floor5,green,3,    T               
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3, t                  
+5,Floor5,green,3,p    p              
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,3,                    
+5,Floor5,green,4,*     *     H****H  
+5,Floor5,green,4,      i     *@@@@*  
+5,Floor5,green,4,      i     *@@@@*  
+5,Floor5,green,4,      i     *@@@@*  
+5,Floor5,green,4,      i     *@@@@*  
+5,Floor5,green,4,      i     *@@@@*  
+5,Floor5,green,4,*iiiii*     H****H  
 5,Floor5,green,4,                    
 5,Floor5,green,4,                    
 5,Floor5,green,4,                    
@@ -558,13 +559,13 @@ ID,Name,Skin,Layer,Layout
 5,Floor5,green,4,                    
 5,Floor5,green,4,                    
 5,Floor5,green,4,                    
-5,Floor5,green,4,                    
-5,Floor5,green,5,******        p t  p
-5,Floor5,green,5,******              
-5,Floor5,green,5,******              
-5,Floor5,green,5,******              
-5,Floor5,green,5,******              
-5,Floor5,green,5,******        p    p
+5,Floor5,green,5,H*****H     p    p  
+5,Floor5,green,5,*@@@@@*         T   
+5,Floor5,green,5,*@@@@@*             
+5,Floor5,green,5,*@@@@@*             
+5,Floor5,green,5,*@@@@@*             
+5,Floor5,green,5,*@@@@@*      t      
+5,Floor5,green,5,H*****H     p    p  
 5,Floor5,green,5,                    
 5,Floor5,green,5,                    
 5,Floor5,green,5,                    
@@ -578,14 +579,13 @@ ID,Name,Skin,Layer,Layout
 5,Floor5,green,5,                    
 5,Floor5,green,5,                    
 5,Floor5,green,5,                    
-5,Floor5,green,5,                    
-5,Floor5,green,6,p t  p              
+5,Floor5,green,6,p     p             
+5,Floor5,green,6, t                  
 5,Floor5,green,6,                    
 5,Floor5,green,6,                    
 5,Floor5,green,6,                    
 5,Floor5,green,6,                    
-5,Floor5,green,6,p    p              
-5,Floor5,green,6,                    
+5,Floor5,green,6,p     p             
 5,Floor5,green,6,                    
 5,Floor5,green,6,                    
 5,Floor5,green,6,                    
