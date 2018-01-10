@@ -366,7 +366,7 @@ class MainFrame(View):
     RESOURCES_DIR = os.path.dirname(__file__) + "\\resources\\"
 
     TITLE_HEIGHT = 80
-    STATUS_HEIGHT = 50
+    STATUS_HEIGHT = 40
 
     def __init__(self, model: model.Game, width: int = 800, height: int = 800):
 
@@ -377,8 +377,7 @@ class MainFrame(View):
         self.title_bar = TitleBar(width, MainFrame.TITLE_HEIGHT)
         self.status_bar = StatusBar(width, MainFrame.STATUS_HEIGHT)
 
-        play_area_height = height - MainFrame.TITLE_HEIGHT
-        #- MainFrame.STATUS_HEIGHT
+        play_area_height = height - MainFrame.STATUS_HEIGHT
 
         self.battle_view = BattleView(width, play_area_height)
         self.game_view = GameView(width, play_area_height)
@@ -1007,7 +1006,7 @@ class BattleView(View):
                                             view_object.is_effect(model.Player.FROZEN) is False and \
                                             view_object.is_dead() is False:
                                 #y_offset = 5 * (1 + math.sin(self.tick_count / 3))
-                                y_offset = 5 * (1 + math.sin((self.tick_count * math.pi / 7) + (view_object.rect.x * math.pi / 7)))
+                                y_offset = 5 * (1 + math.cos((self.tick_count * math.pi / 7) + (view_object.rect.x * math.pi / 7)))
 
                             # Add x offset if object is a player who is attacking to provide animation
                             if view_object.is_effect(model.Player.ATTACKING) is True:
@@ -1301,7 +1300,7 @@ class PlayerView(View):
                           width=16, height=16)
 
 
-            draw_icon(self.surface, x=pane_rect.width - 50, y=y+8,
+            draw_icon(self.surface, x=pane_rect.width - 46, y=y+8,
                       icon_name=attack.image, tick=self.tick_count,
                       width=32, height=32)
 
