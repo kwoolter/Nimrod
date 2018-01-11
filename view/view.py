@@ -388,7 +388,8 @@ class MainFrame(View):
 
         super(MainFrame, self).initialise()
 
-        self.surface = pygame.display.set_mode((self.width, self.height), DOUBLEBUF)
+        self.surface = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
+        #self.surface = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
 
         os.environ["SDL_VIDEO_CENTERED"] = "1"
         pygame.init()
@@ -1006,7 +1007,7 @@ class BattleView(View):
                                             view_object.is_effect(model.Player.FROZEN) is False and \
                                             view_object.is_dead() is False:
                                 #y_offset = 5 * (1 + math.sin(self.tick_count / 3))
-                                y_offset = 5 * (1 + math.cos((self.tick_count * math.pi / 7) + (view_object.rect.x * math.pi / 7)))
+                                y_offset = 5 * (1 + math.cos((self.tick_count * math.pi / 8) + (view_object.rect.x * math.pi / 7)))
 
                             # Add x offset if object is a player who is attacking to provide animation
                             if view_object.is_effect(model.Player.ATTACKING) is True:
@@ -1306,13 +1307,13 @@ class PlayerView(View):
 
         # Draw the player's stats
         x = pane_rect.centerx
-        y += 74
+        y += 64
 
-        stat_order = ("HP", "Strength", "Dexterity", "Intelligence", "Level", "AC Defence", "Reflex Defence",
+        stat_order = ("HP", "Strength", "Dexterity", "Intelligence", "Wisdom", "Level", "AC Defence", "Reflex Defence",
                       "Will Defence", "Fortitude Defence", "XP")
-        stats_with_modifiers = ("Strength", "Dexterity", "Intelligence")
+        stats_with_modifiers = ("Strength", "Dexterity", "Intelligence", "Wisdom")
         stats = {"HP": "HP", "Level": "LVL", "Strength": "STR", "Dexterity": "DEX",
-                 "Intelligence": "INT", "XP": "XP", "Kills": "Kills", "Physical Attack Bonus": "ATK",
+                 "Intelligence": "INT", "Wisdom": "WIS", "XP": "XP", "Kills": "Kills", "Physical Attack Bonus": "ATK",
                  "AC Defence": "AC", "Reflex Defence": "REF", "Will Defence": "WILL", "Fortitude Defence": "FORT"}
 
         for stat in stat_order:
@@ -1442,8 +1443,8 @@ class PlayerView(View):
 
         # Sword Attacking
         elif self.player.is_effect(model.Player.ATTACKING) is True:
-            effect_name = model.Objects.SWORD_SMALL
-            effect_alpha = 200
+            effect_name = self.player.get_attack().image
+            effect_alpha = 255
 
         # If there is an active effect then add this to the image of the player
         if effect_name is not None:

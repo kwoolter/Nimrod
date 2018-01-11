@@ -1,6 +1,6 @@
 Name,Race,Class,Location,LocationRoute,InventoryID,NPCType,Attack
 Jack,Squoid,Sword,2,,-100,4,Sword
-Jerry,Squoid,Mage,2,,-101,4,Pollution
+Jerry,Squoid,Mage,2,,-101,4,Polution
 Fred,Skeleton Pirate,Mage,1,,-102,4,Shock
 Bill,Skeleton Pirate,Sword,1,,-103,4,Sword
 Jim,Squoid,Shield,1,,-104,4,Hammer
