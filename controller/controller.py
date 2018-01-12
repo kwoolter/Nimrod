@@ -139,7 +139,8 @@ class Controller:
                                 self.game.battle.next_player()
                             elif event.key == K_F1:
                                 self.view.battle_view.toggle_show_names()
-
+                            elif event.key == K_F11:
+                                self.game.battle.do_auto()
                             elif event.key == K_F12:
                                 self.game.battle.print()
 

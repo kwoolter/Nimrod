@@ -77,7 +77,7 @@ class ImageManager:
             model.Objects.BLOCK1: "Block_green.png",
             model.Objects.BLOCK2: "Block_red.png",
             model.Objects.BLOCK3: "Block_master.png",
-            model.Objects.BRICK: "Brick32x32.png",
+            model.Objects.BRICK: "Brick_blue.png",
             model.Objects.BLOCK_ORNATE: "BlockOrnate_blue.png",
             model.Objects.BLOCK_HEXAGON: "Hexagon_blue.png",
             model.Objects.BLOCK_TOP: "BlockFront_blue.png",
@@ -124,7 +124,8 @@ class ImageManager:
             model.Objects.POTION: "red_potion4.png",
             model.Objects.SWORD_SMALL: "sword_small.png",
             model.Objects.SWORD: "weapon0.png",
-            model.Objects.DAGGER: "weapon1.png",
+            model.Objects.DAGGER: "weapon6.png",
+            model.Objects.AXE: "weapon7.png",
             model.Objects.BOW: "weapon2.png",
             model.Objects.SPEAR: "weapon3.png",
             model.Objects.MAGIC: "weapon4.png",
@@ -178,6 +179,7 @@ class ImageManager:
             model.Objects.BLOCK1: "Block_blue.png",
             model.Objects.BLOCK2: "Block_red.png",
             model.Objects.BLOCK3: "Block_master.png",
+            model.Objects.BRICK: "Brick_green.png",
             model.Objects.BLOCK_ORNATE: "BlockOrnate_green.png",
             model.Objects.PYRAMID1: "Pyramid4_green.png",
             model.Objects.PYRAMID2: "Pyramid2_green.png",
@@ -237,10 +239,11 @@ class ImageManager:
 
             self.sprite_sheets["Pyramid2_{0}.png".format(colour_scheme)] = (sheet_file_name, (127, 0, 32, 32))
             self.sprite_sheets["Pyramid4_{0}.png".format(colour_scheme)] = (sheet_file_name, (160, 0, 32, 32))
-            self.sprite_sheets["Cylinder_{0}.png".format(colour_scheme)] = (sheet_file_name, (0, 0, 32, 32))
+            self.sprite_sheets["Cylinder_{0}.png".format(colour_scheme)] = (sheet_file_name, (32, 64, 32, 32))
             self.sprite_sheets["Sphere_{0}.png".format(colour_scheme)] = (sheet_file_name, (96, 0, 32, 32))
             self.sprite_sheets["Hexagon_{0}.png".format(colour_scheme)] = (sheet_file_name, (64, 0, 32, 32))
             self.sprite_sheets["BlockOrnate_{0}.png".format(colour_scheme)] = (sheet_file_name, (32, 0, 32, 32))
+            self.sprite_sheets["Brick_{0}.png".format(colour_scheme)] = (sheet_file_name, (0, 64, 32, 32))
 
             self.sprite_sheets["Block_{0}.png".format(colour_scheme)] = (sheet_file_name, (0, 32, 32, 32))
             self.sprite_sheets["BlockFront_{0}.png".format(colour_scheme)] = (sheet_file_name, (32, 32, 32, 32))
@@ -257,6 +260,7 @@ class ImageManager:
             self.sprite_sheets["BlockSlopeNE.png"] = (sheet_file_name, (224, 32, 32, 32))
             self.sprite_sheets["BlockSlopeSE.png"] = (sheet_file_name, (256, 32, 32, 32))
             self.sprite_sheets["Brick32x32.png"] = (sheet_file_name, (288, 32, 32, 32))
+            self.sprite_sheets["BrickNew.png"] = (sheet_file_name, (0, 64, 32, 32))
 
         self.sprite_sheets["SphereBlue.png"] = (sheet_file_name, (96, 0, 32, 32))
 
@@ -330,7 +334,7 @@ class ImageManager:
             self.sprite_sheets["electric{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "weapons.png"
-        for i in range(0, 6):
+        for i in range(0, 8):
             self.sprite_sheets["weapon{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "zzzz.png"
@@ -388,7 +392,7 @@ class MainFrame(View):
 
         super(MainFrame, self).initialise()
 
-        self.surface = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
+        self.surface = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF|pygame.HWACCEL)
         #self.surface = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
 
         os.environ["SDL_VIDEO_CENTERED"] = "1"

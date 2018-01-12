@@ -12,3 +12,4 @@ Polution,Polution,Magic,Wisdom,Fortitude,1,4,0,4,2,poisoned,Magic
 Chill,Chill,Magic,Dexterity,Reflex,1,4,0,4,2,frozen,Magic
 Hot Water,Hot Water,Magic,Intelligence,Reflex,1,4,0,4,2,burned,Magic
 Ice Bow,Bow Attack,Ranged,Dexterity,AC,1,4,0,8,2,frozen,Bow
+Axe,Axe,Melee,Strength,AC,1,4,1,1,2,hit,Axe

@@ -222,6 +222,7 @@ class Objects:
     BOW = "Bow"
     MAGIC = "Magic"
     HAMMER = "Hammer"
+    AXE = "Axe"
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID_BLUE, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
@@ -376,6 +377,10 @@ class Player(FloorObject):
         self._name = new_name
 
     @property
+    def xyz(self):
+        return (self.rect.x, self.rect.y, self.layer)
+
+    @property
     def HP(self):
         return self.character.get_stat("HP").value
 
@@ -463,6 +468,7 @@ class Team:
     TACTIC_STRONGEST = "strongest"
     TACTIC_NEAREST = "nearest"
     TACTIC_FURTHEST = "furthest"
+    TACTIC_SPECIFIED = "specified"
 
     def __init__(self, name: str, colour=(255, 0, 0)):
         self.name = name
@@ -488,7 +494,7 @@ class Team:
 
         return is_dead
 
-    def choose_player(self, tactic: int = TACTIC_RANDOM, other_player: Player = None):
+    def choose_player(self, tactic: int = TACTIC_RANDOM, other_player: Player = None, target_player : Player = None):
 
         print("Choosing player based on {0}".format(tactic))
 
@@ -510,6 +516,13 @@ class Team:
         if tactic == Team.TACTIC_RANDOM:
             chosen_player = random.choice(available_players)
 
+        elif tactic == Team.TACTIC_SPECIFIED:
+
+            if self.is_player_in_team(target_player) is True:
+                chosen_player = target_player
+            else:
+                chosen_player = None
+
         elif tactic == Team.TACTIC_WEAKEST:
             chosen_player = sorted(available_players, key=attrgetter("HP"), reverse=False)[0]
 
@@ -519,9 +532,6 @@ class Team:
         elif tactic == Team.TACTIC_NEAREST:
             if other_player is not None:
                 chosen_player = sorted(available_players, key=attrgetter("distance"), reverse=False)[0]
-                # print("Attacker at ({0},{1},{2})".format(other_player.rect.x,other_player.rect.y,other_player.layer))
-                # for player in available_players:
-                #      print(player, player.distance)
             else:
                 chosen_player = random.choice(available_players)
 
@@ -1111,7 +1121,7 @@ class Battle:
     PLAYING = "playing"
     END = "end"
 
-    TACTIC_NEXT = "nexdt opponent"
+    TACTIC_NEXT = "next opponent"
 
     def __init__(self, team1: Team, team2: Team, battle_floor: Floor = None):
         self.teams = [team1, team2]
@@ -1121,6 +1131,7 @@ class Battle:
         self.battle_floor = battle_floor
         self.order_of_play = []
         self.current_target = None
+        self.bots = {}
 
     def __str__(self):
         return "Battle between team {0} and team {1} ({5})\nRound {2}\n{3}\n{4}".format(self.teams[0].name,
@@ -1192,14 +1203,16 @@ class Battle:
 
         return current_player
 
-    def set_current_target(self, tactic: str = Team.TACTIC_NEAREST):
+    def set_current_target(self, tactic: str = Team.TACTIC_NEAREST, target : Player = None):
 
         current_player = self.get_current_player()
         current_team = self.get_player_team(current_player)
-
         opponent_team = self.get_opposite_team(current_team)
 
-        self.current_target = opponent_team.choose_player(tactic=tactic, other_player=current_player)
+        if tactic == Team.TACTIC_SPECIFIED:
+            self.current_target = opponent_team.choose_player(tactic=tactic,target_player=target)
+        else:
+            self.current_target = opponent_team.choose_player(tactic=tactic, other_player=current_player)
 
         return self.current_target
 
@@ -1415,6 +1428,22 @@ class Battle:
                                           description="{0} does not have enough AP to move!".format(
                                               current_player.character.name)))
 
+
+    def do_auto(self):
+
+        if self.get_current_player() not in self.bots.keys():
+
+            self.bots[self.get_current_player()] = AIBot(self.get_current_player(), self)
+
+        ai = self.bots[self.get_current_player()]
+        ai.print()
+        ai.do_tick()
+
+        if ai.current_state == AIBot.FINISHED:
+            self.next_player()
+            ai.reset()
+
+
     def get_winning_team(self):
 
         winning_team = None
@@ -1491,7 +1520,7 @@ class Game:
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 2, 3, 4))
 
-        self._battle_floor_id = 5
+        self._battle_floor_id = 0
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
@@ -1770,11 +1799,11 @@ class Navigator:
 
         d = self.distance(start, finish)
 
-        print("{3}. navigating from {0} to {1}. {2:.2f} distance to travel".format(start, finish, d, level))
+        #print("{3}. navigating from {0} to {1}. {2:.2f} distance to travel".format(start, finish, d, level))
         finished = False
 
         if start == finish:
-            print("found the finish")
+            #print("found the finish")
             finished = True
         else:
             startx, starty, startz = start
@@ -1782,7 +1811,7 @@ class Navigator:
             tile = self.floor.get_floor_tile(startx, starty, startz)
 
             if level > 0 and tile is not None and tile.is_solid is True:
-                print("Hit an obstacle at {0}".format(start))
+                #print("Hit an obstacle at {0}".format(start))
                 return False
 
             finishx, finishy, finishz = finish
@@ -1836,3 +1865,189 @@ class Navigator:
                     break
 
         return finished
+
+class AIBot:
+
+    HUNTING = "Hunting"
+    TRACKING = "Tracking"
+    ATTACKING = "Attacking"
+    FLEEING = "Fleeing"
+    FINISHED = "Finished"
+
+    def __init__(self, player : Player, battle : Battle):
+
+        self.player = player
+        self.battle = battle
+        self.player_team = self.battle.get_player_team(self.player)
+        self.opposition_team = self.battle.get_opposite_team(self.player_team)
+        self.navigator = Navigator(battle.battle_floor)
+        self.tick_count = 0
+        self.current_state = AIBot.HUNTING
+        self._actions = {}
+
+        self.initialise()
+
+    def reset(self):
+        self.current_state = AIBot.HUNTING
+
+    def do_tick(self):
+
+        if self.current_state == AIBot.FINISHED:
+            return
+
+        self.tick_count +=1
+
+        if self.player.AP <= 0:
+            self.current_state = AIBot.FINISHED
+
+        result = self._actions[self.current_state]()
+
+        while result is False:
+            result = self._actions[self.current_state]()
+
+    def is_visible(self, direct : bool = True):
+        opponents = []
+        is_visible = False
+        for player in self.opposition_team.players:
+
+            if player.is_dead() is False:
+                result = self.navigator.navigate(start=self.player.xyz,
+                                                 finish=player.xyz,
+                                                 direct=direct)
+                if result is True:
+                    opponents.append((player, self.navigator.distance(a=self.player.xyz,b=player.xyz)))
+                    is_visible = True
+
+        return is_visible, opponents
+
+    def do_hunting(self):
+
+        print("Hunting")
+
+        action = False
+
+        is_visible, opponents = self.is_visible()
+
+        # If we can see a target then switch to Tracking mode
+        if is_visible is True:
+            print("Target spotted")
+            self.current_state = AIBot.TRACKING
+
+        # Else move around randomly
+        else:
+            print("Moving")
+            choices = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+            for i in range(0,10):
+                dx, dy = random.choice(choices)
+                self.battle.battle_floor.move_player(self.player, dx, dy)
+                if self.player.has_moved() is True:
+                    action = True
+                    break
+                else:
+                    choices.remove((dx,dy))
+
+            # If we failed to move after several attempts then give up
+            if self.player.has_moved() is False:
+                self.current_state = AIBot.FINISHED
+
+        return action
+
+    def do_tracking(self):
+
+        action = False
+
+        print("Tracking")
+
+        is_visible, opponents = self.is_visible()
+
+        # If we are tracking but have lost visibility of a target then switch to hunting
+        if is_visible is False:
+            self.current_state = AIBot.HUNTING
+
+        # Else...
+        else:
+            # Look at the closest opponent that we can see
+            opponents.sort(key=itemgetter(1))
+            target, distance = opponents[0]
+            self.battle.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
+
+            print("Tracking nearest opponent {0} at distance {1}".format(target.character.name, distance))
+
+            # If they are close enough to attack then switch to attacking mode
+            if distance <= self.player.get_attack().get_stat(Attack.RANGE).value:
+                print("In range for attack!")
+                self.current_state = AIBot.ATTACKING
+
+            #Else navigate towards the target
+            else:
+
+                result = self.navigator.navigate(start=self.player.xyz,
+                                                 finish=target.xyz,
+                                                 direct=False)
+                x,y,z = self.player.xyz
+                newx, newy, newz = self.navigator.route[1]
+                print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+                self.battle.battle_floor.move_player(self.player, newx - x, newy - y)
+                action = True
+
+        return action
+
+    def do_attacking(self):
+        print("Attacking")
+
+        action = False
+
+        is_visible, opponents = self.is_visible()
+
+        # If we have lost visibility of a target then switch to hunting
+        if is_visible is False:
+            self.current_state = AIBot.HUNTING
+
+        # Else
+        else:
+
+            # Look at the nearest opponent
+            opponents.sort(key=itemgetter(1))
+            target, distance = opponents[0]
+
+            # if they are close enough to attack...
+            if distance <= self.player.get_attack().get_stat(Attack.RANGE).value:
+
+                # .. and have enough AP...
+                if self.player.AP >= self.player.get_attack().get_stat(Attack.AP).value :
+                    self.battle.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
+                    self.battle.do_attack()
+                    print("Attacking {0}".format(self.battle.get_current_target().character.name))
+                    action = True
+
+                # Otherwise we have run out of options
+                else:
+                    self.current_state = AIBot.FINISHED
+
+            # Else switch to tracking mode
+            else:
+                self.current_state = AIBot.TRACKING
+
+        return action
+
+
+    def do_fleeing(self):
+        print("Fleeing")
+        return True
+
+    def do_finish(self):
+        return True
+
+    def initialise(self):
+        self._actions[AIBot.HUNTING] = self.do_hunting
+        self._actions[AIBot.TRACKING] = self.do_tracking
+        self._actions[AIBot.ATTACKING] = self.do_attacking
+        self._actions[AIBot.FLEEING] = self.do_fleeing
+        self._actions[AIBot.FINISHED] = self.do_finish
+
+    def print(self):
+        print("AIBot for player {0} on team {1} vs team {2}: State={3}".format(self.player.character.name,
+                                                                    self.player_team.name,
+                                                                    self.opposition_team.name,
+                                                                               self.current_state))
