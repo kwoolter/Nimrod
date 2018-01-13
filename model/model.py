@@ -1903,6 +1903,15 @@ class Navigator:
                     option = (startx - 1, starty, startz)
                     options.append((option, self.distance(option, finish)))
 
+            # If you are not hurry and bang on track also look at other options
+            elif dx == 0 and direct is False:
+                    print("Adding extra X options")
+                    option = (startx - 1, starty, startz)
+                    options.append((option, self.distance(option, finish)))
+                    option = (startx + 1, starty, startz)
+                    options.append((option, self.distance(option, finish)))
+
+
             if dy > 0:
 
                 option = (startx, starty - 1, startz)
@@ -1924,6 +1933,15 @@ class Navigator:
                     print("Adding extra Y options")
                     option = (startx, starty - 1, startz)
                     options.append((option, self.distance(option, finish)))
+
+            # If you are bang on track still look at other options
+            elif dy == 0 and direct is False:
+                    print("Adding extra Y options")
+                    option = (startx, starty - 1, startz)
+                    options.append((option, self.distance(option, finish)))
+                    option = (startx, starty + 1, startz)
+                    options.append((option, self.distance(option, finish)))
+
 
             if startz > finishz:
 
@@ -2031,6 +2049,7 @@ class AIBot:
 
             for i in range(0, 10):
                 dx, dy = random.choice(choices)
+                # Need to fix bug where random moves can be dangerous!!!
                 self.battle.battle_floor.move_player(self.player, dx, dy)
                 if self.player.has_moved() is True:
                     action = True
