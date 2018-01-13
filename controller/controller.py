@@ -46,6 +46,7 @@ class Controller:
         FPSCLOCK = pygame.time.Clock()
 
         pygame.time.set_timer(USEREVENT + 1, 150)
+        pygame.time.set_timer(USEREVENT + 2, 2000)
         pygame.event.set_allowed([QUIT, KEYUP, USEREVENT])
 
         loop = True
@@ -86,6 +87,12 @@ class Controller:
 
                 elif event.type == QUIT:
                     loop = False
+
+
+                # Timer for Computer AI moves
+                elif event.type == USEREVENT + 2:
+                    if self.game.state == model.Game.BATTLE:
+                        self.game.battle.do_auto()
 
                 # Key pressed events
                 elif event.type == KEYUP:
@@ -140,7 +147,7 @@ class Controller:
                             elif event.key == K_F1:
                                 self.view.battle_view.toggle_show_names()
                             elif event.key == K_F11:
-                                self.game.battle.do_auto()
+                                self.game.battle.do_auto(override=True)
                             elif event.key == K_F12:
                                 self.game.battle.print()
 
