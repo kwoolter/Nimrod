@@ -46,7 +46,7 @@ class Controller:
         FPSCLOCK = pygame.time.Clock()
 
         pygame.time.set_timer(USEREVENT + 1, 150)
-        pygame.time.set_timer(USEREVENT + 2, 2000)
+        pygame.time.set_timer(USEREVENT + 2, 1000)
         pygame.event.set_allowed([QUIT, KEYUP, USEREVENT])
 
         loop = True

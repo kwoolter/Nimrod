@@ -925,6 +925,9 @@ class Floor:
                                                  description="{0} stood on {1}".format(selected_player.character.name,
                                                                                        base_tile.name)))
 
+            if selected_player.has_moved() is True:
+                selected_player.AP -= 1
+
     def tick(self):
 
         # For each player...
@@ -1440,8 +1443,6 @@ class Battle:
 
         if current_player.AP > 0:
             self.battle_floor.move_player(current_player, dx, dy)
-            if current_player.has_moved() is True:
-                current_player.AP -= 1
         else:
             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                           name=Event.NO_AP,
@@ -1542,13 +1543,13 @@ class Game:
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 2, 3, 4))
 
-        self._battle_floor_id = 0
+        self._battle_floor_id = 4
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
         BLUE = (63, 72, 204)
 
-        team1 = Team("Blue", BLUE)
+        team1 = Team("Blue", BLUE, type=Team.COMPUTER)
         team2 = Team("Red", RED, type=Team.COMPUTER)
 
         characters = list(self._npcs.get_characters())
@@ -1804,6 +1805,10 @@ class EventQueue():
 
 
 class Navigator:
+
+    ALTERNATE_OPTION_DIFF = 2
+    MAX_RECURSION_LEVEL = 100
+
     def __init__(self, floor: Floor):
         self.floor = floor
         self.route = []
@@ -1815,11 +1820,21 @@ class Navigator:
         d = math.sqrt(math.pow(ax - bx, 2) + math.pow(ay - by, 2) + math.pow(az - bz, 2))
         return d
 
-    def navigate(self, start, finish, direct=False, walkable=False, safe=False, level=0):
+    def navigate(self, start, finish, direct=False, walkable=False, safe=False, level=0, visited = []):
 
         if level == 0:
             self.route = []
+            visited = []
             self.danger_count = 0
+
+        if start in visited:
+            print("Already been here on this navigation!")
+            return False
+
+        visited.append(start)
+
+        if level >= Navigator.MAX_RECURSION_LEVEL:
+            return False
 
         d = self.distance(start, finish)
 
@@ -1836,7 +1851,7 @@ class Navigator:
             if level > 0:
                 tile = self.floor.get_floor_tile(startx, starty, startz)
 
-                if level > 0 and tile is not None and tile.is_solid is True:
+                if tile is not None and tile.is_solid is True:
                     # print("Hit an obstacle at {0}".format(start))
                     return False
 
@@ -1854,25 +1869,52 @@ class Navigator:
 
             options = []
 
-            if startx > finishx:
+            dx = startx - finishx
+            dy = starty - finishy
+
+            if dx > 0:
 
                 option = (startx - 1, starty, startz)
                 options.append((option, self.distance(option, finish)))
 
-            elif startx < finishx:
+                # If you are not far off track also look at other options
+                if direct is False and abs(dx) <= Navigator.ALTERNATE_OPTION_DIFF:
+                    print("Adding extra options")
+                    option = (startx + 1, starty, startz)
+                    options.append((option, self.distance(option, finish)))
+
+            elif dx < 0:
 
                 option = (startx + 1, starty, startz)
                 options.append((option, self.distance(option, finish)))
 
-            if starty > finishy:
+                # If you are not hurry and not far off track also look at other options
+                if direct is False and abs(dx) <= Navigator.ALTERNATE_OPTION_DIFF:
+                    print("Adding extra options")
+                    option = (startx - 1, starty, startz)
+                    options.append((option, self.distance(option, finish)))
+
+            if dy > 0:
 
                 option = (startx, starty - 1, startz)
                 options.append((option, self.distance(option, finish)))
 
-            elif starty < finishy:
+                # If you are not far off track also look at other options
+                if direct is False and abs(dy) <= Navigator.ALTERNATE_OPTION_DIFF:
+                    print("Adding extra options")
+                    option = (startx, starty + 1, startz)
+                    options.append((option, self.distance(option, finish)))
+
+            elif dy < 0:
 
                 option = (startx, starty + 1, startz)
                 options.append((option, self.distance(option, finish)))
+
+                # If you are not far off track also look at other options
+                if direct is False and abs(dy) <= Navigator.ALTERNATE_OPTION_DIFF:
+                    print("Adding extra options")
+                    option = (startx, starty - 1, startz)
+                    options.append((option, self.distance(option, finish)))
 
             if startz > finishz:
 
@@ -1887,7 +1929,7 @@ class Navigator:
             options.sort(key=itemgetter(1))
             option, min_distance = options[0]
 
-            # print(str(options))
+            print(str(options))
 
             for option in options:
                 direction, d = option
@@ -1895,7 +1937,7 @@ class Navigator:
                 if direct is True and d > min_distance:
                     continue
 
-                if self.navigate(direction, finish, direct=direct, walkable=walkable, safe=safe, level=level + 1) is True:
+                if self.navigate(direction, finish, direct=direct, walkable=walkable, safe=safe, level=level + 1, visited=visited) is True:
                     self.route.insert(0, start)
                     finished = True
                     break
@@ -2062,6 +2104,7 @@ class AIBot:
                     # If we failed to move after several attempts then give up
                     if self.player.has_moved() is False:
                         self.current_state = AIBot.FINISHED
+
 
         return action
 
