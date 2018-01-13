@@ -516,7 +516,7 @@ class Team:
                                                 (player.layer - other_player.layer) ** 2)
                 else:
                     player.distance = 9999
-                    print("defaulting distance to 999")
+                    print("Choose Player Tactic {0}: defaulting distance to 999".format(tactic))
                 available_players.append(player)
 
         if tactic == Team.TACTIC_RANDOM:
@@ -771,10 +771,10 @@ class Floor:
             result = False
         else:
 
-            tile = self.get_floor_tile(x, y, z)
+            tile = self.get_floor_tile(x, y, z - 1)
 
-            # Is the new position occupied?
-            if tile is not None and tile.is_occupiable() is False:
+            # Is the base of the new position occupied?
+            if tile is None or tile.is_occupiable() is False:
                 result = False
 
         return result
@@ -783,11 +783,18 @@ class Floor:
 
         result = False
 
-        tile = self.get_floor_tile(x, y, z-1)
+        tile = self.get_floor_tile(x, y, z)
 
         # Is the tile dangerous?
-        if tile is not None and tile.name in (Objects.LAVA, Objects.SPIKE, Objects.ICE):
+        if tile is not None and tile.name in (Objects.SPIKE):
             result = True
+        else:
+
+            base_tile = self.get_floor_tile(x, y, z - 1)
+
+            # Is the base tile dangerous?
+            if base_tile is not None and base_tile.name in (Objects.LAVA, Objects.ICE):
+                result = True
 
         return result
 
@@ -840,7 +847,7 @@ class Floor:
             else:
 
                 selected_player.move(dx, dy)
-                x, y, z = selected_player.rect.x, selected_player.rect.y, selected_player.layer
+                x, y, z = selected_player.xyz
 
                 tile = self.get_floor_tile(x, y, z, is_raw=True)
 
@@ -1233,7 +1240,8 @@ class Battle:
         opponent_team = self.get_opposite_team(current_team)
 
         if tactic == Team.TACTIC_SPECIFIED:
-            self.current_target = opponent_team.choose_player(tactic=tactic, target_player=target)
+            self.current_target = opponent_team.choose_player(tactic=tactic, other_player=current_player,
+                                                              target_player=target)
         else:
             self.current_target = opponent_team.choose_player(tactic=tactic, other_player=current_player)
 
@@ -1451,6 +1459,9 @@ class Battle:
 
     def do_auto(self, override=False):
 
+        if self.state != Battle.PLAYING:
+            return
+
         if self.get_player_team(self.get_current_player()).type == Team.COMPUTER or override is True:
 
             # If no Bot exists for the current player then create one
@@ -1549,8 +1560,8 @@ class Game:
         GREEN = (34, 177, 76)
         BLUE = (63, 72, 204)
 
-        team1 = Team("Blue", BLUE, type=Team.COMPUTER)
-        team2 = Team("Red", RED, type=Team.COMPUTER)
+        team1 = Team("Blue", BLUE, type=Team.PLAYER)
+        team2 = Team("Red", RED, type=Team.PLAYER)
 
         characters = list(self._npcs.get_characters())
 
@@ -1805,8 +1816,7 @@ class EventQueue():
 
 
 class Navigator:
-
-    ALTERNATE_OPTION_DIFF = 2
+    ALTERNATE_OPTION_DIFF = 4
     MAX_RECURSION_LEVEL = 100
 
     def __init__(self, floor: Floor):
@@ -1820,7 +1830,7 @@ class Navigator:
         d = math.sqrt(math.pow(ax - bx, 2) + math.pow(ay - by, 2) + math.pow(az - bz, 2))
         return d
 
-    def navigate(self, start, finish, direct=False, walkable=False, safe=False, level=0, visited = []):
+    def navigate(self, start, finish, direct=False, walkable=False, safe=False, level=0, visited=[]):
 
         if level == 0:
             self.route = []
@@ -1849,21 +1859,20 @@ class Navigator:
             startx, starty, startz = start
 
             if level > 0:
+
                 tile = self.floor.get_floor_tile(startx, starty, startz)
 
                 if tile is not None and tile.is_solid is True:
-                    # print("Hit an obstacle at {0}".format(start))
+                    print("Hit an obstacle at {0}".format(start))
                     return False
 
-                if walkable is True and self.floor.is_occupiable(startx, starty, startz) is False:
+                elif walkable is True and self.floor.is_occupiable(startx, starty, startz) is False:
                     print("Hit an unoccupiable place")
                     return False
 
-                if self.floor.is_dangerous(startx, starty, startz) is True:
-                    self.danger_count += 1
-                    if safe is True:
-                        print("Hit an unsafe place!")
-                        return False
+                elif safe is True and self.floor.is_dangerous(startx, starty, startz) is True:
+                    print("Hit an unsafe place!")
+                    return False
 
             finishx, finishy, finishz = finish
 
@@ -1879,7 +1888,7 @@ class Navigator:
 
                 # If you are not far off track also look at other options
                 if direct is False and abs(dx) <= Navigator.ALTERNATE_OPTION_DIFF:
-                    print("Adding extra options")
+                    print("Adding extra X options")
                     option = (startx + 1, starty, startz)
                     options.append((option, self.distance(option, finish)))
 
@@ -1890,7 +1899,7 @@ class Navigator:
 
                 # If you are not hurry and not far off track also look at other options
                 if direct is False and abs(dx) <= Navigator.ALTERNATE_OPTION_DIFF:
-                    print("Adding extra options")
+                    print("Adding extra X options")
                     option = (startx - 1, starty, startz)
                     options.append((option, self.distance(option, finish)))
 
@@ -1901,7 +1910,7 @@ class Navigator:
 
                 # If you are not far off track also look at other options
                 if direct is False and abs(dy) <= Navigator.ALTERNATE_OPTION_DIFF:
-                    print("Adding extra options")
+                    print("Adding extra Y options")
                     option = (startx, starty + 1, startz)
                     options.append((option, self.distance(option, finish)))
 
@@ -1912,7 +1921,7 @@ class Navigator:
 
                 # If you are not far off track also look at other options
                 if direct is False and abs(dy) <= Navigator.ALTERNATE_OPTION_DIFF:
-                    print("Adding extra options")
+                    print("Adding extra Y options")
                     option = (startx, starty - 1, startz)
                     options.append((option, self.distance(option, finish)))
 
@@ -1937,7 +1946,8 @@ class Navigator:
                 if direct is True and d > min_distance:
                     continue
 
-                if self.navigate(direction, finish, direct=direct, walkable=walkable, safe=safe, level=level + 1, visited=visited) is True:
+                if self.navigate(direction, finish, direct=direct, walkable=walkable, safe=safe, level=level + 1,
+                                 visited=visited) is True:
                     self.route.insert(0, start)
                     finished = True
                     break
@@ -2104,7 +2114,6 @@ class AIBot:
                     # If we failed to move after several attempts then give up
                     if self.player.has_moved() is False:
                         self.current_state = AIBot.FINISHED
-
 
         return action
 
