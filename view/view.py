@@ -326,7 +326,7 @@ class ImageManager:
         for i in range(0, 6):
             self.sprite_sheets["lava{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
-        sheet_file_name = "electric.png"
+        sheet_file_name = "electric_new.png"
         for i in range(0, 4):
             self.sprite_sheets["electric{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
@@ -1006,8 +1006,9 @@ class BattleView(View):
                             # Add y offset if object is an awake player to provide floating animation
                             if view_object.is_effect(model.Player.ASLEEP) is False and \
                                             view_object.is_effect(model.Player.FROZEN) is False and \
+                                            view_object.is_effect(model.Player.SHOCKED) is False and \
                                             view_object.is_dead() is False:
-                                #y_offset = 5 * (1 + math.sin(self.tick_count / 3))
+
                                 y_offset = 5 * (1 + math.cos((self.tick_count * math.pi / 8) + (view_object.rect.x * math.pi / 7)))
 
                             # Add x offset if object is a player who is attacking to provide animation
