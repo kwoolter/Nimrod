@@ -240,6 +240,7 @@ class FloorObject(object):
                  visible: bool = True,
                  interactable: bool = True,
                  occupiable: bool = False):
+
         self._name = name
         self._rect = pygame.Rect(rect)
         self._origin = self._rect.copy()
@@ -274,6 +275,10 @@ class FloorObject(object):
     def rect(self, new_rect):
         self._old_rect = self._rect.copy()
         self._rect = new_rect
+
+    @property
+    def xyz(self):
+        return (self.rect.x, self.rect.y, self.layer)
 
     def set_origin(self, new_origin: pygame.Rect = None):
         if new_origin is None:
@@ -376,9 +381,9 @@ class Player(FloorObject):
     def name(self, new_name: str):
         self._name = new_name
 
-    @property
-    def xyz(self):
-        return (self.rect.x, self.rect.y, self.layer)
+    # @property
+    # def xyz(self):
+    #     return (self.rect.x, self.rect.y, self.layer)
 
     @property
     def HP(self):
@@ -408,6 +413,7 @@ class Player(FloorObject):
         if self.HP <= 0:
             self.effects = {}
             self.do_effect(Player.DEAD)
+            self.is_solid = False
 
     def do_heal(self, new_value):
         self.character.increment_stat("Damage", new_value * -1)
@@ -745,8 +751,9 @@ class Floor:
         layer = self.floor_plans[layer_id]
         floor_object = layer[x][y]
         if is_raw is False:
+
             for player in self.players:
-                if (x, y, layer_id) == (player.rect.x, player.rect.y, player.layer):
+                if (x, y, layer_id) == player.xyz:
                     floor_object = player
                     break
 
@@ -761,6 +768,32 @@ class Floor:
 
         layer = self.floor_plans[layer_id]
         layer[x][y] = new_object
+
+    def get_matching_objects(self, types : list, layer_id : int = None):
+        matches = []
+        types = list(types)
+
+        if layer_id is not None:
+            start_layer = layer_id
+            end_layer = layer_id
+        else:
+            start_layer = min(self.layers.keys())
+            end_layer = max(self.layers.keys())
+
+        print("looking for objects {0} in layers {1} to {2}".format(types, start_layer, end_layer))
+
+        for selected_layer_id in range(start_layer, end_layer + 1):
+            if selected_layer_id in self.layers.keys():
+                for x in range(0, self.rect.width):
+                    for y in range(0, self.rect.height):
+                        tile = self.get_floor_tile(x,y,selected_layer_id)
+                        if tile is not None and tile.name in types:
+                            matches.append(tile)
+
+        print("{0} matches for tile type {1}".format(len(matches), type))
+
+        return matches
+
 
     def is_occupiable(self, x, y, z):
 
@@ -1552,9 +1585,9 @@ class Game:
 
     def start_battle(self):
         self.state = Game.BATTLE
-        self._battle_floor_id = random.choice((0, 2, 3, 4))
+        self._battle_floor_id = random.choice((0, 2, 3, 4, 5))
 
-        self._battle_floor_id = 4
+        self._battle_floor_id = 5
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
@@ -1854,6 +1887,7 @@ class Navigator:
 
         if start == finish:
             print("found the finish")
+            self.route.append((start))
             finished = True
         else:
             startx, starty, startz = start
@@ -1956,7 +1990,7 @@ class Navigator:
             options.sort(key=itemgetter(1))
             option, min_distance = options[0]
 
-            print(str(options))
+            #print(str(options))
 
             for option in options:
                 direction, d = option
@@ -1979,6 +2013,7 @@ class AIBot:
     ATTACKING = "Attacking"
     FLEEING = "Fleeing"
     FINISHED = "Finished"
+    TELEPORTING = "Teleporting"
 
     def __init__(self, player: Player, battle: Battle):
 
@@ -2084,10 +2119,16 @@ class AIBot:
 
             print("Tracking nearest opponent {0} at distance {1}".format(target.character.name, distance))
 
+            if target.layer != self.player.layer:
+                print("No opponents on this level")
+                self.current_state = AIBot.TELEPORTING
+                return False
+
             # If they are close enough to attack then switch to attacking mode
             if distance <= self.player.get_attack().get_stat(Attack.RANGE).value:
                 print("In range for attack!")
                 self.current_state = AIBot.ATTACKING
+
 
             # Else navigate towards the target
             else:
@@ -2133,6 +2174,42 @@ class AIBot:
                     # If we failed to move after several attempts then give up
                     if self.player.has_moved() is False:
                         self.current_state = AIBot.FINISHED
+
+        return action
+
+
+    def do_teleporting(self):
+        print("Teleporting")
+
+        action = False
+
+        x, y, z = self.player.xyz
+
+        teleports = self.battle.battle_floor.get_matching_objects((Objects.TELEPORT, Objects.TELEPORT2), z )
+
+        if len(teleports) == 0:
+            self.current_state = AIBot.HUNTING
+            return
+
+        print(str(teleports))
+
+        for teleport in teleports:
+            result = self.navigator.navigate(start=self.player.xyz, finish=teleport.xyz, direct=False, walkable=True, safe = False)
+            print(str(self.navigator.route))
+            if result is True:
+
+                newx, newy, newz = self.navigator.route[1]
+                print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+                self.battle.battle_floor.move_player(self.player, newx - x, newy - y)
+                if self.player.has_moved() is True:
+                    self.current_state = AIBot.HUNTING
+                    action = True
+                    break
+            else:
+                print("Can't find a route to the teleporter!")
+
+            action = True
+
 
         return action
 
@@ -2184,6 +2261,7 @@ class AIBot:
     def initialise(self):
         self._actions[AIBot.HUNTING] = self.do_hunting
         self._actions[AIBot.TRACKING] = self.do_tracking
+        self._actions[AIBot.TELEPORTING] = self.do_teleporting
         self._actions[AIBot.ATTACKING] = self.do_attacking
         self._actions[AIBot.FLEEING] = self.do_fleeing
         self._actions[AIBot.FINISHED] = self.do_finish

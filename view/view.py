@@ -183,7 +183,7 @@ class ImageManager:
             model.Objects.BLOCK_ORNATE: "BlockOrnate_green.png",
             model.Objects.PYRAMID1: "Pyramid4_green.png",
             model.Objects.PYRAMID2: "Pyramid2_green.png",
-            model.Objects.CYLINDER: "new_Cylinder.png",
+            model.Objects.CYLINDER: "Cylinder_master3D.png",
             model.Objects.SPHERE: "Sphere_green.png",
             model.Objects.BLOCK_HEXAGON: "Hexagon_green.png",
             model.Objects.BLOCK_TOP: "BlockFront_green.png",
@@ -232,7 +232,7 @@ class ImageManager:
 
     def load_sprite_sheets(self):
 
-        colour_schemes = ("master", "green", "blue")
+        colour_schemes = ("master", "master3D","green", "blue")
         for colour_scheme in colour_schemes:
 
             sheet_file_name = "blocks_sheet_" + colour_scheme + ".png"
