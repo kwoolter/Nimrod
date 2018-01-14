@@ -137,10 +137,7 @@ class ImageManager:
             model.Objects.RED_DOT: "red_dot.png",
             model.Objects.GREEN_DOT: "green_dot.png",
             model.Objects.BUBBLES: (
-                "bubbles0.png", "bubbles1.png", "bubbles2.png", "bubbles3.png", "bubbles4.png", "bubbles5.png",
-                "bubbles6.png", "bubbles7.png",
-                "bubbles8.png", "bubbles9.png", "bubbles10.png", "bubbles11.png", "bubbles12.png",
-                "bubbles13.png", "bubbles14.png", "bubbles15.png"),
+                "bubbles0.png", "bubbles1.png", "bubbles2.png", "bubbles3.png", "bubbles4.png", "bubbles5.png"),
             model.Objects.TELEPORT: (
                 "teleport0.png", "teleport1.png", "teleport2.png", "teleport3.png", "teleport4.png", "teleport5.png",
                 "teleport6.png", "teleport7.png", "teleport6.png", "teleport5.png", "teleport4.png", "teleport3.png",
@@ -289,8 +286,8 @@ class ImageManager:
         for i in range(0, 4):
             self.sprite_sheets["SphereRed{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
-        sheet_file_name = "bubbles3.png"
-        for i in range(0, 16):
+        sheet_file_name = "bubbles_new.png"
+        for i in range(0, 6):
             self.sprite_sheets["bubbles{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "teleport2.png"

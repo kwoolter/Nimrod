@@ -786,11 +786,11 @@ class Floor:
             if selected_layer_id in self.layers.keys():
                 for x in range(0, self.rect.width):
                     for y in range(0, self.rect.height):
-                        tile = self.get_floor_tile(x,y,selected_layer_id)
+                        tile = self.get_floor_tile(x,y,selected_layer_id, is_raw=True)
                         if tile is not None and tile.name in types:
                             matches.append(tile)
 
-        print("{0} matches for tile type {1}".format(len(matches), type))
+        print("{0} matches for tile type {1}".format(len(matches), types))
 
         return matches
 
@@ -1587,14 +1587,18 @@ class Game:
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 2, 3, 4, 5))
 
-        self._battle_floor_id = 5
+        #self._battle_floor_id = 5
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
         BLUE = (63, 72, 204)
 
+        team1 = Team("Blue", BLUE, type=Team.COMPUTER)
+        team2 = Team("Red", RED, type=Team.COMPUTER)
         team1 = Team("Blue", BLUE, type=Team.PLAYER)
         team2 = Team("Red", RED, type=Team.PLAYER)
+
+
 
         characters = list(self._npcs.get_characters())
 
@@ -2198,8 +2202,14 @@ class AIBot:
             print(str(self.navigator.route))
             if result is True:
 
-                newx, newy, newz = self.navigator.route[1]
-                print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+                if len(self.navigator.route) == 1:
+                    next_xyz = self.navigator.route[0]
+                else:
+                    next_xyz = self.navigator.route[1]
+
+                newx, newy, newz = next_xyz
+
+                print("from {0} to {1}".format(self.player.xyz, next_xyz))
                 self.battle.battle_floor.move_player(self.player, newx - x, newy - y)
                 if self.player.has_moved() is True:
                     self.current_state = AIBot.HUNTING
@@ -2208,8 +2218,8 @@ class AIBot:
             else:
                 print("Can't find a route to the teleporter!")
 
-            action = True
-
+        if self.player.has_moved() is False:
+            self.current_state = AIBot.FINISHED
 
         return action
 
