@@ -1602,7 +1602,7 @@ class Game:
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 2, 3, 4, 5, 100))
 
-        #self._battle_floor_id = 5
+        self._battle_floor_id = 4
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)

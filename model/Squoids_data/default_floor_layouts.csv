@@ -623,7 +623,7 @@ ID,Name,Skin,Layer,Layout
 100,Floor100,default,1,#H    <#    #^    H#
 100,Floor100,default,1,#      !    !      #
 100,Floor100,default,1,#                  #
-100,Floor100,default,1,#   w          w   #
+100,Floor100,default,1,#  bw          w   #
 100,Floor100,default,1,#                  #
 100,Floor100,default,1,#>                v#
 100,Floor100,default,1,##!               ##
@@ -633,17 +633,17 @@ ID,Name,Skin,Layer,Layout
 100,Floor100,default,1,W       H  H       E
 100,Floor100,default,1,##!               ##
 100,Floor100,default,1,#^                <#
-100,Floor100,default,1,#   w          w   #
+100,Floor100,default,1,#   w         bw   #
 100,Floor100,default,1,#                  #
 100,Floor100,default,1,#                  #
 100,Floor100,default,1,#                  #
 100,Floor100,default,1,#H    <#    #>    H#
-100,Floor100,default,1,########SSSS########
+100,Floor100,default,1,########SSSS#######^
 100,Floor100,default,2,########    ########
 100,Floor100,default,2,#      P    P      #
 100,Floor100,default,2,#                   
 100,Floor100,default,2,#                   
-100,Floor100,default,2,#                   
+100,Floor100,default,2,#  b                
 100,Floor100,default,2,#                   
 100,Floor100,default,2,#                  #
 100,Floor100,default,2,#P                 #
@@ -653,7 +653,7 @@ ID,Name,Skin,Layer,Layout
 100,Floor100,default,2,                   E
 100,Floor100,default,2,#P                 #
 100,Floor100,default,2,#                  #
-100,Floor100,default,2,#                   
+100,Floor100,default,2,#             b     
 100,Floor100,default,2,#                   
 100,Floor100,default,2,#                   
 100,Floor100,default,2,#                   
@@ -663,7 +663,7 @@ ID,Name,Skin,Layer,Layout
 100,Floor100,default,3,                    
 100,Floor100,default,3,                    
 100,Floor100,default,3,P                   
-100,Floor100,default,3,                    
+100,Floor100,default,3,   b                
 100,Floor100,default,3,                    
 100,Floor100,default,3,)                  )
 100,Floor100,default,3,#                  #
@@ -673,7 +673,7 @@ ID,Name,Skin,Layer,Layout
 100,Floor100,default,3,#                  #
 100,Floor100,default,3,#                  #
 100,Floor100,default,3,/                  /
-100,Floor100,default,3,                    
+100,Floor100,default,3,              b     
 100,Floor100,default,3,                    
 100,Floor100,default,3,P                   
 100,Floor100,default,3,                    
@@ -683,17 +683,17 @@ ID,Name,Skin,Layer,Layout
 100,Floor100,default,4,                    
 100,Floor100,default,4,                    
 100,Floor100,default,4,                    
-100,Floor100,default,4,                    
-100,Floor100,default,4,                    
-100,Floor100,default,4,                    
-100,Floor100,default,4,p                  p
-100,Floor100,default,4,                    
-100,Floor100,default,4,                    
+100,Floor100,default,4,   b                
 100,Floor100,default,4,                    
 100,Floor100,default,4,                    
 100,Floor100,default,4,p                  p
 100,Floor100,default,4,                    
 100,Floor100,default,4,                    
+100,Floor100,default,4,                    
+100,Floor100,default,4,                    
+100,Floor100,default,4,p                  p
+100,Floor100,default,4,                    
+100,Floor100,default,4,              b     
 100,Floor100,default,4,                    
 100,Floor100,default,4,                    
 100,Floor100,default,4,                    
