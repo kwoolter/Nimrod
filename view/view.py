@@ -895,6 +895,8 @@ class GameView(View):
                         if isinstance(view_object, model.Player):
                             self.player_view.initialise(view_object)
                             image = self.player_view.draw_player(GameView.TILE_WIDTH, GameView.TILE_HEIGHT)
+                            y_offset = 5 * (
+                            1 + math.cos((self.tick_count * math.pi / 8) + (view_object.rect.x * math.pi / 7)))
 
                         else:
 
@@ -904,10 +906,14 @@ class GameView(View):
                                                                       height=GameView.TILE_HEIGHT,
                                                                       skin_name=skin_name)
 
+                            y_offset = 0
+
                         if image is not None:
 
+                            d = self.floor.distance_to_camera(view_object.xyz)
+
                             if layer_id > 1:
-                                image.set_alpha(255 - (layer_id * 15))
+                                image.set_alpha(100 + (d * 7))
                             else:
                                 image.set_alpha(255)
 

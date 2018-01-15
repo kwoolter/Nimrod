@@ -115,6 +115,7 @@ class Controller:
                             elif event.key == Controller.KEY_BATTLE:
                                 self.game.start_battle()
 
+
                         except Exception as err:
                             print(str(err))
 

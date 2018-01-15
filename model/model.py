@@ -708,6 +708,15 @@ class Floor:
                     self.teleports[floor_object.name].append(
                         (floor_object.rect.x, floor_object.rect.y, floor_object.layer))
 
+    def get_camera_position(self):
+        return (self.rect.width, self.rect.height, len(self.layers.keys()))
+
+    def distance_to_camera(self, a):
+        ax, ay, az = a
+        bx, by, bz = self.get_camera_position()
+        d = math.sqrt(math.pow(ax - bx, 2) + math.pow(ay - by, 2) + math.pow(az - bz, 2))
+        return d
+
     def set_details(self, floor_details):
 
         self.details = floor_details
@@ -1215,6 +1224,8 @@ class Battle:
         for team in self.teams:
             team.print()
 
+        print("Camera at {0}".format(self.battle_floor.get_camera_position()))
+
     @property
     def state(self):
 
@@ -1671,7 +1682,7 @@ class Game:
         characters = list(self._npcs.get_characters())
         new_char = random.choice(characters)
         new_char_type = new_char.get_attribute("Image") + "_red"
-        new_player = Player(name=new_char_type, rect=(10,10, 32, 32), layer=1, character=new_char)
+        new_player = Player(name=new_char_type, rect=(0,10, 32, 32), layer=1, character=new_char)
         attack_name = new_char.get_attribute("Attack")
         new_player.add_attack(self._attacks[attack_name])
 
