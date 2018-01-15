@@ -142,10 +142,10 @@ class Objects:
     TREE = "tree"
     PLAYER = "player"
     SKULL = "skull"
-    NORTH = "north"
-    SOUTH = "south"
-    EAST = "east"
-    WEST = "west"
+    NORTH = "North"
+    SOUTH = "South"
+    EAST = "East"
+    WEST = "West"
     UP = "up"
     DOWN = "down"
     HEART = "heart"
@@ -1054,6 +1054,10 @@ class FloorBuilder():
         new_floor_details = ("Citadel", 6, (0, 0, 6, 6), 2, (11, 11, 16, 16), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
+        new_floor_id = 100
+        new_floor_details = ("The Start", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 5, 5)
+        self.floor_details[new_floor_id] = new_floor_details
+
 
 class FloorLayoutLoader():
     floor_layouts = {}
@@ -1585,7 +1589,7 @@ class Game:
 
     def start_battle(self):
         self.state = Game.BATTLE
-        self._battle_floor_id = random.choice((0, 2, 3, 4, 5))
+        self._battle_floor_id = random.choice((0, 2, 3, 4, 5, 100))
 
         #self._battle_floor_id = 5
 
@@ -1595,9 +1599,9 @@ class Game:
 
         team1 = Team("Blue", BLUE, type=Team.COMPUTER)
         team2 = Team("Red", RED, type=Team.COMPUTER)
+
         team1 = Team("Blue", BLUE, type=Team.PLAYER)
         team2 = Team("Red", RED, type=Team.PLAYER)
-
 
 
         characters = list(self._npcs.get_characters())
@@ -1646,7 +1650,7 @@ class Game:
     def initialise(self):
 
         self.state = Game.READY
-        self.current_floor_id = 1
+        self.current_floor_id = 100
 
         self.load_characters("characters.csv")
         self.load_map("locations.csv", "maplinks.csv")
@@ -1664,8 +1668,12 @@ class Game:
 
         self.hst.load()
 
-        new_char = random.choice(list(self._npcs.get_characters()))
-        new_player = Player(name=Objects.SQUOID, rect=(19, 19, 0, 0), character=new_char)
+        characters = list(self._npcs.get_characters())
+        new_char = random.choice(characters)
+        new_char_type = new_char.get_attribute("Image") + "_red"
+        new_player = Player(name=new_char_type, rect=(10,10, 32, 32), layer=1, character=new_char)
+        attack_name = new_char.get_attribute("Attack")
+        new_player.add_attack(self._attacks[attack_name])
 
         self.add_player(new_player)
 

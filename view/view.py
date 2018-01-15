@@ -65,6 +65,11 @@ class ImageManager:
         new_skin_name = ImageManager.DEFAULT_SKIN
         new_skin = (new_skin_name, {
 
+            model.Objects.NORTH: None,
+            model.Objects.SOUTH: None,
+            model.Objects.EAST: None,
+            model.Objects.WEST: None,
+
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.SKULL: "Skull.png",
             model.Objects.HEART: "heart.png",
@@ -906,7 +911,7 @@ class GameView(View):
                             else:
                                 image.set_alpha(255)
 
-                        surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
 
         return surface
 
@@ -1019,7 +1024,7 @@ class BattleView(View):
                             x_offset = 0
 
                         # Draw any base graphics before we draw the actual object
-                        # If this is the current player then highlight base in yellow
+                        # If this is the current player then highlight base in green
                         if view_object == current_player:
 
                             image = View.image_manager.get_skin_image(model.Objects.BASE_GREEN,
@@ -1031,7 +1036,7 @@ class BattleView(View):
 
                             surface.blit(image, (view_x, view_y))
 
-                        # If this is the current target then highlight base in green
+                        # If this is the current target then highlight base in yellow
                         elif view_object == current_target:
 
                             image = View.image_manager.get_skin_image(model.Objects.BASE_YELLOW,
