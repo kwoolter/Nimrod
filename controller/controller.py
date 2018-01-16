@@ -174,7 +174,7 @@ class Controller:
             self.view.draw()
             self.view.update()
 
-            FPSCLOCK.tick(75)
+            FPSCLOCK.tick(50)
 
         self.view.end()
         self.audio.end()

@@ -917,7 +917,8 @@ class GameView(View):
                             else:
                                 image.set_alpha(255)
 
-                            surface.blit(image, self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id))
+                            image_x,image_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
+                            surface.blit(image, (image_x, image_y - y_offset))
 
         return surface
 

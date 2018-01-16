@@ -1,5 +1,5 @@
 FromID,ToID,Direction,Description,Lockable,Locked,LockedDescription,Reversible,Hidden
-1,2,NORTH,along a path,FALSE,,,TRUE,FALSE
-2,3,NORTH,following the ancient road,FALSE,,,TRUE,FALSE
-3,4,NORTH,following the ancient road,FALSE,,,TRUE,FALSE
-4,5,WEST,,FALSE,,,TRUE,FALSE
+100,101,SOUTH,Through a Gate,FALSE,FALSE,,TRUE,FALSE
+100,103,EAST,Through a Gate,FALSE,FALSE,,TRUE,FALSE
+101,102,EAST,Through a Gate,FALSE,FALSE,,TRUE,FALSE
+102,103,NORTH,Through a Gate,FALSE,FALSE,,TRUE,FALSE

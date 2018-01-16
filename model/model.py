@@ -581,6 +581,14 @@ class Floor:
                            Objects.UP: EXIT_UP,
                            Objects.DOWN: EXIT_DOWN}
 
+
+    DIRECTION_TO_OBJECT = {EXIT_WEST : Objects.WEST ,
+                           EXIT_EAST : Objects.EAST ,
+                           EXIT_NORTH : Objects.NORTH ,
+                           EXIT_SOUTH : Objects.SOUTH ,
+                           EXIT_UP :  Objects.UP ,
+                           EXIT_DOWN : Objects.DOWN }
+
     REVERSE_DIRECTION = {EXIT_WEST: EXIT_EAST,
                          EXIT_EAST: EXIT_WEST,
                          EXIT_NORTH: EXIT_SOUTH,
@@ -623,6 +631,26 @@ class Floor:
         for layer in self.layers.values():
             count += len(layer)
         return count
+
+    def add_player_at_entrance(self, new_player: Player, direction : str):
+
+        x,y,z = new_player.xyz
+
+        matching_entrances = self.get_matching_objects((Floor.DIRECTION_TO_OBJECT[direction],""), layer_id=z)
+        if len(matching_entrances) > 0:
+            selected = random.choice(matching_entrances)
+            x,y,z = selected.xyz
+            new_player.set_pos(x,y,z)
+            self.players.append(new_player)
+
+        else:
+
+            new_player.set_pos(10,10,z)
+            self.players.append(new_player)
+
+        print("Adding player at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
+
+
 
     def add_player(self, new_player: Player, auto_position: bool = False, team: int = 0):
 
@@ -1065,6 +1093,18 @@ class FloorBuilder():
 
         new_floor_id = 100
         new_floor_details = ("The Start", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 5, 5)
+        self.floor_details[new_floor_id] = new_floor_details
+
+        new_floor_id = 101
+        new_floor_details = ("The Square", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 5, 5)
+        self.floor_details[new_floor_id] = new_floor_details
+
+        new_floor_id = 102
+        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 3, 3)
+        self.floor_details[new_floor_id] = new_floor_details
+
+        new_floor_id = 103
+        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
 
@@ -1579,6 +1619,9 @@ class Game:
     def current_floor(self):
         return self.floor_factory.floors[self.current_floor_id]
 
+    def get_current_floor(self):
+        return self.current_floor
+
     @property
     def state(self):
 
@@ -1600,9 +1643,9 @@ class Game:
 
     def start_battle(self):
         self.state = Game.BATTLE
-        self._battle_floor_id = random.choice((0, 2, 3, 4, 5, 100))
+        self._battle_floor_id = random.choice((0, 2, 3, 4, 5, 100, 101, 102))
 
-        self._battle_floor_id = 4
+        #self._battle_floor_id = 101
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
@@ -1687,6 +1730,10 @@ class Game:
         new_player.add_attack(self._attacks[attack_name])
 
         self.add_player(new_player)
+
+        self.current_map = self._maps.get_map(1)
+        self.current_map.print()
+
 
     def load_map(self, location_file_name: str, map_links_file_name: str):
 
@@ -1815,6 +1862,52 @@ class Game:
     def move_player(self, dx: int, dy: int):
 
         self.current_floor.move_player(self.player, dx, dy)
+
+        x,y,z = self.player.xyz
+
+        tile = self.current_floor.get_floor_tile(x,y,z, is_raw = True)
+
+        if tile is not None and tile.name in Floor.OBJECT_TO_DIRECTION.keys():
+
+            try:
+                print("You found the exit {}!".format(Floor.OBJECT_TO_DIRECTION[tile.name]))
+                self.check_exit(Floor.OBJECT_TO_DIRECTION[tile.name])
+
+            except Exception as err:
+                print(err)
+                self.player.back()
+
+
+    def check_exit(self, direction):
+
+        # Check if a direction was even specified
+        if direction is "":
+            raise (Exception("You need to specify a direction e.g. NORTH"))
+
+        # Check if the direction is a valid one
+        direction = direction.upper()
+        if direction not in trpg.MapLink.valid_directions:
+            raise (Exception("Direction %s is not valid" % direction.title()))
+
+        # Now see if the map allows you to go in that direction
+        links = self.current_map.get_location_links_map(self.get_current_floor().id)
+
+        # OK stat direction is valid...
+        if direction in links.keys():
+            link = links[direction]
+
+            # ..but see if it is currently locked...
+            if link.is_locked() is True:
+                raise (Exception("You can't go %s - %s" % (direction.title(), link.locked_description)))
+
+            # If all good move to the new location
+            print("You go %s %s..." % (direction.title(), link.description))
+
+            self.current_floor_id = link.to_id
+            self.get_current_floor().add_player_at_entrance(self.player, Floor.REVERSE_DIRECTION[direction])
+
+        else:
+            raise(Exception("You can't go {0} from here!".format(direction)))
 
 
 class Event():
