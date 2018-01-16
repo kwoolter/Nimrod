@@ -935,7 +935,7 @@ class GameView(View):
 
     def model_to_view(self, x, y, layer_id):
         origin_x = (self.surface.get_rect().width / 2) - (GameView.TILE_WIDTH / 2)
-        origin_y = 128
+        origin_y = len(self.game.get_current_floor().layers.keys()) * BattleView.TILE_HEIGHT/2
         view_x = int(origin_x + (GameView.TILE_WIDTH * x / 2) - (GameView.TILE_WIDTH * y / 2))
         view_y = int(origin_y + (GameView.TILE_HEIGHT * x / 4) + (GameView.TILE_HEIGHT * y / 4) - (
             layer_id * GameView.TILE_HEIGHT / 2))

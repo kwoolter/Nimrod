@@ -726,12 +726,12 @@ ID,Name,Skin,Layer,Layout
 101,Floor101,default,1,                    
 101,Floor101,default,1,                    
 101,Floor101,default,1,                    
-101,Floor101,default,1,##                ##
-101,Floor101,default,1,W                  E
-101,Floor101,default,1,W                  E
-101,Floor101,default,1,W                  E
-101,Floor101,default,1,W                  E
-101,Floor101,default,1,##                ##
+101,Floor101,default,1,##     ######     ##
+101,Floor101,default,1,W      #llll#      E
+101,Floor101,default,1,W      #llll#      E
+101,Floor101,default,1,W      #llll#      E
+101,Floor101,default,1,W      #llll#      E
+101,Floor101,default,1,##     ######     ##
 101,Floor101,default,1,                    
 101,Floor101,default,1,                    
 101,Floor101,default,1,                    
@@ -759,26 +759,26 @@ ID,Name,Skin,Layer,Layout
 102,Floor102,default,0, ~~~~~~~~~~~~~~~~~~ 
 102,Floor102,default,0,~~~~~~~~~~~~~~~~~~~~
 102,Floor102,default,0,~~    ~~~~~~~~    ~~
-102,Floor102,default,1,**     *NNNN*     **
-102,Floor102,default,1,*      *    *      *
+102,Floor102,default,1,##     #NNNN#     ##
+102,Floor102,default,1,#      #    #      #
 102,Floor102,default,1,                    
 102,Floor102,default,1,                    
 102,Floor102,default,1,                    
 102,Floor102,default,1,                    
 102,Floor102,default,1,                    
-102,Floor102,default,1,**                **
+102,Floor102,default,1,##     p    p     ##
 102,Floor102,default,1,W                  E
+102,Floor102,default,1,W        **        E
+102,Floor102,default,1,W        **        E
 102,Floor102,default,1,W                  E
-102,Floor102,default,1,W                  E
-102,Floor102,default,1,W                  E
-102,Floor102,default,1,**                **
+102,Floor102,default,1,##     p    p     ##
 102,Floor102,default,1,                    
 102,Floor102,default,1,                    
 102,Floor102,default,1,                    
 102,Floor102,default,1,                    
 102,Floor102,default,1,                    
-102,Floor102,default,1,*      *    *      *
-102,Floor102,default,1,**     *SSSS*     *^
+102,Floor102,default,1,#      #    #      #
+102,Floor102,default,1,##     #SSSS#     #^
 103,Floor103,default,0,~~    ~~~~~~~~    ~~
 103,Floor103,default,0,~~~~~~~~~~~~~~~~~~~~
 103,Floor103,default,0, ~~~~~~~~~~~~~~~~~~ 
