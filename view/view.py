@@ -891,8 +891,22 @@ class GameView(View):
                     view_object = self.floor.get_floor_tile(x, y, layer_id)
                     if view_object is not None:
 
+                        image_x, image_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
+
 
                         if isinstance(view_object, model.Player):
+
+                            # If this is a player then give them a shadow
+                            image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
+                                                                      tick=self.tick_count,
+                                                                      width=BattleView.TILE_WIDTH,
+                                                                      height=BattleView.TILE_HEIGHT,
+                                                                      skin_name=skin_name)
+
+                            image.set_alpha(100)
+
+                            surface.blit(image, (image_x, image_y))
+
                             self.player_view.initialise(view_object)
                             image = self.player_view.draw_player(GameView.TILE_WIDTH, GameView.TILE_HEIGHT)
                             y_offset = 5 * (
@@ -917,7 +931,7 @@ class GameView(View):
                             else:
                                 image.set_alpha(255)
 
-                            image_x,image_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
+
                             surface.blit(image, (image_x, image_y - y_offset))
 
         return surface
@@ -936,6 +950,7 @@ class GameView(View):
     def model_to_view(self, x, y, layer_id):
         origin_x = (self.surface.get_rect().width / 2) - (GameView.TILE_WIDTH / 2)
         origin_y = len(self.game.get_current_floor().layers.keys()) * BattleView.TILE_HEIGHT/2
+        origin_y = 100
         view_x = int(origin_x + (GameView.TILE_WIDTH * x / 2) - (GameView.TILE_WIDTH * y / 2))
         view_y = int(origin_y + (GameView.TILE_HEIGHT * x / 4) + (GameView.TILE_HEIGHT * y / 4) - (
             layer_id * GameView.TILE_HEIGHT / 2))

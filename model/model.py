@@ -1107,6 +1107,9 @@ class FloorBuilder():
         new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
+        new_floor_id = 104
+        new_floor_details = ("The Ancient Gate", 1, (9, 17, 12, 18), 1, (5, 16, 14, 18), 2, 2)
+        self.floor_details[new_floor_id] = new_floor_details
 
 class FloorLayoutLoader():
     floor_layouts = {}
@@ -1704,7 +1707,7 @@ class Game:
     def initialise(self):
 
         self.state = Game.READY
-        self.current_floor_id = 100
+        self.current_floor_id = 104
 
         self.load_characters("characters.csv")
         self.load_map("locations.csv", "maplinks.csv")
