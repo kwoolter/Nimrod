@@ -1557,7 +1557,9 @@ class Battle:
 
             # If no Bot exists for the current player then create one
             if self.get_current_player() not in self.bots.keys():
-                self.bots[self.get_current_player()] = AIBot(self.get_current_player(), self)
+                new_bot = AIBot(self.get_current_player(), self)
+                new_bot.set_path(((10,10,1),(10,1,1)))
+                self.bots[self.get_current_player()] = new_bot
 
             # Get the Bot for the current player and do a tick
             ai = self.bots[self.get_current_player()]
@@ -2142,6 +2144,9 @@ class AIBot:
         self.opposition_team = self.battle.get_opposite_team(self.player_team)
         self.navigator = Navigator(battle.battle_floor)
         self.tick_count = 0
+        self.view_range = 4
+        self._path = None
+        self._path_target = None
         self.current_state = AIBot.HUNTING
         self._actions = {}
 
@@ -2149,6 +2154,17 @@ class AIBot:
 
     def reset(self):
         self.current_state = AIBot.HUNTING
+
+    def set_path(self, path : list, start_pos : int = 0):
+        self._path = list(path)
+        self._path_target = start_pos
+
+    def next_path_target(self):
+        self._path_target += 1
+        if self._path_target > len(self._path):
+            self._path_target = 0
+
+        return self._path[self._path_target]
 
     def do_tick(self):
 
@@ -2176,10 +2192,14 @@ class AIBot:
                                                  direct=direct,
                                                  walkable=False,
                                                  safe=False)
-                if result is True:
+
+                distance = self.navigator.distance(a=self.player.xyz, b=player.xyz)
+                if result is True and distance < self.view_range:
                     opponents.append(
-                        (player, self.navigator.distance(a=self.player.xyz, b=player.xyz), len(self.navigator.route)))
+                        (player, distance, len(self.navigator.route)))
                     is_visible = True
+                else:
+                    print("Target at distance {0:.2f} beyond range {1}".format(distance, self.view_range))
 
         return is_visible, opponents
 
@@ -2196,22 +2216,14 @@ class AIBot:
             print("Target spotted")
             self.current_state = AIBot.TRACKING
 
+        # Try and follow a set path
+        elif self._path is not None:
+            action = self.do_path_following()
+
         # Else move around randomly
         else:
-            print("Moving")
-            choices = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+            action = self.do_random_move()
 
-            for i in range(0, 10):
-                dx, dy = random.choice(choices)
-                # Need to fix bug where random moves can be dangerous!!!
-                self.battle.battle_floor.move_player(self.player, dx, dy)
-                if self.player.has_moved() is True:
-                    action = True
-                    break
-                else:
-                    choices.remove((dx, dy))
-
-            # If we failed to move after several attempts then give up
             if self.player.has_moved() is False:
                 self.current_state = AIBot.FINISHED
 
@@ -2278,17 +2290,7 @@ class AIBot:
 
                 # Else move randomly
                 else:
-                    print("Moving")
-                    choices = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-
-                    for i in range(0, 10):
-                        dx, dy = random.choice(choices)
-                        self.battle.battle_floor.move_player(self.player, dx, dy)
-                        if self.player.has_moved() is True:
-                            action = True
-                            break
-                        else:
-                            choices.remove((dx, dy))
+                    action = self.do_random_move()
 
                     # If we failed to move after several attempts then give up
                     if self.player.has_moved() is False:
@@ -2382,6 +2384,66 @@ class AIBot:
 
     def do_finish(self):
         return True
+
+    def do_random_move(self):
+        print("Moving")
+        action = False
+        choices = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        x,y,z = self.player.xyz
+
+        for i in range(0, 10):
+            dx, dy = random.choice(choices)
+            new_x = x + dx
+            new_y = y + dy
+            if self.battle.battle_floor.is_dangerous(new_x, new_y, z) is False and \
+                self.battle.battle_floor.is_occupiable(new_x, new_y, z) is True:
+
+                self.battle.battle_floor.move_player(self.player, dx, dy)
+                if self.player.has_moved() is True:
+                    action = True
+                    break
+            else:
+                choices.remove((dx, dy))
+
+        return action
+
+    def do_path_following(self):
+
+        print("Path Following")
+
+        action = False
+
+        target_position = self._path[self._path_target]
+        if target_position == self.player.xyz:
+            target_position = self.next_path_target()
+
+        result = self.navigator.navigate(start = self.player.xyz,
+                                         finish=target_position,
+                                         direct=False,
+                                         walkable=True,
+                                         safe=True)
+
+        print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
+
+        # If no safe route go unsafe route!
+        if result is False:
+            result = self.navigator.navigate(start=self.player.xyz,
+                                             finish=target_position,
+                                             direct=False,
+                                             walkable=True,
+                                             safe=False)
+
+            print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
+
+        # If there is a route to the target then move towards it
+        if result is True:
+            x, y, z = self.player.xyz
+            newx, newy, newz = self.navigator.route[1]
+            print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+            self.battle.battle_floor.move_player(self.player, newx - x, newy - y)
+            action = True
+
+        return action
 
     def initialise(self):
         self._actions[AIBot.HUNTING] = self.do_hunting
