@@ -701,11 +701,11 @@ class Floor:
 
             self.bots.append(ai)
 
-        print("Adding enemy at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
+        #print("Adding enemy at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
 
     def add_items(self, item_type, item_count: int = 1):
 
-        print("Adding {0} {1} items into rect {2}".format(item_count, item_type, self.rect))
+        #print("Adding {0} {1} items into rect {2}".format(item_count, item_type, self.rect))
 
         new_object = FloorObjectLoader.get_object_copy_by_name(item_type)
         if new_object is not None:
@@ -723,7 +723,7 @@ class Floor:
                             self.add_object(new_object)
                             new_object = FloorObjectLoader.get_object_copy_by_name(item_type)
                             placed = True
-                            print("Added {0} item at {1},{2},{3}".format(item_type, x, y, z))
+                            #print("Added {0} item at {1},{2},{3}".format(item_type, x, y, z))
                             break
 
                 if placed is False:
@@ -758,9 +758,6 @@ class Floor:
             for floor_object in self.layers[layer_id]:
 
                 object_x, object_y, object_z = floor_object.xyz
-
-                if floor_object.name == Objects.TEST:
-                    pass
 
                 width = floor_object.rect.width
                 depth = floor_object.rect.height
@@ -1088,11 +1085,11 @@ class Floor:
 
     def do_auto(self):
 
-        print("Bot automation...")
+        #print("Bot automation...")
 
         # for each bot do a tick
         for bot in self.bots:
-            bot.print()
+            #bot.print()
             bot.do_tick()
             bot.player.AP = bot.player.MaxAP
             bot.reset()
@@ -1183,6 +1180,10 @@ class FloorBuilder():
 
         new_floor_id = 104
         new_floor_details = ("The Ancient Gate", 1, (9, 17, 12, 18), 1, (4, 4, 15, 8), 2, 2)
+        self.floor_details[new_floor_id] = new_floor_details
+
+        new_floor_id = 105
+        new_floor_details = ("The Lava Crossing", 1, (16,2,19,12), 1, (1,2,4,12), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
 
@@ -1732,11 +1733,13 @@ class Game:
         GREEN = (34, 177, 76)
         BLUE = (63, 72, 204)
 
+        team1 = Team("Blue", BLUE, type=Team.PLAYER)
+        team2 = Team("Red", RED, type=Team.PLAYER)
+
         team1 = Team("Blue", BLUE, type=Team.COMPUTER)
         team2 = Team("Red", RED, type=Team.COMPUTER)
 
-        team1 = Team("Blue", BLUE, type=Team.PLAYER)
-        team2 = Team("Red", RED, type=Team.PLAYER)
+
 
         characters = list(self._npcs.get_characters())
 
@@ -1784,7 +1787,7 @@ class Game:
     def initialise(self):
 
         self.state = Game.READY
-        self.current_floor_id = 104
+        self.current_floor_id = 105
 
         self.load_characters("characters.csv")
         self.load_map("locations.csv", "maplinks.csv")
@@ -2101,7 +2104,7 @@ class Navigator:
         finished = False
 
         if start == finish:
-            print("found the finish")
+            #print("found the finish")
             self.route.append((start))
             finished = True
         else:
@@ -2625,8 +2628,8 @@ class AIBot2:
                     opponents.append(
                         (player, distance, len(self.navigator.route)))
                     is_visible = True
-                else:
-                    print("Target at distance {0:.2f} beyond range {1}".format(distance, self.view_range))
+                # else:
+                #     print("Target at distance {0:.2f} beyond range {1}".format(distance, self.view_range))
 
         return is_visible, opponents
 
@@ -2640,7 +2643,7 @@ class AIBot2:
 
         # If we can see a target then switch to Tracking mode
         if is_visible is True:
-            print("Target spotted")
+            #print("Target spotted")
             self.current_state = AIBot.TRACKING
 
         # Else try to move around
@@ -2679,7 +2682,7 @@ class AIBot2:
             target, distance, route_length = opponents[0]
             # self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
 
-            print("Tracking nearest opponent {0} at distance {1}".format(target.character.name, distance))
+            #print("Tracking nearest opponent {0} at distance {1}".format(target.character.name, distance))
 
             if target.layer != self.player.layer:
                 print("No opponents on this level")
@@ -2700,7 +2703,7 @@ class AIBot2:
                                                  direct=False,
                                                  walkable=True,
                                                  safe=True)
-                print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
+                #print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
                 # If no safe route go direct!
                 if result is False:
                     result = self.navigator.navigate(start=self.player.xyz,
@@ -2709,13 +2712,13 @@ class AIBot2:
                                                      walkable=True,
                                                      safe=False)
 
-                    print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
+                    #print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
 
                 # If there is a route to the target then move towards it
                 if result is True:
                     x, y, z = self.player.xyz
                     newx, newy, newz = self.navigator.route[1]
-                    print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+                    #print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
                     self.floor.move_player(self.player, newx - x, newy - y)
                     action = True
 
@@ -2730,7 +2733,8 @@ class AIBot2:
         return action
 
     def do_teleporting(self):
-        print("Teleporting")
+
+        #print("Teleporting")
 
         action = False
 
@@ -2853,7 +2857,7 @@ class AIBot2:
                                          walkable=True,
                                          safe=True)
 
-        print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
+        #print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
 
         # If no safe route go unsafe route!
         if result is False:
@@ -2863,13 +2867,13 @@ class AIBot2:
                                              walkable=True,
                                              safe=False)
 
-            print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
+            #print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
 
         # If there is a route to the target then move towards it
         if result is True:
             x, y, z = self.player.xyz
             newx, newy, newz = self.navigator.route[1]
-            print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+            #print("Moving from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
             self.floor.move_player(self.player, newx - x, newy - y)
             action = True
 

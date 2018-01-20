@@ -69,7 +69,8 @@ class ImageManager:
             model.Objects.SOUTH: None,
             model.Objects.EAST: None,
             model.Objects.WEST: None,
-            model.Objects.TEST: "Block_blue.png",
+            model.Objects.TEST: (
+                "bubbles0.png", "bubbles1.png", "bubbles2.png", "bubbles3.png", "bubbles4.png", "bubbles5.png","bubbles6.png", "bubbles7.png"),
 
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.SKULL: "Skull.png",

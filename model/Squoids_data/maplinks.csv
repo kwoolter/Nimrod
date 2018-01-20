@@ -1,5 +1,6 @@
 FromID,ToID,Direction,Description,Lockable,Locked,LockedDescription,Reversible,Hidden
 100,101,SOUTH,Through a Gate,FALSE,FALSE,,TRUE,FALSE
+100,105,WEST,Through a Gate,FALSE,FALSE,,TRUE,FALSE
 100,103,EAST,Through a Gate,FALSE,FALSE,,TRUE,FALSE
 101,102,EAST,Through a Gate,FALSE,FALSE,,TRUE,FALSE
 102,103,NORTH,Through a Gate,FALSE,FALSE,,TRUE,FALSE
