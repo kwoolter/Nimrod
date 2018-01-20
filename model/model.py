@@ -1558,7 +1558,8 @@ class Battle:
             # If no Bot exists for the current player then create one
             if self.get_current_player() not in self.bots.keys():
                 new_bot = AIBot(self.get_current_player(), self)
-                new_bot.set_path(((10,10,1),(10,1,1)))
+                x,y,z = self.get_current_player().xyz
+                new_bot.set_path(((10,10,z),(10,1,z)))
                 self.bots[self.get_current_player()] = new_bot
 
             # Get the Bot for the current player and do a tick
@@ -2216,14 +2217,18 @@ class AIBot:
             print("Target spotted")
             self.current_state = AIBot.TRACKING
 
-        # Try and follow a set path
-        elif self._path is not None:
-            action = self.do_path_following()
-
-        # Else move around randomly
+        # Else try to move around
         else:
-            action = self.do_random_move()
 
+            # Try and follow a set path
+            if self._path is not None:
+                action = self.do_path_following()
+
+            # If that failed try to move around randomly
+            if action is False:
+                action = self.do_random_move()
+
+            # Otherwise give-up
             if self.player.has_moved() is False:
                 self.current_state = AIBot.FINISHED
 
