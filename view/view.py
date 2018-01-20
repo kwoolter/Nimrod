@@ -91,13 +91,13 @@ class ImageManager:
             model.Objects.BLOCK_BOTTOM: "BlockBack_blue.png",
             model.Objects.BLOCK_RIGHT: "BlockRight_blue.png",
             model.Objects.BLOCK_LEFT: "BlockLeft_blue.png",
-            model.Objects.BLOCK_LEFT_SLOPE: "BlockSlopeSW.png",
-            model.Objects.BLOCK_RIGHT_SLOPE: "BlockSlopeSE.png",
-            model.Objects.BLOCK_LEFT_BACK_SLOPE: "BlockSlopeNW.png",
-            model.Objects.BLOCK_RIGHT_BACK_SLOPE: "BlockSlopeNE.png",
+            model.Objects.BLOCK_LEFT_SLOPE: "BlockSlopeSW_blue.png",
+            model.Objects.BLOCK_RIGHT_SLOPE: "BlockSlopeSE_blue.png",
+            model.Objects.BLOCK_LEFT_BACK_SLOPE: "BlockSlopeNW_blue.png",
+            model.Objects.BLOCK_RIGHT_BACK_SLOPE: "BlockSlopeNE_blue.png",
             model.Objects.BLOCK_ARCH_NE: "BlockArchNE_blue.png",
-            model.Objects.BLOCK_ARCH_NW: "BlockArchNW.png",
-            model.Objects.BLOCK_ARCH_SE: "BlockArchSE.png",
+            model.Objects.BLOCK_ARCH_NW: "BlockArchNW_blue.png",
+            model.Objects.BLOCK_ARCH_SE: "BlockArchSE_blue.png",
             model.Objects.BLOCK_ARCH_SW: "BlockArchSW_blue.png",
             model.Objects.BLUE: "Block32x32Blue2.png",
             model.Objects.PYRAMID1: "Pyramid4_blue.png",
@@ -200,6 +200,32 @@ class ImageManager:
         })
 
         ImageManager.skins[new_skin_name] = new_skin
+        
+        
+        new_skin_name = "red"
+        new_skin = (new_skin_name, {
+
+            model.Objects.BLOCK: "Block_red.png",
+            model.Objects.BLOCK1: "Block_blue.png",
+            model.Objects.BLOCK2: "Block_red.png",
+            model.Objects.BLOCK3: "Block_master.png",
+            model.Objects.BRICK: "Brick_red.png",
+            model.Objects.BLOCK_ORNATE: "BlockOrnate_red.png",
+            model.Objects.PYRAMID1: "Pyramid4_red.png",
+            model.Objects.PYRAMID2: "Pyramid2_red.png",
+            model.Objects.CYLINDER: "Cylinder_master3D.png",
+            model.Objects.SPHERE: "Sphere_red.png",
+            model.Objects.BLOCK_HEXAGON: "Hexagon_red.png",
+            model.Objects.BLOCK_TOP: "BlockFront_red.png",
+            model.Objects.BLOCK_BOTTOM: "BlockBack_red.png",
+            model.Objects.BLOCK_RIGHT: "BlockRight_red.png",
+            model.Objects.BLOCK_LEFT: "BlockLeft_red.png",
+            model.Objects.BLOCK_ARCH_NE: "BlockArchNE_red.png",
+            model.Objects.BLOCK_ARCH_SW: "BlockArchSW_red.png",
+
+        })
+
+        ImageManager.skins[new_skin_name] = new_skin
 
     def get_skin_image(self, tile_name: str, skin_name: str = DEFAULT_SKIN, tick=0, width: int = 32, height: int = 32):
 
@@ -236,7 +262,7 @@ class ImageManager:
 
     def load_sprite_sheets(self):
 
-        colour_schemes = ("master", "master3D","green", "blue")
+        colour_schemes = ("master", "master3D","green", "blue", "red")
         for colour_scheme in colour_schemes:
 
             sheet_file_name = "blocks_sheet_" + colour_scheme + ".png"
@@ -255,21 +281,18 @@ class ImageManager:
             self.sprite_sheets["BlockBack_{0}.png".format(colour_scheme)] = (sheet_file_name, (96, 32, 32, 32))
             self.sprite_sheets["BlockLeft_{0}.png".format(colour_scheme)] = (sheet_file_name, (128, 32, 32, 32))
             self.sprite_sheets["BlockArchNE_{0}.png".format(colour_scheme)] = (sheet_file_name, (192, 0, 32, 32))
-            self.sprite_sheets["BlockArchSE.png"] = (sheet_file_name, (224, 0, 32, 32))
+            self.sprite_sheets["BlockArchSE_{0}.png".format(colour_scheme)] = (sheet_file_name, (224, 0, 32, 32))
             self.sprite_sheets["BlockArchSW_{0}.png".format(colour_scheme)] = (sheet_file_name, (256, 0, 32, 32))
-            self.sprite_sheets["BlockArchNW.png"] = (sheet_file_name, (288, 0, 32, 32))
+            self.sprite_sheets["BlockArchNW_{0}.png".format(colour_scheme)] = (sheet_file_name, (288, 0, 32, 32))
 
-            self.sprite_sheets["BlockSlopeSW.png"] = (sheet_file_name, (160, 32, 32, 32))
-            self.sprite_sheets["BlockSlopeNW.png"] = (sheet_file_name, (192, 32, 32, 32))
-            self.sprite_sheets["BlockSlopeNE.png"] = (sheet_file_name, (224, 32, 32, 32))
-            self.sprite_sheets["BlockSlopeSE.png"] = (sheet_file_name, (256, 32, 32, 32))
-            self.sprite_sheets["Brick32x32.png"] = (sheet_file_name, (288, 32, 32, 32))
-            self.sprite_sheets["BrickNew.png"] = (sheet_file_name, (0, 64, 32, 32))
+            self.sprite_sheets["BlockSlopeSW_{0}.png".format(colour_scheme)] = (sheet_file_name, (160, 32, 32, 32))
+            self.sprite_sheets["BlockSlopeNW_{0}.png".format(colour_scheme)] = (sheet_file_name, (192, 32, 32, 32))
+            self.sprite_sheets["BlockSlopeNE_{0}.png".format(colour_scheme)] = (sheet_file_name, (224, 32, 32, 32))
+            self.sprite_sheets["BlockSlopeSE_{0}.png".format(colour_scheme)] = (sheet_file_name, (256, 32, 32, 32))
+            self.sprite_sheets["Sphere_{0}.png".format(colour_scheme)] = (sheet_file_name, (96, 0, 32, 32))
 
-        self.sprite_sheets["SphereBlue.png"] = (sheet_file_name, (96, 0, 32, 32))
-
-        sheet_file_name = "blocks_sheet_green.png"
-        self.sprite_sheets["SphereGreen.png"] = (sheet_file_name, (96, 0, 32, 32))
+        self.sprite_sheets["Brick32x32.png"] = (sheet_file_name, (288, 32, 32, 32))
+        self.sprite_sheets["BrickNew.png"] = (sheet_file_name, (0, 64, 32, 32))
         self.sprite_sheets["BlockGreen.png"] = (sheet_file_name, (0, 32, 32, 32))
 
         sheet_file_name = "Keys.png"

@@ -2734,7 +2734,7 @@ class AIBot2:
 
     def do_teleporting(self):
 
-        #print("Teleporting")
+        print("Teleporting")
 
         action = False
 
@@ -2749,7 +2749,7 @@ class AIBot2:
         for teleport in teleports:
             result = self.navigator.navigate(start=self.player.xyz, finish=teleport.xyz, direct=False, walkable=True,
                                              safe=False)
-            # print(str(self.navigator.route))
+            print(str(self.navigator.route))
             if result is True:
 
                 if len(self.navigator.route) == 1:
