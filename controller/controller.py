@@ -114,6 +114,8 @@ class Controller:
                                 self.game.game_over()
                             elif event.key == Controller.KEY_BATTLE:
                                 self.game.start_battle()
+                            elif event.key == K_F11:
+                                self.game.get_current_floor().do_auto()
 
 
                         except Exception as err:
@@ -153,7 +155,7 @@ class Controller:
                                 self.game.battle.print()
 
                         elif self.game.battle.state == model.Battle.END:
-                            if event.key == K_ESCAPE:
+                            if event.key == K_F10:
                                 self.game.state = model.Game.PLAYING
 
                         # except Exception as err:

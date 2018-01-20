@@ -581,13 +581,12 @@ class Floor:
                            Objects.UP: EXIT_UP,
                            Objects.DOWN: EXIT_DOWN}
 
-
-    DIRECTION_TO_OBJECT = {EXIT_WEST : Objects.WEST ,
-                           EXIT_EAST : Objects.EAST ,
-                           EXIT_NORTH : Objects.NORTH ,
-                           EXIT_SOUTH : Objects.SOUTH ,
-                           EXIT_UP :  Objects.UP ,
-                           EXIT_DOWN : Objects.DOWN }
+    DIRECTION_TO_OBJECT = {EXIT_WEST: Objects.WEST,
+                           EXIT_EAST: Objects.EAST,
+                           EXIT_NORTH: Objects.NORTH,
+                           EXIT_SOUTH: Objects.SOUTH,
+                           EXIT_UP: Objects.UP,
+                           EXIT_DOWN: Objects.DOWN}
 
     REVERSE_DIRECTION = {EXIT_WEST: EXIT_EAST,
                          EXIT_EAST: EXIT_WEST,
@@ -605,6 +604,7 @@ class Floor:
         self.players = []
         self.objects = []
         self.monsters = []
+        self.bots = []
         self.layers = {}
         self.floor_plans = {}
         self.exits = {}
@@ -632,25 +632,23 @@ class Floor:
             count += len(layer)
         return count
 
-    def add_player_at_entrance(self, new_player: Player, direction : str):
+    def add_player_at_entrance(self, new_player: Player, direction: str):
 
-        x,y,z = new_player.xyz
+        x, y, z = new_player.xyz
 
-        matching_entrances = self.get_matching_objects((Floor.DIRECTION_TO_OBJECT[direction],""), layer_id=z)
+        matching_entrances = self.get_matching_objects((Floor.DIRECTION_TO_OBJECT[direction], ""), layer_id=z)
         if len(matching_entrances) > 0:
             selected = random.choice(matching_entrances)
-            x,y,z = selected.xyz
-            new_player.set_pos(x,y,z)
+            x, y, z = selected.xyz
+            new_player.set_pos(x, y, z)
             self.players.append(new_player)
 
         else:
 
-            new_player.set_pos(10,10,z)
+            new_player.set_pos(10, 10, z)
             self.players.append(new_player)
 
         print("Adding player at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
-
-
 
     def add_player(self, new_player: Player, auto_position: bool = False, team: int = 0):
 
@@ -662,12 +660,10 @@ class Floor:
                 x = random.randint(min_x, max_x)
                 y = random.randint(min_y, max_y)
 
-                if self.get_floor_tile(x, y, start_layer) is None:
-                    base_tile = self.get_floor_tile(x, y, start_layer - 1)
-                    if base_tile is not None and base_tile.is_solid is True:
-                        new_player.set_pos(x, y, start_layer)
-                        placed = True
-                        break
+                if self.get_floor_tile(x, y, start_layer) is None and self.is_occupiable(x, y, start_layer) is True:
+                    new_player.set_pos(x, y, start_layer)
+                    placed = True
+                    break
 
             if placed is False:
                 print("Failed to auto position player {0}".format(new_player.character.name))
@@ -675,6 +671,36 @@ class Floor:
         self.players.append(new_player)
 
         print("Adding player at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
+
+
+    def add_enemy(self, new_player: Player, auto_position: bool = False, is_bot : bool = True, team: int = 1):
+
+        if auto_position is True:
+            min_x, min_y, max_x, max_y = self.start_positions[team]
+            start_layer = self.start_layers[team]
+            placed = False
+            # Try 20 times
+            for i in range(1, 20):
+                x = random.randint(min_x, max_x)
+                y = random.randint(min_y, max_y)
+
+                if self.get_floor_tile(x, y, start_layer) is None and self.is_occupiable(x, y, start_layer) is True:
+                    new_player.set_pos(x, y, start_layer)
+                    placed = True
+                    break
+
+            if placed is False:
+                print("Failed to auto position enemy {0}".format(new_player.character.name))
+
+        self.monsters.append(new_player)
+
+        if is_bot is True:
+            ai = AIBot2(player=new_player, floor = self)
+            ai.set_path(((min_x ,min_y, start_layer),(max_x, min_y, start_layer),(max_x,max_y,start_layer), (min_x, max_y, start_layer)))
+
+            self.bots.append(ai)
+
+        print("Adding enemy at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
 
     def add_items(self, item_type, item_count: int = 1):
 
@@ -794,6 +820,11 @@ class Floor:
                     floor_object = player
                     break
 
+            for enemy in self.monsters:
+                if (x, y, layer_id) == enemy.xyz:
+                    floor_object = enemy
+                    break
+
         return floor_object
 
     def set_floor_tile(self, x: int, y: int, layer_id: int, new_object: FloorObject = None):
@@ -806,7 +837,7 @@ class Floor:
         layer = self.floor_plans[layer_id]
         layer[x][y] = new_object
 
-    def get_matching_objects(self, types : list, layer_id : int = None):
+    def get_matching_objects(self, types: list, layer_id: int = None):
         matches = []
         types = list(types)
 
@@ -823,14 +854,13 @@ class Floor:
             if selected_layer_id in self.layers.keys():
                 for x in range(0, self.rect.width):
                     for y in range(0, self.rect.height):
-                        tile = self.get_floor_tile(x,y,selected_layer_id, is_raw=True)
+                        tile = self.get_floor_tile(x, y, selected_layer_id, is_raw=True)
                         if tile is not None and tile.name in types:
                             matches.append(tile)
 
         print("{0} matches for tile type {1}".format(len(matches), types))
 
         return matches
-
 
     def is_occupiable(self, x, y, z):
 
@@ -868,9 +898,18 @@ class Floor:
 
         return result
 
+    def is_in_bounds(self, x : int, y : int, z : int):
+
+        # Is the position out of bounds?
+        if x >= self.rect.width or x < 0 or y >= self.rect.height or y < 0 or z < min(self.layers.keys()) or z > max(
+                self.layers.keys()):
+            return False
+        else:
+            return True
+
     def move_player(self, selected_player: Player, dx: int = 0, dy: int = 0):
 
-        if selected_player not in self.players:
+        if selected_player not in self.players and selected_player not in self.monsters:
             raise Exception(
                 "{0}:move_player() - Player {1} is not on floor (2).".format(__class__, selected_player.character.name,
                                                                              self.name))
@@ -883,7 +922,7 @@ class Floor:
         new_y = y + dy
 
         # Is the new position out of bounds?
-        if new_x >= self.rect.width or new_x < 0 or new_y >= self.rect.height or new_y < 0:
+        if self.is_in_bounds(new_x, new_y, z) is False:
 
             Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED, description="You hit an edge!"))
 
@@ -1012,7 +1051,7 @@ class Floor:
 
             selected_player.tick()
 
-            x, y, layer = selected_player.rect.x, selected_player.rect.y, selected_player.layer
+            x, y, layer = selected_player.xyz
 
             # Check what the player is standing on...
             base_tile = self.get_floor_tile(x, y, layer - 1)
@@ -1022,6 +1061,23 @@ class Floor:
                                              name=Event.LOSE_HEALTH,
                                              description="{0} stood on {1}".format(selected_player.name,
                                                                                    base_tile.name)))
+
+        # For each enemy do a tick
+        for enemy in self.monsters:
+            enemy.tick()
+
+        self.do_auto()
+
+    def do_auto(self):
+
+        print("Bot automation...")
+
+        # for each bot do a tick
+        for bot in self.bots:
+            bot.print()
+            bot.do_tick()
+            bot.player.AP = bot.player.MaxAP
+            bot.reset()
 
 
 class FloorBuilder():
@@ -1108,8 +1164,9 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 104
-        new_floor_details = ("The Ancient Gate", 1, (9, 17, 12, 18), 1, (5, 16, 14, 18), 2, 2)
+        new_floor_details = ("The Ancient Gate", 1, (9, 17, 12, 18), 1, (4,4,15,8), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
+
 
 class FloorLayoutLoader():
     floor_layouts = {}
@@ -1558,8 +1615,8 @@ class Battle:
             # If no Bot exists for the current player then create one
             if self.get_current_player() not in self.bots.keys():
                 new_bot = AIBot(self.get_current_player(), self)
-                x,y,z = self.get_current_player().xyz
-                new_bot.set_path(((10,10,z),(10,1,z)))
+                x, y, z = self.get_current_player().xyz
+                new_bot.set_path(((10, 10, z), (10, 1, z)))
                 self.bots[self.get_current_player()] = new_bot
 
             # Get the Bot for the current player and do a tick
@@ -1651,7 +1708,7 @@ class Game:
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 2, 3, 4, 5, 100, 101, 102))
 
-        #self._battle_floor_id = 101
+        # self._battle_floor_id = 101
 
         RED = (237, 28, 36)
         GREEN = (34, 177, 76)
@@ -1662,7 +1719,6 @@ class Game:
 
         team1 = Team("Blue", BLUE, type=Team.PLAYER)
         team2 = Team("Red", RED, type=Team.PLAYER)
-
 
         characters = list(self._npcs.get_characters())
 
@@ -1731,15 +1787,27 @@ class Game:
         characters = list(self._npcs.get_characters())
         new_char = random.choice(characters)
         new_char_type = new_char.get_attribute("Image") + "_red"
-        new_player = Player(name=new_char_type, rect=(0,10, 32, 32), layer=1, character=new_char)
+        new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
         attack_name = new_char.get_attribute("Attack")
         new_player.add_attack(self._attacks[attack_name])
 
-        self.add_player(new_player)
+        characters.remove(new_char)
+
+        self.add_player(new_player, auto_position=True)
+
+        for i in range(0,3):
+            new_char = random.choice(characters)
+            new_char_type = new_char.get_attribute("Image") + "_blue"
+            new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
+            attack_name = new_char.get_attribute("Attack")
+            new_player.add_attack(self._attacks[attack_name])
+
+            self.add_enemy(new_player, auto_position=True)
+
+            characters.remove(new_char)
 
         self.current_map = self._maps.get_map(1)
         self.current_map.print()
-
 
     def load_map(self, location_file_name: str, map_links_file_name: str):
 
@@ -1855,7 +1923,7 @@ class Game:
     def load(self):
         pass
 
-    def add_player(self, new_player: Player):
+    def add_player(self, new_player: Player, auto_position : bool = False):
 
         if self.state != Game.READY:
             raise Exception("Game is in state {0} so can't add new players!".format(self.state))
@@ -1863,15 +1931,24 @@ class Game:
         logging.info("Adding new player {0} to game {1}...".format(new_player.name, self.name))
 
         self.player = new_player
-        self.current_floor.add_player(new_player)
+        self.current_floor.add_player(new_player, auto_position = auto_position)
+
+    def add_enemy(self, new_player: Player, auto_position : bool = False):
+
+        if self.state != Game.READY:
+            raise Exception("Game is in state {0} so can't add new players!".format(self.state))
+
+        logging.info("Adding new enemy {0} to game {1}...".format(new_player.name, self.name))
+
+        self.current_floor.add_enemy(new_player, auto_position=auto_position)
 
     def move_player(self, dx: int, dy: int):
 
         self.current_floor.move_player(self.player, dx, dy)
 
-        x,y,z = self.player.xyz
+        x, y, z = self.player.xyz
 
-        tile = self.current_floor.get_floor_tile(x,y,z, is_raw = True)
+        tile = self.current_floor.get_floor_tile(x, y, z, is_raw=True)
 
         if tile is not None and tile.name in Floor.OBJECT_TO_DIRECTION.keys():
 
@@ -1882,7 +1959,6 @@ class Game:
             except Exception as err:
                 print(err)
                 self.player.back()
-
 
     def check_exit(self, direction):
 
@@ -1913,7 +1989,7 @@ class Game:
             self.get_current_floor().add_player_at_entrance(self.player, Floor.REVERSE_DIRECTION[direction])
 
         else:
-            raise(Exception("You can't go {0} from here!".format(direction)))
+            raise (Exception("You can't go {0} from here!".format(direction)))
 
 
 class Event():
@@ -1993,7 +2069,7 @@ class Navigator:
             self.danger_count = 0
 
         if start in visited:
-            print("Already been here on this navigation!")
+            # print("Already been here on this navigation!")
             return False
 
         visited.append(start)
@@ -2003,8 +2079,8 @@ class Navigator:
 
         d = self.distance(start, finish)
 
-        print("{3}. navigating from {0} to {1} (direct={4}, walkable={5},safe={6}). {2:.2f} distance to travel".format(
-            start, finish, d, level, direct, walkable, safe))
+        # print("{3}. navigating from {0} to {1} (direct={4}, walkable={5},safe={6}). {2:.2f} distance to travel".format(
+        #   start, finish, d, level, direct, walkable, safe))
         finished = False
 
         if start == finish:
@@ -2019,15 +2095,15 @@ class Navigator:
                 tile = self.floor.get_floor_tile(startx, starty, startz)
 
                 if tile is not None and tile.is_solid is True:
-                    print("Hit an obstacle at {0}".format(start))
+                    # print("Hit an obstacle at {0}".format(start))
                     return False
 
                 elif walkable is True and self.floor.is_occupiable(startx, starty, startz) is False:
-                    print("Hit an unoccupiable place")
+                    # print("Hit an unoccupiable place")
                     return False
 
                 elif safe is True and self.floor.is_dangerous(startx, starty, startz) is True:
-                    print("Hit an unsafe place!")
+                    # print("Hit an unsafe place!")
                     return False
 
             finishx, finishy, finishz = finish
@@ -2044,7 +2120,7 @@ class Navigator:
 
                 # If you are not far off track also look at other options
                 if direct is False and abs(dx) <= Navigator.ALTERNATE_OPTION_DIFF:
-                    print("Adding extra X options")
+                    # print("Adding extra X options")
                     option = (startx + 1, starty, startz)
                     options.append((option, self.distance(option, finish)))
 
@@ -2055,18 +2131,17 @@ class Navigator:
 
                 # If you are not hurry and not far off track also look at other options
                 if direct is False and abs(dx) <= Navigator.ALTERNATE_OPTION_DIFF:
-                    print("Adding extra X options")
+                    # print("Adding extra X options")
                     option = (startx - 1, starty, startz)
                     options.append((option, self.distance(option, finish)))
 
             # If you are not hurry and bang on track also look at other options
             elif dx == 0 and direct is False:
-                    print("Adding extra X options")
-                    option = (startx - 1, starty, startz)
-                    options.append((option, self.distance(option, finish)))
-                    option = (startx + 1, starty, startz)
-                    options.append((option, self.distance(option, finish)))
-
+                # print("Adding extra X options")
+                option = (startx - 1, starty, startz)
+                options.append((option, self.distance(option, finish)))
+                option = (startx + 1, starty, startz)
+                options.append((option, self.distance(option, finish)))
 
             if dy > 0:
 
@@ -2075,7 +2150,7 @@ class Navigator:
 
                 # If you are not far off track also look at other options
                 if direct is False and abs(dy) <= Navigator.ALTERNATE_OPTION_DIFF:
-                    print("Adding extra Y options")
+                    # print("Adding extra Y options")
                     option = (startx, starty + 1, startz)
                     options.append((option, self.distance(option, finish)))
 
@@ -2086,18 +2161,17 @@ class Navigator:
 
                 # If you are not far off track also look at other options
                 if direct is False and abs(dy) <= Navigator.ALTERNATE_OPTION_DIFF:
-                    print("Adding extra Y options")
+                    # print("Adding extra Y options")
                     option = (startx, starty - 1, startz)
                     options.append((option, self.distance(option, finish)))
 
             # If you are bang on track still look at other options
             elif dy == 0 and direct is False:
-                    print("Adding extra Y options")
-                    option = (startx, starty - 1, startz)
-                    options.append((option, self.distance(option, finish)))
-                    option = (startx, starty + 1, startz)
-                    options.append((option, self.distance(option, finish)))
-
+                # print("Adding extra Y options")
+                option = (startx, starty - 1, startz)
+                options.append((option, self.distance(option, finish)))
+                option = (startx, starty + 1, startz)
+                options.append((option, self.distance(option, finish)))
 
             if startz > finishz:
 
@@ -2112,7 +2186,7 @@ class Navigator:
             options.sort(key=itemgetter(1))
             option, min_distance = options[0]
 
-            #print(str(options))
+            # print(str(options))
 
             for option in options:
                 direction, d = option
@@ -2156,7 +2230,7 @@ class AIBot:
     def reset(self):
         self.current_state = AIBot.HUNTING
 
-    def set_path(self, path : list, start_pos : int = 0):
+    def set_path(self, path: list, start_pos: int = 0):
         self._path = list(path)
         self._path_target = start_pos
 
@@ -2303,7 +2377,6 @@ class AIBot:
 
         return action
 
-
     def do_teleporting(self):
         print("Teleporting")
 
@@ -2311,7 +2384,7 @@ class AIBot:
 
         x, y, z = self.player.xyz
 
-        teleports = self.battle.battle_floor.get_matching_objects((Objects.TELEPORT, Objects.TELEPORT2), z )
+        teleports = self.battle.battle_floor.get_matching_objects((Objects.TELEPORT, Objects.TELEPORT2), z)
 
         if len(teleports) == 0:
             self.current_state = AIBot.HUNTING
@@ -2320,7 +2393,8 @@ class AIBot:
         print(str(teleports))
 
         for teleport in teleports:
-            result = self.navigator.navigate(start=self.player.xyz, finish=teleport.xyz, direct=False, walkable=True, safe = False)
+            result = self.navigator.navigate(start=self.player.xyz, finish=teleport.xyz, direct=False, walkable=True,
+                                             safe=False)
             print(str(self.navigator.route))
             if result is True:
 
@@ -2394,14 +2468,14 @@ class AIBot:
         print("Moving")
         action = False
         choices = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-        x,y,z = self.player.xyz
+        x, y, z = self.player.xyz
 
         for i in range(0, 10):
             dx, dy = random.choice(choices)
             new_x = x + dx
             new_y = y + dy
-            if self.battle.battle_floor.is_dangerous(new_x, new_y, z) is False and \
-                self.battle.battle_floor.is_occupiable(new_x, new_y, z) is True:
+            if self.battle.battle_floor.is_in_bounds(new_x, new_y, z) is True and self.battle.battle_floor.is_dangerous(new_x, new_y, z) is False and \
+                            self.battle.battle_floor.is_occupiable(new_x, new_y, z) is True:
 
                 self.battle.battle_floor.move_player(self.player, dx, dy)
                 if self.player.has_moved() is True:
@@ -2422,7 +2496,7 @@ class AIBot:
         if target_position == self.player.xyz:
             target_position = self.next_path_target()
 
-        result = self.navigator.navigate(start = self.player.xyz,
+        result = self.navigator.navigate(start=self.player.xyz,
                                          finish=target_position,
                                          direct=False,
                                          walkable=True,
@@ -2463,3 +2537,333 @@ class AIBot:
                                                                                self.player_team.name,
                                                                                self.opposition_team.name,
                                                                                self.current_state))
+
+
+class AIBot2:
+    HUNTING = "Hunting"
+    TRACKING = "Tracking"
+    ATTACKING = "Attacking"
+    FLEEING = "Fleeing"
+    FINISHED = "Finished"
+    TELEPORTING = "Teleporting"
+
+    def __init__(self, player: Player, floor : Floor):
+
+        self.player = player
+        self.floor = floor
+        self.navigator = Navigator(floor)
+        self.tick_count = 0
+        self.view_range = 6
+        self._path = None
+        self._path_target = None
+        self.current_state = AIBot.HUNTING
+        self._actions = {}
+        self.initialise()
+
+    def reset(self):
+        self.current_state = AIBot.HUNTING
+
+    def set_path(self, path: list, start_pos: int = 0):
+        self._path = list(path)
+        self._path_target = start_pos
+
+    def next_path_target(self):
+        self._path_target += 1
+        if self._path_target >= len(self._path):
+            self._path_target = 0
+
+        return self._path[self._path_target]
+
+    def do_tick(self):
+
+        if self.current_state == AIBot.FINISHED:
+            return
+
+        self.tick_count += 1
+
+        if self.player.AP <= 0:
+            self.current_state = AIBot.FINISHED
+
+        result = self._actions[self.current_state]()
+
+        while result is False:
+            result = self._actions[self.current_state]()
+
+    def is_visible(self, direct: bool = True):
+
+        opponents = []
+        is_visible = False
+        for player in self.floor.players:
+
+            if player.is_dead() is False:
+                result = self.navigator.navigate(start=self.player.xyz,
+                                                 finish=player.xyz,
+                                                 direct=direct,
+                                                 walkable=False,
+                                                 safe=False)
+
+                distance = self.navigator.distance(a=self.player.xyz, b=player.xyz)
+                if result is True and distance < self.view_range:
+                    opponents.append(
+                        (player, distance, len(self.navigator.route)))
+                    is_visible = True
+                else:
+                    print("Target at distance {0:.2f} beyond range {1}".format(distance, self.view_range))
+
+        return is_visible, opponents
+
+    def do_hunting(self):
+
+        print("Hunting")
+
+        action = False
+
+        is_visible, opponents = self.is_visible()
+
+        # If we can see a target then switch to Tracking mode
+        if is_visible is True:
+            print("Target spotted")
+            self.current_state = AIBot.TRACKING
+
+        # Else try to move around
+        else:
+
+            # Try and follow a set path
+            if self._path is not None:
+                action = self.do_path_following()
+
+            # If that failed try to move around randomly
+            if action is False:
+                action = self.do_random_move()
+
+            # Otherwise give-up
+            if self.player.has_moved() is False:
+                self.current_state = AIBot.FINISHED
+
+        return action
+
+    def do_tracking(self):
+
+        action = False
+
+        print("Tracking")
+
+        is_visible, opponents = self.is_visible()
+
+        # If we are tracking but have lost visibility of a target then switch to hunting
+        if is_visible is False:
+            self.current_state = AIBot.HUNTING
+
+        # Else...
+        else:
+            # Look at the closest opponent that we can see
+            opponents.sort(key=itemgetter(1))
+            target, distance, route_length = opponents[0]
+            #self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
+
+            print("Tracking nearest opponent {0} at distance {1}".format(target.character.name, distance))
+
+            if target.layer != self.player.layer:
+                print("No opponents on this level")
+                self.current_state = AIBot.TELEPORTING
+                return False
+
+            # If they are close enough to attack then switch to attacking mode
+            if distance <= self.player.get_attack().get_stat(Attack.RANGE).value:
+                print("In range for attack!")
+                self.current_state = AIBot.ATTACKING
+
+
+            # Else navigate towards the target
+            else:
+                # Try to go via a safe route
+                result = self.navigator.navigate(start=self.player.xyz,
+                                                 finish=target.xyz,
+                                                 direct=False,
+                                                 walkable=True,
+                                                 safe=True)
+                print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
+                # If no safe route go direct!
+                if result is False:
+                    result = self.navigator.navigate(start=self.player.xyz,
+                                                     finish=target.xyz,
+                                                     direct=True,
+                                                     walkable=True,
+                                                     safe=False)
+
+                    print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
+
+                # If there is a route to the target then move towards it
+                if result is True:
+                    x, y, z = self.player.xyz
+                    newx, newy, newz = self.navigator.route[1]
+                    print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+                    self.floor.move_player(self.player, newx - x, newy - y)
+                    action = True
+
+                # Else move randomly
+                else:
+                    action = self.do_random_move()
+
+                    # If we failed to move after several attempts then give up
+                    if self.player.has_moved() is False:
+                        self.current_state = AIBot.FINISHED
+
+        return action
+
+    def do_teleporting(self):
+        print("Teleporting")
+
+        action = False
+
+        x, y, z = self.player.xyz
+
+        teleports = self.floor.get_matching_objects((Objects.TELEPORT, Objects.TELEPORT2), z)
+
+        if len(teleports) == 0:
+            self.current_state = AIBot.HUNTING
+            return
+
+        for teleport in teleports:
+            result = self.navigator.navigate(start=self.player.xyz, finish=teleport.xyz, direct=False, walkable=True,
+                                             safe=False)
+            #print(str(self.navigator.route))
+            if result is True:
+
+                if len(self.navigator.route) == 1:
+                    next_xyz = self.navigator.route[0]
+                else:
+                    next_xyz = self.navigator.route[1]
+
+                newx, newy, newz = next_xyz
+
+                print("Moving from {0} to {1}".format(self.player.xyz, next_xyz))
+                self.floor.move_player(self.player, newx - x, newy - y)
+                if self.player.has_moved() is True:
+                    self.current_state = AIBot.HUNTING
+                    action = True
+                    break
+            else:
+                print("Can't find a route to the teleporter!")
+
+        if self.player.has_moved() is False:
+            self.current_state = AIBot.FINISHED
+
+        return action
+
+    def do_attacking(self):
+        print("Attacking")
+
+        action = False
+
+        is_visible, opponents = self.is_visible()
+
+        # If we have lost visibility of a target then switch to hunting
+        if is_visible is False:
+            self.current_state = AIBot.HUNTING
+
+        # Else
+        else:
+
+            # Look at the nearest opponent
+            opponents.sort(key=itemgetter(1))
+            target, distance, route_length = opponents[0]
+
+            # if they are close enough to attack...
+            if distance <= self.player.get_attack().get_stat(Attack.RANGE).value:
+
+                # .. and we have enough AP...
+                if self.player.AP >= self.player.get_attack().get_stat(Attack.AP).value:
+                    #self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
+                    #self.floor.do_attack()
+                    print("Attacking {0}".format(target.character.name))
+                    action = True
+
+                # Otherwise we have run out of options
+                else:
+                    self.current_state = AIBot.FINISHED
+
+            # Else switch to tracking mode
+            else:
+                self.current_state = AIBot.TRACKING
+
+        return action
+
+    def do_fleeing(self):
+        print("Fleeing")
+        return True
+
+    def do_finish(self):
+        return True
+
+    def do_random_move(self):
+        print("Moving")
+        action = False
+        choices = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        x, y, z = self.player.xyz
+
+        for i in range(0, 10):
+            dx, dy = random.choice(choices)
+            new_x = x + dx
+            new_y = y + dy
+            if self.floor.is_in_bounds(new_x, new_y, z) is True and self.floor.is_dangerous(new_x, new_y, z) is False and \
+                            self.floor.is_occupiable(new_x, new_y, z) is True:
+
+                self.floor.move_player(self.player, dx, dy)
+                if self.player.has_moved() is True:
+                    action = True
+                    break
+            else:
+                choices.remove((dx, dy))
+
+        return action
+
+    def do_path_following(self):
+
+        print("Path Following")
+
+        action = False
+
+        target_position = self._path[self._path_target]
+        if target_position == self.player.xyz:
+            target_position = self.next_path_target()
+
+        result = self.navigator.navigate(start=self.player.xyz,
+                                         finish=target_position,
+                                         direct=False,
+                                         walkable=True,
+                                         safe=True)
+
+        print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
+
+        # If no safe route go unsafe route!
+        if result is False:
+            result = self.navigator.navigate(start=self.player.xyz,
+                                             finish=target_position,
+                                             direct=False,
+                                             walkable=True,
+                                             safe=False)
+
+            print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
+
+        # If there is a route to the target then move towards it
+        if result is True:
+            x, y, z = self.player.xyz
+            newx, newy, newz = self.navigator.route[1]
+            print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+            self.floor.move_player(self.player, newx - x, newy - y)
+            action = True
+
+        return action
+
+    def initialise(self):
+        self._actions[AIBot.HUNTING] = self.do_hunting
+        self._actions[AIBot.TRACKING] = self.do_tracking
+        self._actions[AIBot.TELEPORTING] = self.do_teleporting
+        self._actions[AIBot.ATTACKING] = self.do_attacking
+        self._actions[AIBot.FLEEING] = self.do_fleeing
+        self._actions[AIBot.FINISHED] = self.do_finish
+
+    def print(self):
+        print("AIBot for player {0} : State={1}".format(self.player.character.name, self.current_state))
+        print(str(self.player))
