@@ -139,6 +139,7 @@ class Character(trpg.RPGCharacter):
 
 class Objects:
     EMPTY = "empty"
+    TEST = "Q"
     TREE = "tree"
     PLAYER = "player"
     SKULL = "skull"
@@ -329,7 +330,7 @@ class FloorObject(object):
         return self._rect.x, self._rect.y, self.layer
 
     def __str__(self):
-        return "{0}:{1}".format(self.name, self.is_occupiable())
+        return "{0}:{1}, {2}".format(self.name, self.rect, self.is_occupiable())
 
 
 class Player(FloorObject):
@@ -672,8 +673,7 @@ class Floor:
 
         print("Adding player at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
 
-
-    def add_enemy(self, new_player: Player, auto_position: bool = False, is_bot : bool = True, team: int = 1):
+    def add_enemy(self, new_player: Player, auto_position: bool = False, is_bot: bool = True, team: int = 1):
 
         if auto_position is True:
             min_x, min_y, max_x, max_y = self.start_positions[team]
@@ -695,8 +695,9 @@ class Floor:
         self.monsters.append(new_player)
 
         if is_bot is True:
-            ai = AIBot2(player=new_player, floor = self)
-            ai.set_path(((min_x ,min_y, start_layer),(max_x, min_y, start_layer),(max_x,max_y,start_layer), (min_x, max_y, start_layer)))
+            ai = AIBot2(player=new_player, floor=self)
+            ai.set_path(((min_x, min_y, start_layer), (max_x, min_y, start_layer), (max_x, max_y, start_layer),
+                         (min_x, max_y, start_layer)))
 
             self.bots.append(ai)
 
@@ -749,13 +750,32 @@ class Floor:
 
     def build_floor_plan(self):
 
-        for layer_id in self.layers.keys():
+        for layer_id in sorted(self.layers.keys(), reverse=True):
             if layer_id not in self.floor_plans.keys():
                 new_plan = [[None for x in range(self.rect.height)] for x in range(self.rect.width)]
                 self.floor_plans[layer_id] = new_plan
-            floor_plan = self.floor_plans[layer_id]
+
             for floor_object in self.layers[layer_id]:
-                floor_plan[floor_object.rect.x][floor_object.rect.y] = floor_object
+
+                object_x, object_y, object_z = floor_object.xyz
+
+                if floor_object.name == Objects.TEST:
+                    pass
+
+                width = floor_object.rect.width
+                depth = floor_object.rect.height
+                height = floor_object.height
+
+                for x in range(object_x, object_x + width):
+                    for y in range(object_y, object_y + depth):
+                        for z in range(layer_id, layer_id + height):
+                            new_object = FloorObjectLoader.get_object_copy_by_name(floor_object.name)
+                            try:
+                                self.set_floor_tile(x, y, z, new_object)
+                            except Exception as e:
+                                print("Error:{0}".format(str(new_object)))
+
+
                 if floor_object.name in (Objects.TELEPORT, Objects.TELEPORT2):
                     if floor_object.name not in self.teleports.keys():
                         self.teleports[floor_object.name] = []
@@ -830,9 +850,7 @@ class Floor:
     def set_floor_tile(self, x: int, y: int, layer_id: int, new_object: FloorObject = None):
 
         if new_object is not None:
-            new_object.rect.x = x
-            new_object.rect.y = y
-            new_object.layer = layer_id
+            new_object.set_pos(x, y, layer_id)
 
         layer = self.floor_plans[layer_id]
         layer[x][y] = new_object
@@ -898,7 +916,7 @@ class Floor:
 
         return result
 
-    def is_in_bounds(self, x : int, y : int, z : int):
+    def is_in_bounds(self, x: int, y: int, z: int):
 
         # Is the position out of bounds?
         if x >= self.rect.width or x < 0 or y >= self.rect.height or y < 0 or z < min(self.layers.keys()) or z > max(
@@ -1164,7 +1182,7 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 104
-        new_floor_details = ("The Ancient Gate", 1, (9, 17, 12, 18), 1, (4,4,15,8), 2, 2)
+        new_floor_details = ("The Ancient Gate", 1, (9, 17, 12, 18), 1, (4, 4, 15, 8), 2, 2)
         self.floor_details[new_floor_id] = new_floor_details
 
 
@@ -1795,12 +1813,11 @@ class Game:
 
         self.add_player(new_player, auto_position=True)
 
-        for i in range(0,3):
+        for i in range(0, 4):
             new_char = random.choice(characters)
             new_char_type = new_char.get_attribute("Image") + "_blue"
             new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
-            attack_name = new_char.get_attribute("Attack")
-            new_player.add_attack(self._attacks[attack_name])
+            new_player.add_attack(self._attacks["Basic Attack"])
 
             self.add_enemy(new_player, auto_position=True)
 
@@ -1923,7 +1940,7 @@ class Game:
     def load(self):
         pass
 
-    def add_player(self, new_player: Player, auto_position : bool = False):
+    def add_player(self, new_player: Player, auto_position: bool = False):
 
         if self.state != Game.READY:
             raise Exception("Game is in state {0} so can't add new players!".format(self.state))
@@ -1931,9 +1948,9 @@ class Game:
         logging.info("Adding new player {0} to game {1}...".format(new_player.name, self.name))
 
         self.player = new_player
-        self.current_floor.add_player(new_player, auto_position = auto_position)
+        self.current_floor.add_player(new_player, auto_position=auto_position)
 
-    def add_enemy(self, new_player: Player, auto_position : bool = False):
+    def add_enemy(self, new_player: Player, auto_position: bool = False):
 
         if self.state != Game.READY:
             raise Exception("Game is in state {0} so can't add new players!".format(self.state))
@@ -2474,7 +2491,8 @@ class AIBot:
             dx, dy = random.choice(choices)
             new_x = x + dx
             new_y = y + dy
-            if self.battle.battle_floor.is_in_bounds(new_x, new_y, z) is True and self.battle.battle_floor.is_dangerous(new_x, new_y, z) is False and \
+            if self.battle.battle_floor.is_in_bounds(new_x, new_y, z) is True and self.battle.battle_floor.is_dangerous(
+                    new_x, new_y, z) is False and \
                             self.battle.battle_floor.is_occupiable(new_x, new_y, z) is True:
 
                 self.battle.battle_floor.move_player(self.player, dx, dy)
@@ -2547,7 +2565,7 @@ class AIBot2:
     FINISHED = "Finished"
     TELEPORTING = "Teleporting"
 
-    def __init__(self, player: Player, floor : Floor):
+    def __init__(self, player: Player, floor: Floor):
 
         self.player = player
         self.floor = floor
@@ -2659,7 +2677,7 @@ class AIBot2:
             # Look at the closest opponent that we can see
             opponents.sort(key=itemgetter(1))
             target, distance, route_length = opponents[0]
-            #self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
+            # self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
 
             print("Tracking nearest opponent {0} at distance {1}".format(target.character.name, distance))
 
@@ -2727,7 +2745,7 @@ class AIBot2:
         for teleport in teleports:
             result = self.navigator.navigate(start=self.player.xyz, finish=teleport.xyz, direct=False, walkable=True,
                                              safe=False)
-            #print(str(self.navigator.route))
+            # print(str(self.navigator.route))
             if result is True:
 
                 if len(self.navigator.route) == 1:
@@ -2774,8 +2792,8 @@ class AIBot2:
 
                 # .. and we have enough AP...
                 if self.player.AP >= self.player.get_attack().get_stat(Attack.AP).value:
-                    #self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
-                    #self.floor.do_attack()
+                    # self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
+                    # self.floor.do_attack()
                     print("Attacking {0}".format(target.character.name))
                     action = True
 
@@ -2806,7 +2824,8 @@ class AIBot2:
             dx, dy = random.choice(choices)
             new_x = x + dx
             new_y = y + dy
-            if self.floor.is_in_bounds(new_x, new_y, z) is True and self.floor.is_dangerous(new_x, new_y, z) is False and \
+            if self.floor.is_in_bounds(new_x, new_y, z) is True and self.floor.is_dangerous(new_x, new_y,
+                                                                                            z) is False and \
                             self.floor.is_occupiable(new_x, new_y, z) is True:
 
                 self.floor.move_player(self.player, dx, dy)

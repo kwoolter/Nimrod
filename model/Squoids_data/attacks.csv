@@ -13,3 +13,4 @@ Chill,Chill,Magic,Dexterity,Reflex,1,4,0,4,2,frozen,Magic
 Hot Water,Hot Water,Magic,Intelligence,Reflex,1,4,0,4,2,burned,Magic
 Ice Bow,Bow Attack,Ranged,Dexterity,AC,1,4,0,6,2,frozen,Bow
 Axe,Axe,Melee,Strength,AC,1,4,1,1,2,hit,Axe
+Basic Attack,Basic attack,Melee,Strength,AC,1,2,0,1,2,hit,Dagger
