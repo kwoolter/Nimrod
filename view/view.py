@@ -65,6 +65,7 @@ class ImageManager:
         new_skin_name = ImageManager.DEFAULT_SKIN
         new_skin = (new_skin_name, {
 
+            model.Objects.EMPTY:None,
             model.Objects.NORTH: None,
             model.Objects.SOUTH: None,
             model.Objects.EAST: None,
@@ -72,10 +73,14 @@ class ImageManager:
             model.Objects.TEST: (
                 "bubbles0.png", "bubbles1.png", "bubbles2.png", "bubbles3.png", "bubbles4.png", "bubbles5.png","bubbles6.png", "bubbles7.png"),
 
-            model.Objects.DOORH:"doorH.png",
-            model.Objects.DOORV: "doorV.png",
+            model.Objects.DOORH:"doorh2.png",
+            model.Objects.DOORV: "doorv2.png",
+            model.Objects.BASE_FLAG_STONES: "flags2.png",
+            model.Objects.BLOCK_SECRET: "Block_blue.png",
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.SKULL: "Skull.png",
+            model.Objects.SWITCH: "base_red.png",
+            model.Objects.SWITCH_LIT: "base_green.png",
             model.Objects.HEART: "heart.png",
             model.Objects.BASE: "Base_yellow.png",
             model.Objects.BASE_YELLOW: "Base_yellow.png",

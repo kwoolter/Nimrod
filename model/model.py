@@ -155,6 +155,8 @@ class Objects:
     BASE_YELLOW = "base_yellow"
     BASE_GREEN = "base_green"
     BASE_SHADOW = "base_shadow"
+    BASE_FLAG_STONES = "flag_stones"
+    BLOCK_SECRET = "secret"
     BLOCK = "block"
     BLOCK1 = "block1"
     BLOCK2 = "block2"
@@ -197,6 +199,9 @@ class Objects:
     SKELETON_LEFT = "skeleton_blue"
     SKELETON_RIGHT = "skeleton_red"
     KEY = "key1"
+    SWITCH = "switch"
+    SWITCH_LIT = "switch_lit"
+    SWITCH_TILE = "switch_tile"
     DOORH = "doorh"
     DOORV = "doorv"
     CHEST = "chest"
@@ -229,6 +234,8 @@ class Objects:
 
     DIRECTIONS = (NORTH, SOUTH, EAST, WEST)
     SQUOIDS = (SQUOID, SQUOID_BLUE, SQUOID_GREEN, SQUOID_RED, CRAB_GREEN, CRAB_RED, SKELETON_LEFT, SKELETON_RIGHT)
+
+    SWAP_TILES = {BLOCK_SECRET: EMPTY, SWITCH: SWITCH_LIT, SWITCH_LIT: SWITCH}
 
 
 class FloorObject(object):
@@ -618,6 +625,8 @@ class Floor:
         self.start_layer = 1
         self.potions = 0
         self.chests = 0
+        self.switch_on = False
+        self.switch_tiles = None
 
     def __str__(self):
         return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}, potions={4}, chests={5}".format(self.name,
@@ -794,26 +803,29 @@ class Floor:
 
         self.details = floor_details
         self.name, self.start_layers[0], self.start_positions[0], self.start_layers[1], self.start_positions[
-            1], self.potions, self.chests = floor_details
+            1], self.potions, self.chests, self.switch_tiles = floor_details
 
         self.add_items(Objects.POTION, self.potions)
         self.add_items(Objects.CHEST, self.chests)
         self.build_floor_plan()
 
-    def remove_object(self, object: FloorObject):
-        objects = self.layers[object.layer]
-        objects.remove(object)
 
     def swap_object(self, object: FloorObject, new_object_type: str):
 
-        objects = self.layers[object.layer]
-
-        x, y, z = object.get_pos()
-
+        x,y,z = object.xyz
         swap_object = FloorObjectLoader.get_object_copy_by_name(new_object_type)
-        swap_object.set_pos(x, y, z)
-        objects.remove(object)
-        objects.append(swap_object)
+
+        self.set_floor_tile(x,y,z,swap_object)
+
+
+    def switch(self, setting=None):
+
+        if setting is None:
+            self.switch_on = not self.switch_on
+        else:
+            self.switch_on = setting
+
+        return self.switch_on
 
     def add_monster(self, new_object: Monster):
 
@@ -832,6 +844,18 @@ class Floor:
 
         layer = self.floor_plans[layer_id]
         floor_object = layer[x][y]
+
+        if floor_object is not None and floor_object.name == Objects.SWITCH_TILE and self.switch_tiles is not None:
+            if self.switch_on is True:
+                tile = self.switch_tiles[1]
+            else:
+                tile = self.switch_tiles[0]
+
+            x, y, z = floor_object.xyz
+            floor_object = FloorObjectLoader.get_object_copy_by_name(tile)
+            floor_object.set_pos(x,y,z)
+
+
         if is_raw is False:
 
             for player in self.players:
@@ -964,8 +988,25 @@ class Floor:
                         Floor.EVENTS.add_event(
                             Event(type=Event.FLOOR, name=Event.TREASURE, description="You find a {0}".format(reward)))
 
+                    elif tile.name == Objects.BLOCK_SECRET:
 
-                    if tile.name in (Objects.DOORH, Objects.DOORV):
+                        self.set_floor_tile(new_x, new_y, z, None)
+                        Floor.EVENTS.add_event(
+                            Event(type=Event.FLOOR, name=Event.SECRET, description="You find a secret way"))
+
+
+                    elif tile.name in (Objects.SWITCH, Objects.SWITCH_LIT):
+
+                        new_state = self.switch()
+                        if new_state == True:
+                            self.swap_object(tile, Objects.SWITCH_LIT)
+                        else:
+                            self.swap_object(tile, Objects.SWITCH)
+
+                        Floor.EVENTS.add_event(
+                            Event(type=Event.FLOOR, name=Event.SWITCH, description="You operated a switch"))
+
+                    elif tile.name in (Objects.DOORH, Objects.DOORV):
                         if selected_player.keys > 0:
                             self.set_floor_tile(new_x, new_y, z, None)
                             selected_player.keys -= 1
@@ -1119,6 +1160,7 @@ class FloorBuilder():
         self.floors = {}
         self.floor_details = {}
 
+
     def initialise(self, file_prefix: str = "default"):
 
         self.load_floor_details()
@@ -1154,51 +1196,51 @@ class FloorBuilder():
         # - chests
 
         new_floor_id = 0
-        new_floor_details = ("The Trial", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 4, 4)
+        new_floor_details = ("The Trial", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 4, 4, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 1
-        new_floor_details = ("The Maze", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 1, 1)
+        new_floor_details = ("The Maze", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 1, 1, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 2
-        new_floor_details = ("The Bridge", 3, (5, 2, 12, 3), 3, (5, 16, 14, 18), 4, 4)
+        new_floor_details = ("The Bridge", 3, (5, 2, 12, 3), 3, (5, 16, 14, 18), 4, 4, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 3
-        new_floor_details = ("The Whale Grave Yard", 1, (2, 0, 16, 2), 1, (3, 17, 16, 19), 2, 2)
+        new_floor_details = ("The Whale Grave Yard", 1, (2, 0, 16, 2), 1, (3, 17, 16, 19), 2, 2, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 4
-        new_floor_details = ("Sunken Wreck", 2, (1, 1, 10, 3), 2, (1, 13, 8, 15), 2, 2)
+        new_floor_details = ("Sunken Wreck", 2, (1, 1, 10, 3), 2, (1, 13, 8, 15), 2, 2, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 5
-        new_floor_details = ("Citadel", 6, (0, 0, 6, 6), 2, (11, 11, 16, 16), 2, 2)
+        new_floor_details = ("Citadel", 6, (0, 0, 6, 6), 2, (11, 11, 16, 16), 2, 2, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 100
-        new_floor_details = ("The Start", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 5, 5)
+        new_floor_details = ("The Start", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 5, 5, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 101
-        new_floor_details = ("The Square", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 5, 5)
+        new_floor_details = ("The Square", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 5, 5, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 102
-        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 3, 3)
+        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 3, 3, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 103
-        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 2, 2)
+        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 2, 2, (Objects.BLOCK, Objects.EMPTY))
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 104
-        new_floor_details = ("The Ancient Gate", 1, (9, 17, 12, 18), 1, (4, 4, 15, 8), 2, 2)
+        new_floor_details = ("The Ancient Gate", 1, (9, 17, 12, 18), 1, (4, 4, 15, 8), 2, 2, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 105
-        new_floor_details = ("The Lava Crossing", 1, (16,2,19,12), 1, (1,2,4,12), 2, 2)
+        new_floor_details = ("The Lava Crossing", 1, (16,2,19,12), 1, (1,2,4,12), 2, 2, None)
         self.floor_details[new_floor_id] = new_floor_details
 
 
@@ -2042,9 +2084,11 @@ class Event():
     COLLIDE = "collide"
     INTERACT = "interact"
     BLOCKED = "blocked"
+    SECRET = "secret"
     TREASURE = "treasure"
     DOOR_OPEN = "door opened"
     DOOR_LOCKED = "door locked"
+    SWITCH = "switch"
     KEY = "key"
     TELEPORT = "teleport"
     GAIN_HEALTH = "gain health"
