@@ -1800,13 +1800,13 @@ class Game:
         GREEN = (34, 177, 76)
         BLUE = (63, 72, 204)
 
-        team1 = Team("Blue", BLUE, type=Team.PLAYER)
-        team2 = Team("Red", RED, type=Team.PLAYER)
+
 
         team1 = Team("Blue", BLUE, type=Team.COMPUTER)
         team2 = Team("Red", RED, type=Team.COMPUTER)
 
-
+        team1 = Team("Blue", BLUE, type=Team.PLAYER)
+        team2 = Team("Red", RED, type=Team.PLAYER)
 
         characters = list(self._npcs.get_characters())
 
