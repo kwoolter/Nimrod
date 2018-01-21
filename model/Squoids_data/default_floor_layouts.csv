@@ -786,11 +786,11 @@ ID,Name,Skin,Layer,Layout
 103,Floor103,default,0,--------------------
 103,Floor103,default,0,--------------------
 103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
+103,Floor103,default,0,~~~-----------------
+103,Floor103,default,0,~~~-----------------
+103,Floor103,default,0,~~~-----------------
+103,Floor103,default,0,~~~-----------------
+103,Floor103,default,0,~~~-----------------
 103,Floor103,default,0,--------------------
 103,Floor103,default,0,--------------------
 103,Floor103,default,0,--------------------
@@ -801,7 +801,7 @@ ID,Name,Skin,Layer,Layout
 103,Floor103,default,0,--------------------
 103,Floor103,default,1,*######NNNNN########
 103,Floor103,default,1,*     #     #      #
-103,Floor103,default,1,*     #     _       
+103,Floor103,default,1,*     #     _  F    
 103,Floor103,default,1,*     #     #       
 103,Floor103,default,1,*     ##*D*##       
 103,Floor103,default,1,*                   

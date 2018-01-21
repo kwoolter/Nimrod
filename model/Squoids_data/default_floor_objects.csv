@@ -3,7 +3,7 @@ Code,Name,width,depth,height,solid,visible,interactable,occupiable
 _,secret,1,1,1,TRUE,TRUE,TRUE,TRUE
 =,switch_tile,1,1,1,TRUE,TRUE,TRUE,TRUE
 -,flag_stones,1,1,1,TRUE,TRUE,FALSE,TRUE
-F,flag,1,1,1,TRUE,TRUE,TRUE,TRUE
+F,red_flag,1,1,1,TRUE,TRUE,TRUE,TRUE
 @,block1,1,1,1,TRUE,TRUE,FALSE,TRUE
 $,block2,1,1,1,TRUE,TRUE,FALSE,TRUE
 %,block3,1,1,1,TRUE,TRUE,FALSE,TRUE

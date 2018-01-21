@@ -75,6 +75,7 @@ class ImageManager:
 
             model.Objects.DOORH:"doorh2.png",
             model.Objects.DOORV: "doorv2.png",
+            model.Objects.RED_FLAG: ("red_flag0.png","red_flag1.png","red_flag2.png","red_flag1.png"),
             model.Objects.BASE_FLAG_STONES: "flags3.png",
             model.Objects.BLOCK_SECRET: "Block_blue.png",
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
@@ -322,6 +323,10 @@ class ImageManager:
         sheet_file_name = "Sphere_sheet_red2.png"
         for i in range(0, 4):
             self.sprite_sheets["SphereRed{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "red_flag_sheet.png"
+        for i in range(0, 3):
+            self.sprite_sheets["red_flag{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "bubbles_new.png"
         for i in range(0, 8):

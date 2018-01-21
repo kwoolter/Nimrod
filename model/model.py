@@ -141,6 +141,7 @@ class Objects:
     EMPTY = "empty"
     TEST = "Q"
     TREE = "tree"
+    RED_FLAG = "red_flag"
     PLAYER = "player"
     SKULL = "skull"
     NORTH = "North"
@@ -977,6 +978,7 @@ class Floor:
 
                 # If you can interact with it...
                 if tile.is_interactable is True:
+
                     Floor.EVENTS.add_event(
                         Event(type=Event.FLOOR, name=Event.INTERACT,
                               description="You interact with a {0}".format(tile.name)))
@@ -1017,10 +1019,12 @@ class Floor:
                             Floor.EVENTS.add_event(
                                 Event(type=Event.FLOOR, name=Event.DOOR_LOCKED, description="The door is locked"))
 
+                    elif tile.name == Objects.RED_FLAG:
+                        Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.FOUND_FLAG, description="You found a battle flag"))
 
-                else:
-                    Floor.EVENTS.add_event(
-                        Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
+                    else:
+                        Floor.EVENTS.add_event( \
+                            Event(type=Event.FLOOR, name=Event.COLLIDE, description="You hit a {0}".format(tile.name)))
 
 
             # Else move the player and see what happens next...
@@ -1780,6 +1784,12 @@ class Game:
         print(self)
         self.events.print()
 
+    def process_event(self, new_event):
+        print("Default Game event process:{0}".format(new_event))
+        if new_event.name == Event.FOUND_FLAG:
+            print("Battle Mode!!!!")
+            self.start_battle()
+
     def start_battle(self):
         self.state = Game.BATTLE
         self._battle_floor_id = random.choice((0, 2, 3, 4, 5, 100, 101, 102))
@@ -2089,6 +2099,7 @@ class Event():
     DOOR_OPEN = "door opened"
     DOOR_LOCKED = "door locked"
     SWITCH = "switch"
+    FOUND_FLAG = "found_flag"
     KEY = "key"
     TELEPORT = "teleport"
     GAIN_HEALTH = "gain health"
