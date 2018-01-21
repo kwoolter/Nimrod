@@ -72,6 +72,8 @@ class ImageManager:
             model.Objects.TEST: (
                 "bubbles0.png", "bubbles1.png", "bubbles2.png", "bubbles3.png", "bubbles4.png", "bubbles5.png","bubbles6.png", "bubbles7.png"),
 
+            model.Objects.DOORH:"doorH.png",
+            model.Objects.DOORV: "doorV.png",
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.SKULL: "Skull.png",
             model.Objects.HEART: "heart.png",

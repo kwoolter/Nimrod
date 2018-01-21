@@ -197,6 +197,8 @@ class Objects:
     SKELETON_LEFT = "skeleton_blue"
     SKELETON_RIGHT = "skeleton_red"
     KEY = "key1"
+    DOORH = "doorh"
+    DOORV = "doorv"
     CHEST = "chest"
     LAVA = "lava"
     ICE = "ice"
@@ -961,6 +963,19 @@ class Floor:
                         self.set_floor_tile(new_x, new_y, z, reward_object)
                         Floor.EVENTS.add_event(
                             Event(type=Event.FLOOR, name=Event.TREASURE, description="You find a {0}".format(reward)))
+
+
+                    if tile.name in (Objects.DOORH, Objects.DOORV):
+                        if selected_player.keys > 0:
+                            self.set_floor_tile(new_x, new_y, z, None)
+                            selected_player.keys -= 1
+                            Floor.EVENTS.add_event(
+                                Event(type=Event.FLOOR, name=Event.DOOR_OPEN, description="You opened a door"))
+
+                        else:
+                            Floor.EVENTS.add_event(
+                                Event(type=Event.FLOOR, name=Event.DOOR_LOCKED, description="The door is locked"))
+
 
                 else:
                     Floor.EVENTS.add_event(
@@ -1787,7 +1802,7 @@ class Game:
     def initialise(self):
 
         self.state = Game.READY
-        self.current_floor_id = 105
+        self.current_floor_id = 100
 
         self.load_characters("characters.csv")
         self.load_map("locations.csv", "maplinks.csv")
@@ -2028,6 +2043,8 @@ class Event():
     INTERACT = "interact"
     BLOCKED = "blocked"
     TREASURE = "treasure"
+    DOOR_OPEN = "door opened"
+    DOOR_LOCKED = "door locked"
     KEY = "key"
     TELEPORT = "teleport"
     GAIN_HEALTH = "gain health"

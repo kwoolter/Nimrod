@@ -799,26 +799,26 @@ ID,Name,Skin,Layer,Layout
 103,Floor103,default,0, ~~~~~~~~~~~~~~~~~~ 
 103,Floor103,default,0,~~~~~~~~~~~~~~~~~~~~
 103,Floor103,default,0,~~    ~~~~~~~~    ~~
-103,Floor103,default,1,**     *NNNN*     **
+103,Floor103,default,1,**    ##NNNN##    **
+103,Floor103,default,1,*      #    #      *
+103,Floor103,default,1,       #    #       
+103,Floor103,default,1,       #    #       
+103,Floor103,default,1,       ##D###       
+103,Floor103,default,1,                    
+103,Floor103,default,1,                    
+103,Floor103,default,1,****           *****
+103,Floor103,default,1,W  *           *   E
+103,Floor103,default,1,W  d           d   E
+103,Floor103,default,1,W  *           *   E
+103,Floor103,default,1,Wk *      k    *   E
+103,Floor103,default,1,****           *****
+103,Floor103,default,1,                    
+103,Floor103,default,1,                    
+103,Floor103,default,1,       ***D**       
+103,Floor103,default,1,       *    *       
+103,Floor103,default,1,       *    *       
 103,Floor103,default,1,*      *    *      *
-103,Floor103,default,1,                    
-103,Floor103,default,1,                    
-103,Floor103,default,1,                    
-103,Floor103,default,1,                    
-103,Floor103,default,1,                    
-103,Floor103,default,1,**                **
-103,Floor103,default,1,W                  E
-103,Floor103,default,1,W                  E
-103,Floor103,default,1,W                  E
-103,Floor103,default,1,W                  E
-103,Floor103,default,1,**                **
-103,Floor103,default,1,                    
-103,Floor103,default,1,                    
-103,Floor103,default,1,                    
-103,Floor103,default,1,                    
-103,Floor103,default,1,                    
-103,Floor103,default,1,*      *    *      *
-103,Floor103,default,1,**     *SSSS*     *^
+103,Floor103,default,1,**     *SSSS*     **
 104,Floor104,default,0,~~~~~~~~~~~~~~~~~~~~
 104,Floor104,default,0,~~~~~~~~~~~~~~~~~~~~
 104,Floor104,default,0,~~~~~~~~~~~~~~~~~~~~
