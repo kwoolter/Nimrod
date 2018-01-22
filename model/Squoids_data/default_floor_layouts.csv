@@ -806,32 +806,32 @@ ID,Name,Skin,Layer,Layout
 103,Floor103,default,1,*     ##*D*##       
 103,Floor103,default,1,*                   
 103,Floor103,default,1,****           *****
-103,Floor103,default,1,W  *           *   E
+103,Floor103,default,1,W  *    ! !    *   E
 103,Floor103,default,1,Wk H           +   E
-103,Floor103,default,1,W  d     0     d   E
+103,Floor103,default,1,W  d  !  0  !  d   E
 103,Floor103,default,1,W  H           +   E
-103,Floor103,default,1,W  *      k    *   E
+103,Floor103,default,1,W  *    ! !    *   E
 103,Floor103,default,1,****           **=**
 103,Floor103,default,1,*                   
 103,Floor103,default,1,*                   
-103,Floor103,default,1,*     ***D***       
+103,Floor103,default,1,*     H**D**H       
 103,Floor103,default,1,*     *     *       
 103,Floor103,default,1,*     *     =       
 103,Floor103,default,1,*     *     *      *
-103,Floor103,default,1,*\    *SSSSS*     **
+103,Floor103,default,1,*\    *SSSSS*     *H
 103,Floor103,default,2,*######     ########
 103,Floor103,default,2,*     X     X      /
 103,Floor103,default,2,*                   
 103,Floor103,default,2,*                   
-103,Floor103,default,2,*       p p         
+103,Floor103,default,2,*     P p p P       
 103,Floor103,default,2,*                   
-103,Floor103,default,2,*w                 *
-103,Floor103,default,2,                    
+103,Floor103,default,2,*w                 P
+103,Floor103,default,2,   w                
 103,Floor103,default,2,   p           p    
 103,Floor103,default,2,                    
 103,Floor103,default,2,   p           p    
-103,Floor103,default,2,                    
-103,Floor103,default,2,*w                 *
+103,Floor103,default,2,   w                
+103,Floor103,default,2,*w                 P
 103,Floor103,default,2,*                   
 103,Floor103,default,2,*                   
 103,Floor103,default,2,*       p p         

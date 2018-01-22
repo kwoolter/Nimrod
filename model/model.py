@@ -1494,6 +1494,7 @@ class Battle:
         elif self.teams[1].is_player_in_team(selected_player):
             return self.teams[1]
         else:
+            print("Player {0} is not in a team!".format(selected_player.character.name))
             return None
 
     def do_attack(self):
@@ -1811,21 +1812,23 @@ class Game:
         characters = list(self._npcs.get_characters())
 
         for i in range(0, 5):
-            new_char = random.choice(characters)
+            char = random.choice(characters)
+            new_char = copy.deepcopy(char)
             new_char_type = new_char.get_attribute("Image") + "_blue"
             new_player = Player(name=new_char_type, rect=(i * 2 + 8, 2, 32, 32), layer=3, character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])
-            characters.remove(new_char)
             team1.add_player(new_player)
+            characters.remove(char)
 
-            new_char = random.choice(characters)
+            char = random.choice(characters)
+            new_char = copy.deepcopy(char)
             new_char_type = new_char.get_attribute("Image") + "_red"
             new_player = Player(name=new_char_type, rect=(i * 2 + 8, 17, 32, 32), layer=3, character=new_char)
             attack_name = new_char.get_attribute("Attack")
             new_player.add_attack(self._attacks[attack_name])
-            characters.remove(new_char)
             team2.add_player(new_player)
+            characters.remove(char)
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
 
@@ -1873,25 +1876,24 @@ class Game:
         self.hst.load()
 
         characters = list(self._npcs.get_characters())
-        new_char = random.choice(characters)
+        char = random.choice(characters)
+        new_char = copy.deepcopy(char)
         new_char_type = new_char.get_attribute("Image") + "_red"
         new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
         attack_name = new_char.get_attribute("Attack")
         new_player.add_attack(self._attacks[attack_name])
-
-        characters.remove(new_char)
+        characters.remove(char)
 
         self.add_player(new_player, auto_position=True)
 
         for i in range(0, 4):
-            new_char = random.choice(characters)
+            char = random.choice(characters)
+            new_char = copy.deepcopy(char)
             new_char_type = new_char.get_attribute("Image") + "_blue"
             new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
             new_player.add_attack(self._attacks["Basic Attack"])
-
             self.add_enemy(new_player, auto_position=True)
-
-            characters.remove(new_char)
+            characters.remove(char)
 
         self.current_map = self._maps.get_map(1)
         self.current_map.print()
@@ -2184,6 +2186,7 @@ class Navigator:
 
             if level > 0:
 
+                # If we tried to go out of bounds then don't usae this route
                 if self.floor.is_in_bounds(startx, starty, startz ) is False:
                     return False
 
@@ -2230,7 +2233,7 @@ class Navigator:
                     option = (startx - 1, starty, startz)
                     options.append((option, self.distance(option, finish)))
 
-            # If you are not hurry and bang on track also look at other options
+            # If you are not in a hurry and bang on track also look at other options
             elif dx == 0 and direct is False:
                 # print("Adding extra X options")
                 option = (startx - 1, starty, startz)
@@ -2672,7 +2675,7 @@ class AIBot2:
 
     def do_tick(self):
 
-        if self.current_state == AIBot.FINISHED:
+        if self.current_state == AIBot.FINISHED or self.player.is_dead() is True:
             return
 
         self.tick_count += 1
@@ -2755,7 +2758,6 @@ class AIBot2:
             # Look at the closest opponent that we can see
             opponents.sort(key=itemgetter(1))
             target, distance, route_length = opponents[0]
-            # self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
 
             #print("Tracking nearest opponent {0} at distance {1}".format(target.character.name, distance))
 
@@ -2872,7 +2874,8 @@ class AIBot2:
                 # .. and we have enough AP...
                 if self.player.AP >= self.player.get_attack().get_stat(Attack.AP).value:
                     # self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
-                    # self.floor.do_attack()
+                    target.do_damage(1)
+                    self.player.do_damage(999)
                     print("Attacking {0}".format(target.character.name))
                     action = True
 

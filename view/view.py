@@ -76,7 +76,7 @@ class ImageManager:
             model.Objects.DOORH:"doorh2.png",
             model.Objects.DOORV: "doorv2.png",
             model.Objects.RED_FLAG: ("red_flag0.png","red_flag1.png","red_flag2.png","red_flag1.png"),
-            model.Objects.BASE_FLAG_STONES: "flags3.png",
+            model.Objects.BASE_FLAG_STONES: "flags4.png",
             model.Objects.BLOCK_SECRET: "Block_blue.png",
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
             model.Objects.SKULL: "Skull.png",
@@ -458,12 +458,9 @@ class MainFrame(View):
 
         self.surface.fill(Colours.DARK_GREY)
 
-        self.title_bar.draw()
-        self.status_bar.draw()
-
         pane_rect = self.surface.get_rect()
 
-        self.title_bar.draw()
+        #self.title_bar.draw()
         self.status_bar.draw()
 
         x = 0
@@ -560,6 +557,10 @@ class TitleBar(View):
 
         self.surface.fill(TitleBar.FILL_COLOUR)
 
+        if self.game is None:
+            print("TitleBae.draw() - No game to View")
+            return
+
         if self.title_image is not None:
             self.surface.blit(self.title_image, (0, 0))
 
@@ -585,9 +586,9 @@ class StatusBar(View):
     BG_COLOUR = Colours.BLACK
     ICON_WIDTH = 40
     PADDING = 40
-    STATUS_TEXT_FONT_SIZE = 18
-    MESSAGE_TICK_DURATION = 6
-    MESSAGE_TICK_LIFE = 16
+    STATUS_TEXT_FONT_SIZE = 24
+    MESSAGE_TICK_DURATION = 1
+    MESSAGE_TICK_LIFE = 10
 
     def __init__(self, width: int, height: int):
 
@@ -614,19 +615,18 @@ class StatusBar(View):
 
         super(StatusBar, self).tick()
 
-        if len(self.status_messages) > 0:
-
-            msg, count = self.status_messages[self.current_message_number]
-            if count > 1:
-                self.status_messages[self.current_message_number] = (msg, count - 1)
-            else:
-                del self.status_messages[self.current_message_number]
-
         if self.tick_count % StatusBar.MESSAGE_TICK_DURATION == 0:
 
             self.current_message_number += 1
             if self.current_message_number >= len(self.status_messages):
                 self.current_message_number = 0
+
+            if len(self.status_messages) > 0:
+                msg, count = self.status_messages[self.current_message_number]
+                if count > 1:
+                    self.status_messages[self.current_message_number] = (msg, count - 1)
+                else:
+                    del self.status_messages[self.current_message_number]
 
     def draw(self):
 
@@ -946,8 +946,14 @@ class GameView(View):
 
                             self.player_view.initialise(view_object)
                             image = self.player_view.draw_player(GameView.TILE_WIDTH, GameView.TILE_HEIGHT)
-                            y_offset = 5 * (
-                            1 + math.cos((self.tick_count * math.pi / 8) + (view_object.rect.x * math.pi / 7)))
+
+                            if view_object.is_dead() is False:
+
+                                y_offset = 5 * (
+                                1 + math.cos((self.tick_count * math.pi / 8) + (view_object.rect.x * math.pi / 7)))
+
+                            else:
+                                y_offset = 0
 
                         else:
 
@@ -961,13 +967,11 @@ class GameView(View):
 
                         if image is not None:
 
-
                             if layer_id > 1:
                                 d = self.floor.distance_to_camera(view_object.xyz)
                                 image.set_alpha(100 + (d * 7))
                             else:
                                 image.set_alpha(255)
-
 
                             surface.blit(image, (image_x, image_y - y_offset))
 
@@ -1137,7 +1141,10 @@ class BattleView(View):
                                 else:
                                     team = self.game.battle.get_player_team(view_object)
                                     fg_colour = Colours.WHITE
-                                    bg_colour = team.colour
+                                    if team is not None:
+                                        bg_colour = team.colour
+                                    else:
+                                        bg_colour = Colours.GOLD
 
                                 draw_text(self.surface,
                                           view_object.character.name,
@@ -1166,7 +1173,7 @@ class BattleView(View):
                                     image.set_alpha(255)
 
                                 # Trying different transparency based on distance to view camera
-                                if layer_id > current_player.layer - 1:
+                                if layer_id > current_player.layer:
                                     d = self.game.battle.battle_floor.distance_to_camera(view_object.xyz)
                                     image.set_alpha(115 + (d * 7))
 
