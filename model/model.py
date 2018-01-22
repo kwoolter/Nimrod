@@ -1232,11 +1232,11 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 102
-        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 3, 3, None)
+        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 14, 14, 18), 3, 3, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 103
-        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 2, 2, (Objects.BLOCK, Objects.EMPTY))
+        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 13, 16, 17), 2, 2, (Objects.BLOCK, Objects.EMPTY))
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 104
@@ -2183,6 +2183,9 @@ class Navigator:
             startx, starty, startz = start
 
             if level > 0:
+
+                if self.floor.is_in_bounds(startx, starty, startz ) is False:
+                    return False
 
                 tile = self.floor.get_floor_tile(startx, starty, startz)
 

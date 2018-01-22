@@ -78,10 +78,12 @@ class Controller:
 
                 # Timer events
                 if event.type == USEREVENT + 1:
+                    self.game.tick()
+                    self.view.tick()
                     try:
+                        pass
 
-                        self.game.tick()
-                        self.view.tick()
+
 
                     except Exception as err:
                         print(str(err))
