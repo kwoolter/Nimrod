@@ -230,6 +230,41 @@ class ImageManager:
             model.Objects.BLOCK_LEFT: "BlockLeft_red.png",
             model.Objects.BLOCK_ARCH_NE: "BlockArchNE_red.png",
             model.Objects.BLOCK_ARCH_SW: "BlockArchSW_red.png",
+            model.Objects.BLOCK_LEFT_SLOPE: "BlockSlopeSW_red.png",
+            model.Objects.BLOCK_RIGHT_SLOPE: "BlockSlopeSE_red.png",
+            model.Objects.BLOCK_LEFT_BACK_SLOPE: "BlockSlopeNW_red.png",
+            model.Objects.BLOCK_RIGHT_BACK_SLOPE: "BlockSlopeNE_red.png",
+
+        })
+
+        ImageManager.skins[new_skin_name] = new_skin
+        
+        new_skin_name = "master3D"
+        new_skin = (new_skin_name, {
+
+            model.Objects.BLOCK: "Block_master3D.png",
+            model.Objects.BLOCK_SECRET: "Block_master3D.png",
+            model.Objects.BLOCK1: "Block_blue.png",
+            model.Objects.BLOCK2: "Block_master3D.png",
+            model.Objects.BLOCK3: "Block_master.png",
+            model.Objects.BRICK: "Brick_master3D.png",
+            model.Objects.BLOCK_ORNATE: "BlockOrnate_master3D.png",
+            model.Objects.PYRAMID1: "Pyramid4_master3D.png",
+            model.Objects.PYRAMID2: "Pyramid2_master3D.png",
+            model.Objects.CYLINDER: "Cylinder_master3D.png",
+            model.Objects.SPHERE: "Sphere_master3D.png",
+            model.Objects.BLOCK_HEXAGON: "Hexagon_master3D.png",
+            model.Objects.BLOCK_TOP: "BlockFront_master3D.png",
+            model.Objects.BLOCK_BOTTOM: "BlockBack_master3D.png",
+            model.Objects.BLOCK_RIGHT: "BlockRight_master3D.png",
+            model.Objects.BLOCK_LEFT: "BlockLeft_master3D.png",
+            model.Objects.BLOCK_ARCH_NE: "BlockArchNE_master3D.png",
+            model.Objects.BLOCK_ARCH_SW: "BlockArchSW_master3D.png",
+            model.Objects.BLOCK_LEFT_SLOPE: "BlockSlopeSW_master3D.png",
+            model.Objects.BLOCK_RIGHT_SLOPE: "BlockSlopeSE_master3D.png",
+            model.Objects.BLOCK_LEFT_BACK_SLOPE: "BlockSlopeNW_master3D.png",
+            model.Objects.BLOCK_RIGHT_BACK_SLOPE: "BlockSlopeNE_master3D.png",
+            
 
         })
 

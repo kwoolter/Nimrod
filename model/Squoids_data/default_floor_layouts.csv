@@ -779,66 +779,66 @@ ID,Name,Skin,Layer,Layout
 102,Floor102,green,1,                    
 102,Floor102,green,1,#      #    #      #
 102,Floor102,green,1,##     #SSSS#     #^
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,~~~-----------------
-103,Floor103,default,0,~~~-----------------
-103,Floor103,default,0,~~~-----------------
-103,Floor103,default,0,~~~-----------------
-103,Floor103,default,0,~~~-----------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,0,--------------------
-103,Floor103,default,1,*######NNNNN########
-103,Floor103,default,1,*     #     #      #
-103,Floor103,default,1,*     #     _  F    
-103,Floor103,default,1,*     #     #       
-103,Floor103,default,1,*     ##*D*##       
-103,Floor103,default,1,*                   
-103,Floor103,default,1,****           *****
-103,Floor103,default,1,W  *    ! !    *   E
-103,Floor103,default,1,Wk H           +   E
-103,Floor103,default,1,W  d  !  0  !  d   E
-103,Floor103,default,1,W  H           +   E
-103,Floor103,default,1,W  *    ! !    *   E
-103,Floor103,default,1,****           **=**
-103,Floor103,default,1,*                   
-103,Floor103,default,1,*                   
-103,Floor103,default,1,*     H**D**H       
-103,Floor103,default,1,*     *     *       
-103,Floor103,default,1,*     *     =       
-103,Floor103,default,1,*     *     *      *
-103,Floor103,default,1,*\    *SSSSS*     *H
-103,Floor103,default,2,*######     ########
-103,Floor103,default,2,*     X     X      /
-103,Floor103,default,2,*                   
-103,Floor103,default,2,*                   
-103,Floor103,default,2,*     P p p P       
-103,Floor103,default,2,*                   
-103,Floor103,default,2,*w                 P
-103,Floor103,default,2,   w                
-103,Floor103,default,2,   p           p    
-103,Floor103,default,2,                    
-103,Floor103,default,2,   p           p    
-103,Floor103,default,2,   w                
-103,Floor103,default,2,*w                 P
-103,Floor103,default,2,*                   
-103,Floor103,default,2,*                   
-103,Floor103,default,2,*       p p         
-103,Floor103,default,2,*                   
-103,Floor103,default,2,*                   
-103,Floor103,default,2,*                   
-103,Floor103,default,2,*     P     P       
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,~~~-----------------
+103,Floor103,master3D,0,~~~-----------------
+103,Floor103,master3D,0,~~~-----------------
+103,Floor103,master3D,0,~~~-----------------
+103,Floor103,master3D,0,~~~-----------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,0,--------------------
+103,Floor103,master3D,1,*######NNNNN########
+103,Floor103,master3D,1,*     #     #      #
+103,Floor103,master3D,1,*     #     _  F    
+103,Floor103,master3D,1,*     #     #       
+103,Floor103,master3D,1,*     ##*D*##       
+103,Floor103,master3D,1,*                   
+103,Floor103,master3D,1,****           *****
+103,Floor103,master3D,1,W  *    ! !    *   E
+103,Floor103,master3D,1,Wk H           +   E
+103,Floor103,master3D,1,W  d  !  0  !  d   E
+103,Floor103,master3D,1,W  H           +   E
+103,Floor103,master3D,1,W  *    ! !    *   E
+103,Floor103,master3D,1,****           **=**
+103,Floor103,master3D,1,*                   
+103,Floor103,master3D,1,*                   
+103,Floor103,master3D,1,*     H**D**H       
+103,Floor103,master3D,1,*     *     *   0   
+103,Floor103,master3D,1,*     *     =       
+103,Floor103,master3D,1,*     *     *      *
+103,Floor103,master3D,1,*\    *SSSSS*     *H
+103,Floor103,master3D,2,*######     ########
+103,Floor103,master3D,2,*     X     X      /
+103,Floor103,master3D,2,*                   
+103,Floor103,master3D,2,*                   
+103,Floor103,master3D,2,*     P p p P       
+103,Floor103,master3D,2,*                   
+103,Floor103,master3D,2,*w                 P
+103,Floor103,master3D,2,   w                
+103,Floor103,master3D,2,   p           p    
+103,Floor103,master3D,2,                    
+103,Floor103,master3D,2,   p           p    
+103,Floor103,master3D,2,   w                
+103,Floor103,master3D,2,*w                 P
+103,Floor103,master3D,2,*                   
+103,Floor103,master3D,2,*                   
+103,Floor103,master3D,2,*       p p         
+103,Floor103,master3D,2,*                   
+103,Floor103,master3D,2,*                   
+103,Floor103,master3D,2,*                   
+103,Floor103,master3D,2,*     P     P       
 104,Floor104,default,0,~~~~~~~~~~~~~~~~~~~~
 104,Floor104,default,0,~~~~~~~~~~~~~~~~~~~~
 104,Floor104,default,0,~~~~~~~~~~~~~~~~~~~~

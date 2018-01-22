@@ -1864,7 +1864,7 @@ class Game:
         self.load_items("items.csv")
         self.load_attacks("attacks.csv")
 
-        self._stats.print()
+        #self._stats.print()
 
         self.floor_factory = FloorBuilder(Game.GAME_DATA_DIR)
         self.floor_factory.initialise()
@@ -1896,7 +1896,7 @@ class Game:
             characters.remove(char)
 
         self.current_map = self._maps.get_map(1)
-        self.current_map.print()
+        #self.current_map.print()
 
     def load_map(self, location_file_name: str, map_links_file_name: str):
 
@@ -1967,7 +1967,7 @@ class Game:
 
             self._attacks[attack] = new_attack
 
-            new_attack.print()
+            #new_attack.print()
 
     def start(self):
 
