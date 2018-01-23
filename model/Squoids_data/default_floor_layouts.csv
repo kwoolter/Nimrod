@@ -974,3 +974,63 @@ ID,Name,Skin,Layer,Layout
 105,Floor105,default,5,    t          T    
 105,Floor105,default,5,                    
 105,Floor105,default,5,    $$$$$$$$$$$$    
+106,Floor106,master3D,0,-------ll-----------
+106,Floor106,master3D,0,-------ll-----------
+106,Floor106,master3D,0,--------ll----------
+106,Floor106,master3D,0,--------ll----------
+106,Floor106,master3D,0,---------ll---------
+106,Floor106,master3D,0,---------ll---------
+106,Floor106,master3D,0,--------ll----------
+106,Floor106,master3D,0,-------ll-----------
+106,Floor106,master3D,0,-----lll------------
+106,Floor106,master3D,0,-----lll------------
+106,Floor106,master3D,0,-----lll------------
+106,Floor106,master3D,0,--------------------
+106,Floor106,master3D,0,--------------------
+106,Floor106,master3D,0,--------------------
+106,Floor106,master3D,0,--------------------
+106,Floor106,master3D,0,--------------------
+106,Floor106,master3D,0,--------------------
+106,Floor106,master3D,0,--------------------
+106,Floor106,master3D,0,--------------------
+106,Floor106,master3D,0,--------------------
+106,Floor106,master3D,1,#######  ###########
+106,Floor106,master3D,1,#----#        #    #
+106,Floor106,master3D,1,#----#       !H    #
+106,Floor106,master3D,1,#----#    X   d T  #
+106,Floor106,master3D,1,#----#       !H    #
+106,Floor106,master3D,1,#----#        #    #
+106,Floor106,master3D,1,###### X      ######
+106,Floor106,master3D,1,#                  #
+106,Floor106,master3D,1,#          !       #
+106,Floor106,master3D,1,#                  #
+106,Floor106,master3D,1,#               !  #
+106,Floor106,master3D,1,#  #######=##      #
+106,Floor106,master3D,1,#           #      #
+106,Floor106,master3D,1,#*          ###D##_#
+106,Floor106,master3D,1,#   !  !    #      #
+106,Floor106,master3D,1,#*          #      #
+106,Floor106,master3D,1,#           # 0 !  #
+106,Floor106,master3D,1,#           #      #
+106,Floor106,master3D,1,#           #      #
+106,Floor106,master3D,1,#######SSSSS########
+106,Floor106,master3D,2,######)  (##########
+106,Floor106,master3D,2,#T   /             #
+106,Floor106,master3D,2,#             P    #
+106,Floor106,master3D,2,#                  #
+106,Floor106,master3D,2,#  F X        P    #
+106,Floor106,master3D,2,#                  #
+106,Floor106,master3D,2,#\ X p        p    /
+106,Floor106,master3D,2,#                   
+106,Floor106,master3D,2,#                   
+106,Floor106,master3D,2,#                   
+106,Floor106,master3D,2,#                   
+106,Floor106,master3D,2,#  p        p       
+106,Floor106,master3D,2,#                   
+106,Floor106,master3D,2,#X          p p p  p
+106,Floor106,master3D,2,#                   
+106,Floor106,master3D,2,#X                  
+106,Floor106,master3D,2,#                   
+106,Floor106,master3D,2,#                   
+106,Floor106,master3D,2,#                   
+106,Floor106,master3D,2,##\   P     P      p

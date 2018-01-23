@@ -1247,6 +1247,9 @@ class FloorBuilder():
         new_floor_details = ("The Lava Crossing", 1, (16,2,19,12), 1, (1,2,4,12), 2, 2, None)
         self.floor_details[new_floor_id] = new_floor_details
 
+        new_floor_id = 106
+        new_floor_details = ("The Dungeon", 1, (6,1,13,6), 1, (6,15,13,19), 2, 2, (Objects.BLOCK, Objects.EMPTY))
+        self.floor_details[new_floor_id] = new_floor_details
 
 class FloorLayoutLoader():
     floor_layouts = {}
