@@ -622,8 +622,8 @@ class StatusBar(View):
     ICON_WIDTH = 40
     PADDING = 40
     STATUS_TEXT_FONT_SIZE = 24
-    MESSAGE_TICK_DURATION = 1
-    MESSAGE_TICK_LIFE = 10
+    MESSAGE_TICK_DURATION = 10
+    MESSAGE_TICK_LIFE = 20
 
     def __init__(self, width: int, height: int):
 

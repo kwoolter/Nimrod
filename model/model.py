@@ -346,7 +346,7 @@ class FloorObject(object):
 class Player(FloorObject):
     # Effects
     EVERGREEN = -999
-    EFFECT_LIFETIME = 40
+    EFFECT_LIFETIME = 20
     HIT = "hit"
     DEAD = "dead"
     POISONED = "poisoned"
@@ -455,8 +455,8 @@ class Player(FloorObject):
         else:
             return False
 
-    def do_effect(self, effect_name: str):
-        self.effects[effect_name] = Player.EFFECT_LIFETIME
+    def do_effect(self, effect_name: str, count : int = EFFECT_LIFETIME):
+        self.effects[effect_name] = count
 
     def tick(self):
         expired_effects = []
@@ -628,6 +628,7 @@ class Floor:
         self.chests = 0
         self.switch_on = False
         self.switch_tiles = None
+        self.tick_count = 0
 
     def __str__(self):
         return "Floor {0}: rect={1},layer={4} objects={2}, monsters={3}, potions={4}, chests={5}".format(self.name,
@@ -1121,21 +1122,25 @@ class Floor:
 
     def tick(self):
 
+        self.tick_count += 1
+
         # For each player...
         for selected_player in self.players:
 
             selected_player.tick()
 
-            x, y, layer = selected_player.xyz
+            if self.tick_count % 4 == 0:
 
-            # Check what the player is standing on...
-            base_tile = self.get_floor_tile(x, y, layer - 1)
-            if base_tile.name in (Objects.LAVA, Objects.ICE):
-                selected_player.do_damage(1)
-                Floor.EVENTS.add_event(Event(type=Event.FLOOR,
-                                             name=Event.LOSE_HEALTH,
-                                             description="{0} stood on {1}".format(selected_player.name,
-                                                                                   base_tile.name)))
+                x, y, layer = selected_player.xyz
+
+                # Check what the player is standing on...
+                base_tile = self.get_floor_tile(x, y, layer - 1)
+                if base_tile.name in (Objects.LAVA, Objects.ICE):
+                    selected_player.do_damage(1)
+                    Floor.EVENTS.add_event(Event(type=Event.FLOOR,
+                                                 name=Event.LOSE_HEALTH,
+                                                 description="{0} stood on {1}".format(selected_player.name,
+                                                                                       base_tile.name)))
 
         # For each enemy do a tick
         for enemy in self.monsters:
@@ -1147,12 +1152,14 @@ class Floor:
 
         #print("Bot automation...")
 
-        # for each bot do a tick
-        for bot in self.bots:
-            #bot.print()
-            bot.do_tick()
-            bot.player.AP = bot.player.MaxAP
-            bot.reset()
+        if self.tick_count % 4 == 0:
+
+            # for each bot do a tick
+            for bot in self.bots:
+                #bot.print()
+                bot.do_tick()
+                bot.player.AP = bot.player.MaxAP
+                bot.reset()
 
 
 class FloorBuilder():
@@ -1385,6 +1392,7 @@ class Battle:
     def __init__(self, team1: Team, team2: Team, battle_floor: Floor = None):
         self.teams = [team1, team2]
         self.turns = 0
+        self.tick_count = 0
         self._state = Battle.READY
         self.next_team = None
         self.battle_floor = battle_floor
@@ -1441,8 +1449,14 @@ class Battle:
         self.set_current_target(tactic=Team.TACTIC_NEAREST)
 
     def tick(self):
-        for player in self.order_of_play:
-            player.tick()
+
+        self.tick_count += 1
+
+        self.battle_floor.tick()
+
+        # if self.tick_count % 4 == 0:
+        #     for player in self.order_of_play:
+        #         player.tick()
 
     def get_current_player(self):
 
@@ -1846,8 +1860,7 @@ class Game:
         if self.state == Game.BATTLE:
             self.battle.tick()
         elif self.state == Game.PLAYING:
-            if self.tick_count % 4 == 0:
-                self.current_floor.tick()
+            self.current_floor.tick()
 
     def get_next_event(self):
 
