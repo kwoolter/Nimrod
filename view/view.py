@@ -79,7 +79,7 @@ class ImageManager:
             model.Objects.BASE_FLAG_STONES: "flags4.png",
             model.Objects.BLOCK_SECRET: "Block_blue.png",
             model.Objects.PLAYER: ("player.png", "player1.png", "player.png", "player2.png"),
-            model.Objects.SKULL: "Skull.png",
+            model.Objects.SKULL: "Skull2.png",
             model.Objects.SWITCH: "switch_off.png",
             model.Objects.SWITCH_LIT: "switch_on.png",
             model.Objects.HEART: "heart.png",
@@ -136,7 +136,7 @@ class ImageManager:
             model.Objects.SQUOID_BLUE: "squoid_warrior2.png",
             model.Objects.KEY: ("key0.png", "key1.png", "key2.png", "key1.png"),
             model.Objects.CHEST: "chest.png",
-            model.Objects.POTION: "red_potion4.png",
+            model.Objects.POTION: "red_potion5.png",
             model.Objects.SWORD_SMALL: "sword_small.png",
             model.Objects.SWORD: "weapon0.png",
             model.Objects.DAGGER: "weapon6.png",
@@ -965,10 +965,8 @@ class GameView(View):
 
                         image_x, image_y = self.model_to_view(view_object.rect.x, view_object.rect.y, layer_id)
 
-
-                        if isinstance(view_object, model.Player):
-
-                            # If this is a player then give them a shadow
+                        if view_object.is_shadow is True:
+                            # If this object needs a shadow
                             image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
                                                                       tick=self.tick_count,
                                                                       width=BattleView.TILE_WIDTH,
@@ -978,6 +976,9 @@ class GameView(View):
                             image.set_alpha(100)
 
                             surface.blit(image, (image_x, image_y))
+
+
+                        if isinstance(view_object, model.Player):
 
                             self.player_view.initialise(view_object)
                             image = self.player_view.draw_player(GameView.TILE_WIDTH, GameView.TILE_HEIGHT)
@@ -1146,8 +1147,8 @@ class BattleView(View):
 
                             surface.blit(image, (view_x, view_y))
 
-                        # If this is a player then give them a shadow
-                        if isinstance(view_object, model.Player) is True:
+                        if view_object.is_shadow is True:
+                            # If this object needs a shadow
                             image = View.image_manager.get_skin_image(model.Objects.BASE_SHADOW,
                                                                       tick=self.tick_count,
                                                                       width=BattleView.TILE_WIDTH,
@@ -1157,6 +1158,7 @@ class BattleView(View):
                             image.set_alpha(100)
 
                             surface.blit(image, (view_x, view_y))
+
 
                         # If the object is a player draw the player plus any status effects
                         if isinstance(view_object, model.Player) is True:

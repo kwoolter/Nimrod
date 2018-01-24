@@ -250,7 +250,8 @@ class FloorObject(object):
                  solid: bool = True,
                  visible: bool = True,
                  interactable: bool = True,
-                 occupiable: bool = False):
+                 occupiable: bool = False,
+                 shadow: bool = False):
 
         self._name = name
         self._rect = pygame.Rect(rect)
@@ -265,6 +266,7 @@ class FloorObject(object):
         self.is_visible = visible
         self.is_interactable = interactable
         self._is_occupiable = occupiable
+        self.is_shadow = shadow
         self.dx = 0
         self.dy = 0
         self.d2x = 0
@@ -364,7 +366,7 @@ class Player(FloorObject):
                  layer=1,
                  height: int = 40,
                  character: Character = None):
-        super(Player, self).__init__(name=name, rect=rect, height=height, solid=True, visible=True, interactable=False)
+        super(Player, self).__init__(name=name, rect=rect, height=height, solid=True, visible=True, interactable=False, shadow=True)
 
         self.treasure = 0
         self.keys = 0
@@ -455,7 +457,7 @@ class Player(FloorObject):
         else:
             return False
 
-    def do_effect(self, effect_name: str, count : int = EFFECT_LIFETIME):
+    def do_effect(self, effect_name: str, count: int = EFFECT_LIFETIME):
         self.effects[effect_name] = count
 
     def tick(self):
@@ -476,7 +478,7 @@ class Monster(FloorObject):
     def __init__(self, name: str,
                  rect: pygame.Rect,
                  height: int = 30):
-        super(Monster, self).__init__(name=name, rect=rect, height=height)
+        super(Monster, self).__init__(name=name, rect=rect, height=height, shadow=True)
 
 
 class Team:
@@ -714,11 +716,11 @@ class Floor:
 
             self.bots.append(ai)
 
-        #print("Adding enemy at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
+            # print("Adding enemy at {0},{1},{2}".format(new_player.rect.x, new_player.rect.y, new_player.layer))
 
     def add_items(self, item_type, item_count: int = 1):
 
-        #print("Adding {0} {1} items into rect {2}".format(item_count, item_type, self.rect))
+        # print("Adding {0} {1} items into rect {2}".format(item_count, item_type, self.rect))
 
         new_object = FloorObjectLoader.get_object_copy_by_name(item_type)
         if new_object is not None:
@@ -736,7 +738,7 @@ class Floor:
                             self.add_object(new_object)
                             new_object = FloorObjectLoader.get_object_copy_by_name(item_type)
                             placed = True
-                            #print("Added {0} item at {1},{2},{3}".format(item_type, x, y, z))
+                            # print("Added {0} item at {1},{2},{3}".format(item_type, x, y, z))
                             break
 
                 if placed is False:
@@ -785,7 +787,6 @@ class Floor:
                             except Exception as e:
                                 print("Error:{0}".format(str(new_object)))
 
-
                 if floor_object.name in (Objects.TELEPORT, Objects.TELEPORT2):
                     if floor_object.name not in self.teleports.keys():
                         self.teleports[floor_object.name] = []
@@ -811,14 +812,12 @@ class Floor:
         self.add_items(Objects.CHEST, self.chests)
         self.build_floor_plan()
 
-
     def swap_object(self, object: FloorObject, new_object_type: str):
 
-        x,y,z = object.xyz
+        x, y, z = object.xyz
         swap_object = FloorObjectLoader.get_object_copy_by_name(new_object_type)
 
-        self.set_floor_tile(x,y,z,swap_object)
-
+        self.set_floor_tile(x, y, z, swap_object)
 
     def switch(self, setting=None):
 
@@ -855,8 +854,7 @@ class Floor:
 
             x, y, z = floor_object.xyz
             floor_object = FloorObjectLoader.get_object_copy_by_name(tile)
-            floor_object.set_pos(x,y,z)
-
+            floor_object.set_pos(x, y, z)
 
         if is_raw is False:
 
@@ -1021,7 +1019,8 @@ class Floor:
                                 Event(type=Event.FLOOR, name=Event.DOOR_LOCKED, description="The door is locked"))
 
                     elif tile.name == Objects.RED_FLAG:
-                        Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.FOUND_FLAG, description="You found a battle flag"))
+                        Floor.EVENTS.add_event(
+                            Event(type=Event.FLOOR, name=Event.FOUND_FLAG, description="You found a battle flag"))
 
                     else:
                         Floor.EVENTS.add_event( \
@@ -1150,13 +1149,13 @@ class Floor:
 
     def do_auto(self):
 
-        #print("Bot automation...")
+        # print("Bot automation...")
 
         if self.tick_count % 4 == 0:
 
             # for each bot do a tick
             for bot in self.bots:
-                #bot.print()
+                # bot.print()
                 bot.do_tick()
                 bot.player.AP = bot.player.MaxAP
                 bot.reset()
@@ -1170,7 +1169,6 @@ class FloorBuilder():
         self.data_file_directory = data_file_directory
         self.floors = {}
         self.floor_details = {}
-
 
     def initialise(self, file_prefix: str = "default"):
 
@@ -1251,12 +1249,13 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 105
-        new_floor_details = ("The Lava Crossing", 1, (16,2,19,12), 1, (1,2,4,12), 2, 2, None)
+        new_floor_details = ("The Lava Crossing", 1, (16, 2, 19, 12), 1, (1, 2, 4, 12), 2, 2, None)
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 106
-        new_floor_details = ("The Dungeon", 1, (6,1,13,6), 1, (6,15,13,19), 2, 2, (Objects.BLOCK, Objects.EMPTY))
+        new_floor_details = ("The Dungeon", 1, (6, 1, 13, 6), 1, (6, 15, 13, 19), 2, 2, (Objects.BLOCK, Objects.EMPTY))
         self.floor_details[new_floor_id] = new_floor_details
+
 
 class FloorLayoutLoader():
     floor_layouts = {}
@@ -1348,7 +1347,8 @@ class FloorObjectLoader():
                                          solid=FloorObjectLoader.BOOL_MAP[row.get("solid").upper()], \
                                          visible=FloorObjectLoader.BOOL_MAP[row.get("visible").upper()], \
                                          interactable=FloorObjectLoader.BOOL_MAP[row.get("interactable").upper()], \
-                                         occupiable=FloorObjectLoader.BOOL_MAP[row.get("occupiable").upper()] \
+                                         occupiable=FloorObjectLoader.BOOL_MAP[row.get("occupiable").upper()], \
+                                         shadow=FloorObjectLoader.BOOL_MAP[row.get("shadow").upper()] \
                                          )
 
                 # Store the floor object in the code cache
@@ -1818,13 +1818,11 @@ class Game:
         GREEN = (34, 177, 76)
         BLUE = (63, 72, 204)
 
-
+        team1 = Team("Blue", BLUE, type=Team.PLAYER)
+        team2 = Team("Red", RED, type=Team.PLAYER)
 
         team1 = Team("Blue", BLUE, type=Team.COMPUTER)
         team2 = Team("Red", RED, type=Team.COMPUTER)
-
-        team1 = Team("Blue", BLUE, type=Team.PLAYER)
-        team2 = Team("Red", RED, type=Team.PLAYER)
 
         characters = list(self._npcs.get_characters())
 
@@ -1880,7 +1878,7 @@ class Game:
         self.load_items("items.csv")
         self.load_attacks("attacks.csv")
 
-        #self._stats.print()
+        # self._stats.print()
 
         self.floor_factory = FloorBuilder(Game.GAME_DATA_DIR)
         self.floor_factory.initialise()
@@ -1912,7 +1910,7 @@ class Game:
             characters.remove(char)
 
         self.current_map = self._maps.get_map(1)
-        #self.current_map.print()
+        # self.current_map.print()
 
     def load_map(self, location_file_name: str, map_links_file_name: str):
 
@@ -1983,7 +1981,7 @@ class Game:
 
             self._attacks[attack] = new_attack
 
-            #new_attack.print()
+            # new_attack.print()
 
     def start(self):
 
@@ -2194,7 +2192,7 @@ class Navigator:
         finished = False
 
         if start == finish:
-            #print("found the finish")
+            # print("found the finish")
             self.route.append((start))
             finished = True
         else:
@@ -2203,7 +2201,7 @@ class Navigator:
             if level > 0:
 
                 # If we tried to go out of bounds then don't usae this route
-                if self.floor.is_in_bounds(startx, starty, startz ) is False:
+                if self.floor.is_in_bounds(startx, starty, startz) is False:
                     return False
 
                 tile = self.floor.get_floor_tile(startx, starty, startz)
@@ -2722,8 +2720,8 @@ class AIBot2:
                     opponents.append(
                         (player, distance, len(self.navigator.route)))
                     is_visible = True
-                # else:
-                #     print("Target at distance {0:.2f} beyond range {1}".format(distance, self.view_range))
+                    # else:
+                    #     print("Target at distance {0:.2f} beyond range {1}".format(distance, self.view_range))
 
         return is_visible, opponents
 
@@ -2737,7 +2735,7 @@ class AIBot2:
 
         # If we can see a target then switch to Tracking mode
         if is_visible is True:
-            #print("Target spotted")
+            # print("Target spotted")
             self.current_state = AIBot.TRACKING
 
         # Else try to move around
@@ -2775,7 +2773,7 @@ class AIBot2:
             opponents.sort(key=itemgetter(1))
             target, distance, route_length = opponents[0]
 
-            #print("Tracking nearest opponent {0} at distance {1}".format(target.character.name, distance))
+            # print("Tracking nearest opponent {0} at distance {1}".format(target.character.name, distance))
 
             if target.layer != self.player.layer:
                 print("No opponents on this level")
@@ -2796,7 +2794,7 @@ class AIBot2:
                                                  direct=False,
                                                  walkable=True,
                                                  safe=True)
-                #print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
+                # print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
                 # If no safe route go direct!
                 if result is False:
                     result = self.navigator.navigate(start=self.player.xyz,
@@ -2805,13 +2803,13 @@ class AIBot2:
                                                      walkable=True,
                                                      safe=False)
 
-                    #print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
+                    # print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
 
                 # If there is a route to the target then move towards it
                 if result is True:
                     x, y, z = self.player.xyz
                     newx, newy, newz = self.navigator.route[1]
-                    #print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+                    # print("from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
                     self.floor.move_player(self.player, newx - x, newy - y)
                     action = True
 
@@ -2951,7 +2949,7 @@ class AIBot2:
                                          walkable=True,
                                          safe=True)
 
-        #print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
+        # print("Safe route = {0}: route = {1}".format(result, self.navigator.route))
 
         # If no safe route go unsafe route!
         if result is False:
@@ -2961,13 +2959,13 @@ class AIBot2:
                                              walkable=True,
                                              safe=False)
 
-            #print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
+            # print("Direct route = {0}: route = {1}".format(result, self.navigator.route))
 
         # If there is a route to the target then move towards it
         if result is True:
             x, y, z = self.player.xyz
             newx, newy, newz = self.navigator.route[1]
-            #print("Moving from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
+            # print("Moving from {0} to {1}".format(self.player.xyz, self.navigator.route[1]))
             self.floor.move_player(self.player, newx - x, newy - y)
             action = True
 
