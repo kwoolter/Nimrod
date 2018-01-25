@@ -1246,7 +1246,7 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 103
-        new_floor_details = ("The Jigger", 1, (6, 1, 16, 3), 1, (5, 13, 16, 17), 2, 2, (Objects.BLOCK, Objects.EMPTY))
+        new_floor_details = ("The Crosser", 1, (6, 1, 16, 3), 1, (5, 13, 16, 17), 2, 2, (Objects.BLOCK, Objects.EMPTY))
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 104
@@ -1261,6 +1261,9 @@ class FloorBuilder():
         new_floor_details = ("The Dungeon", 1, (6, 1, 13, 6), 1, (6, 15, 13, 19), 2, 2, (Objects.BLOCK, Objects.EMPTY))
         self.floor_details[new_floor_id] = new_floor_details
 
+        new_floor_id = 200
+        new_floor_details = ("TEST", 1, (6, 1, 13, 6), 1, (6, 15, 13, 19), 2, 2, None)
+        self.floor_details[new_floor_id] = new_floor_details
 
 class FloorLayoutLoader():
     floor_layouts = {}

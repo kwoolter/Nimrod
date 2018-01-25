@@ -271,6 +271,14 @@ class ImageManager:
 
         ImageManager.skins[new_skin_name] = new_skin
 
+        new_skin_name = "32x40"
+        new_skin = (new_skin_name, {
+
+            model.Objects.BLOCK: "Block32x40.png",
+        })
+
+        ImageManager.skins[new_skin_name] = new_skin
+
     def get_skin_image(self, tile_name: str, skin_name: str = DEFAULT_SKIN, tick=0, width: int = 32, height: int = 32):
 
         if skin_name not in ImageManager.skins.keys():
