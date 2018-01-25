@@ -220,6 +220,7 @@ class Objects:
     POISON = "poison"
     INK = "ink"
     HIT = "hit"
+    HEAL = "heal"
     SHOCK = "shock"
     ASLEEP = "asleep"
     FROZEN = "frozen"
@@ -351,6 +352,7 @@ class Player(FloorObject):
     EFFECT_LIFETIME = 20
     HIT = "hit"
     DEAD = "dead"
+    HEALING = "healing"
     POISONED = "poisoned"
     ASLEEP = "asleep"
     BURNED = "burned"
@@ -1052,18 +1054,21 @@ class Floor:
 
                     elif tile.name == Objects.SPHERE_RED:
                         selected_player.do_heal(random.randint(1, 3))
+                        selected_player.do_effect(Player.HEALING)
                         self.set_floor_tile(x, y, z, None)
                         Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
                                                      description="You found a {0}".format(tile.name)))
 
                     elif tile.name == Objects.POTION:
                         selected_player.do_heal(random.randint(1, 3))
+                        selected_player.do_effect(Player.HEALING)
                         self.set_floor_tile(x, y, z, None)
                         Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.GAIN_HEALTH,
                                                      description="You found a {0}".format(tile.name)))
 
                     elif tile.name == Objects.SPIKE:
                         selected_player.do_damage(random.randint(1, 3))
+                        selected_player.do_effect(Player.HIT)
                         self.set_floor_tile(x, y, z, None)
                         Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.LOSE_HEALTH,
                                                      description="You hit a {0}".format(tile.name)))
@@ -1095,7 +1100,7 @@ class Floor:
                     selected_player.back()
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.BLOCKED,
                                                  description="You can't go that way"))
-                    print(str(base_tile))
+
 
                 # If standing on lava lose health
                 elif base_tile.name == Objects.LAVA:
@@ -1546,7 +1551,6 @@ class Battle:
                 attack_bonus = attack.get_stat(Attack.BONUS).value
                 attack_range = attack.get_stat(Attack.RANGE).value
                 attack_AP = attack.get_stat(Attack.AP).value
-                attack_effect = attack.effect
 
                 # Is the target too far away based on the range to the attack?
                 distance_to_target = current_player.distance_from_point(opponent.rect.x, opponent.rect.y)
@@ -1641,7 +1645,7 @@ class Battle:
 
                             # Apply the damage to the opponent and also the effect associated with the attack
                             opponent.do_damage(damage)
-                            opponent.do_effect(attack_effect)
+                            opponent.do_effect(attack.effect)
 
                             Battle.EVENTS.add_event(Event(type=Event.BATTLE,
                                                           name=Event.DAMAGE_OPPONENT,
@@ -2881,14 +2885,16 @@ class AIBot2:
             # Look at the nearest opponent
             opponents.sort(key=itemgetter(1))
             target, distance, route_length = opponents[0]
+            attack = self.player.get_attack()
 
             # if they are close enough to attack...
-            if distance <= self.player.get_attack().get_stat(Attack.RANGE).value:
+            if distance <= attack.get_stat(Attack.RANGE).value:
 
                 # .. and we have enough AP...
-                if self.player.AP >= self.player.get_attack().get_stat(Attack.AP).value:
+                if self.player.AP >= attack.get_stat(Attack.AP).value:
                     # self.floor.set_current_target(tactic=Team.TACTIC_SPECIFIED, target=target)
                     target.do_damage(1)
+                    target.do_effect(attack.effect)
                     self.player.do_damage(999)
                     print("Attacking {0}".format(target.character.name))
                     action = True

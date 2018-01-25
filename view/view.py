@@ -177,6 +177,7 @@ class ImageManager:
                 "ink0.png", "ink1.png", "ink2.png", "ink3.png", "ink4.png", "ink5.png", "ink6.png"),
             model.Objects.HIT: ("hit0.png", "hit1.png", "hit2.png"),
             model.Objects.ASLEEP: ("zzzz0.png", "zzzz1.png", "zzzz2.png"),
+            model.Objects.HEAL: ("hearts0.png", "hearts1.png", "hearts2.png"),
             model.Objects.SHOCK: ("electric0.png", "electric1.png", "electric0.png", "electric1.png", "electric2.png"),
             model.Objects.FROZEN: "ice_block.png"
 
@@ -398,6 +399,10 @@ class ImageManager:
         sheet_file_name = "birds2.png"
         for i in range(0, 3):
             self.sprite_sheets["hit{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "hearts.png"
+        for i in range(0, 3):
+            self.sprite_sheets["hearts{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "lava.png"
         for i in range(0, 6):
@@ -1535,6 +1540,12 @@ class PlayerView(View):
         elif self.player.is_effect(model.Player.FROZEN) is True:
             effect_name = model.Objects.FROZEN
             effect_alpha = 150
+
+        # Healing
+        elif self.player.is_effect(model.Player.HEALING) is True:
+            effect_name = model.Objects.HEAL
+            effect_alpha = 200
+
 
         # Hit
         elif self.player.is_effect(model.Player.HIT) is True:
