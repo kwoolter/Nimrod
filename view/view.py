@@ -166,15 +166,16 @@ class ImageManager:
 
             model.Objects.SEAWEED: ("seaweed0.png", "seaweed1.png", "seaweed2.png", "seaweed1.png"),
             model.Objects.FIRE: ("fire0.png", "fire1.png", "fire2.png", "fire1.png"),
-            model.Objects.POISON: (
-                "poison0.png", "poison1.png", "poison2.png", "poison3.png", "poison4.png", "poison5.png",
-                "poison6.png"),
+            model.Objects.POISONED: (
+                "poisoned0.png", "poisoned1.png", "poisoned2.png", "poisoned3.png", "poisoned4.png", "poisoned5.png", "poisoned6.png"),
 
             model.Objects.SPIKE: (None,None, None,"spike3.png",
                 "spike0.png", "spike1.png", "spike2.png", "spike3.png", "spike4.png", "spike5.png",
                 "spike6.png"),
             model.Objects.INK: (
                 "ink0.png", "ink1.png", "ink2.png", "ink3.png", "ink4.png", "ink5.png", "ink6.png"),
+            model.Objects.POISON: (
+                "poison0.png", "poison1.png", "poison2.png", "poison3.png", "poison4.png", "poison5.png"),
             model.Objects.HIT: ("hit0.png", "hit1.png", "hit2.png"),
             model.Objects.ASLEEP: ("zzzz0.png", "zzzz1.png", "zzzz2.png"),
             model.Objects.HEAL: ("hearts0.png", "hearts1.png", "hearts2.png"),
@@ -393,7 +394,7 @@ class ImageManager:
             self.sprite_sheets["fire{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "poison.png"
-        for i in range(0, 7):
+        for i in range(0, 6):
             self.sprite_sheets["poison{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "spike_sheet.png"
@@ -403,6 +404,10 @@ class ImageManager:
         sheet_file_name = "ink.png"
         for i in range(0, 7):
             self.sprite_sheets["ink{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
+
+        sheet_file_name = "poisoned.png"
+        for i in range(0, 7):
+            self.sprite_sheets["poisoned{0}.png".format(i)] = (sheet_file_name, (i * 32, 0, 32, 32))
 
         sheet_file_name = "birds2.png"
         for i in range(0, 3):
@@ -1567,7 +1572,7 @@ class PlayerView(View):
 
         # Poisoned
         elif self.player.is_effect(model.Player.POISONED) is True:
-            effect_name = model.Objects.POISON
+            effect_name = model.Objects.POISONED
             effect_alpha = 200
 
         # Shocked

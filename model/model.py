@@ -218,6 +218,8 @@ class Objects:
     SEAWEED = "seaweed"
     FIRE = "fire"
     POISON = "poison"
+    POISONED = "poisoned"
+    POTION = "potion"
     INK = "ink"
     HIT = "hit"
     HEAL = "heal"
@@ -729,7 +731,7 @@ class Floor:
 
             for i in range(0, item_count):
                 placed = False
-                for tries in range(0, 20):
+                for tries in range(0, 10):
                     x = random.randint(self.rect.x, self.rect.width - 1)
                     y = random.randint(self.rect.y, self.rect.height - 1)
                     z = random.choice(self.start_layers)
@@ -744,7 +746,7 @@ class Floor:
                             break
 
                 if placed is False:
-                    print("Failed to place item {0}".format(new_object.name))
+                    print("Failed to place item {0} on floor {1}".format(new_object.name, self.name))
 
 
         else:
@@ -936,7 +938,7 @@ class Floor:
             base_tile = self.get_floor_tile(x, y, z - 1)
 
             # Is the base tile dangerous?
-            if base_tile is not None and base_tile.name in (Objects.LAVA, Objects.ICE):
+            if base_tile is not None and base_tile.name in (Objects.LAVA, Objects.ICE, Objects.POISON):
                 result = True
 
         return result
@@ -1073,6 +1075,14 @@ class Floor:
                         Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.LOSE_HEALTH,
                                                      description="You hit a {0}".format(tile.name)))
 
+                    # If standing on poison lose health and AP
+                    elif tile.name == Objects.POISON:
+                        selected_player.do_damage(1)
+                        selected_player.AP -= 1
+                        selected_player.do_effect(Player.POISONED)
+                        Floor.EVENTS.add_event(Event(type=Event.FLOOR, name=Event.LOSE_HEALTH,
+                                                     description="You hit a {0}".format(tile.name)))
+
                     elif tile.name == Objects.KEY:
                         selected_player.keys += 1
                         self.set_floor_tile(x, y, z, None)
@@ -1120,6 +1130,8 @@ class Floor:
                                                  name=Event.LOSE_HEALTH,
                                                  description="{0} stood on {1}".format(selected_player.character.name,
                                                                                        base_tile.name)))
+
+
 
             if selected_player.has_moved() is True:
                 selected_player.AP -= 1
@@ -1190,14 +1202,14 @@ class FloorBuilder():
     def load_floors(self):
 
         for floor_id, new_floor in FloorLayoutLoader.floor_layouts.items():
+            new_floor.build_floor_plan()
             if floor_id in self.floor_details.keys():
-                new_floor.build_floor_plan()
                 new_floor.set_details(self.floor_details[floor_id])
             self.floors[floor_id] = new_floor
 
-        for floor in self.floors.values():
-            floor.build_floor_plan()
-            print(str(floor))
+        # for floor in self.floors.values():
+        #     floor.build_floor_plan()
+        #     print(str(floor))
 
     def load_floor_details(self):
 
@@ -1878,18 +1890,20 @@ class Game:
     def initialise(self):
 
         self.state = Game.READY
-        self.current_floor_id = 100
+        self.current_floor_id = 200
 
         self.load_characters("characters.csv")
         self.load_map("locations.csv", "maplinks.csv")
-        self.load_items("items.csv")
+        #self.load_items("items.csv")
         self.load_attacks("attacks.csv")
 
-        # self._stats.print()
-
+        # self._stats.pr        int()
+        print("Loading Floors")
         self.floor_factory = FloorBuilder(Game.GAME_DATA_DIR)
         self.floor_factory.initialise()
         self.floor_factory.load_floors()
+
+        print("Floors Loaded")
 
         Floor.EVENTS = self.events
         Battle.EVENTS = self.events
@@ -1930,6 +1944,7 @@ class Game:
         self._maps.load("Level1", 1, Game.GAME_DATA_DIR + map_links_file_name)
 
     def load_characters(self, character_file_name: str):
+        print("Loading characters..")
         self._npcs = trpg.RPGCharacterFactory(Game.GAME_DATA_DIR + character_file_name, self._stats)
         self._npcs.load()
         self._npcs.print()
@@ -1951,6 +1966,8 @@ class Game:
             add_core_stats(character)
             add_derived_stats(character)
             # character.examine()
+
+        print("Characters loaded")
 
     def load_items(self, item_file_name: str):
         self._items = trpg.ItemFactory(Game.GAME_DATA_DIR + item_file_name, self._stats)
