@@ -1151,7 +1151,7 @@ class Floor:
 
                 # Check what the player is standing on...
                 base_tile = self.get_floor_tile(x, y, layer - 1)
-                if base_tile.name in (Objects.LAVA, Objects.ICE):
+                if base_tile is not None and base_tile.name in (Objects.LAVA, Objects.ICE):
                     selected_player.do_damage(1)
                     Floor.EVENTS.add_event(Event(type=Event.FLOOR,
                                                  name=Event.LOSE_HEALTH,
@@ -1923,14 +1923,26 @@ class Game:
 
         self.add_player(new_player, auto_position=True)
 
-        for i in range(0, 4):
-            char = random.choice(characters)
-            new_char = copy.deepcopy(char)
-            new_char_type = new_char.get_attribute("Image") + "_blue"
-            new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
-            new_player.add_attack(self._attacks["Basic Attack"])
-            self.add_enemy(new_player, auto_position=True)
-            characters.remove(char)
+        # for i in range(0, 4):
+        #     char = random.choice(characters)
+        #     new_char = copy.deepcopy(char)
+        #     new_char_type = new_char.get_attribute("Image") + "_blue"
+        #     new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
+        #     new_player.add_attack(self._attacks["Basic Attack"])
+        #     self.add_enemy(new_player, auto_position=True)
+        #     characters.remove(char)
+
+        for floor in self.floor_factory.floors.values():
+            characters = list(self._npcs.get_characters())
+            for i in range(0, 4):
+                char = random.choice(characters)
+                new_char = copy.deepcopy(char)
+                new_char_type = new_char.get_attribute("Image") + "_blue"
+                new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
+                new_player.add_attack(self._attacks["Basic Attack"])
+                floor.add_enemy(new_player, auto_position=True)
+                characters.remove(char)
+
 
         self.current_map = self._maps.get_map(1)
         # self.current_map.print()
