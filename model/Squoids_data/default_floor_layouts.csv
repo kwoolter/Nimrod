@@ -874,7 +874,7 @@ ID,Name,Skin,Layer,Layout
 104,Floor104,default,1,       *    *       
 104,Floor104,default,1,                    
 104,Floor104,default,1, w                  
-104,Floor104,default,1,     P   Q   w      
+104,Floor104,default,1,     P *    *w      
 104,Floor104,default,1,                    
 104,Floor104,default,1,      w             
 104,Floor104,default,1,                    
@@ -894,7 +894,7 @@ ID,Name,Skin,Layer,Layout
 104,Floor104,default,2,       p    p       
 104,Floor104,default,2,                    
 104,Floor104,default,2,                    
-104,Floor104,default,2,                    
+104,Floor104,default,2,       .    .       
 104,Floor104,default,2,                    
 104,Floor104,default,2,                    
 104,Floor104,default,2,                    

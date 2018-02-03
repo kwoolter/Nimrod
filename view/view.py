@@ -1222,17 +1222,20 @@ class BattleView(View):
                             if image is not None:
 
                                 # Set the image alpha based on the layer so that higher layers are more transparent
-                                if layer_id > current_player.layer:
-                                    image.set_alpha(255 - (layer_id * BattleView.LAYER_ALPHA_MULTIPLIER))
+                                # if layer_id > current_player.layer:
+                                #     image.set_alpha(255 - (layer_id * BattleView.LAYER_ALPHA_MULTIPLIER))
+                                # else:
+                                #     image.set_alpha(255)
+
+                                # # Trying different transparency based on distance to view camera
+                                # surface.blit(image, (view_x - x_offset, view_y - y_offset))
+
+                                if layer_id > 1:
+                                    d = self.game.battle.battle_floor.distance_to_camera(view_object.xyz)
+                                    image.set_alpha(100 + (d * 7))
                                 else:
                                     image.set_alpha(255)
 
-                                # Trying different transparency based on distance to view camera
-                                if layer_id > current_player.layer:
-                                    d = self.game.battle.battle_floor.distance_to_camera(view_object.xyz)
-                                    image.set_alpha(115 + (d * 7))
-
-                                # Draw the object
                                 surface.blit(image, (view_x - x_offset, view_y - y_offset))
 
 

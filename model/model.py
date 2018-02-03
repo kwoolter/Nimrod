@@ -931,14 +931,14 @@ class Floor:
         tile = self.get_floor_tile(x, y, z)
 
         # Is the tile dangerous?
-        if tile is not None and tile.name in (Objects.SPIKE):
+        if tile is not None and tile.name in (Objects.SPIKE, Objects.POISON):
             result = True
         else:
 
             base_tile = self.get_floor_tile(x, y, z - 1)
 
             # Is the base tile dangerous?
-            if base_tile is not None and base_tile.name in (Objects.LAVA, Objects.ICE, Objects.POISON):
+            if base_tile is not None and base_tile.name in (Objects.LAVA, Objects.ICE ):
                 result = True
 
         return result
@@ -1215,11 +1215,13 @@ class FloorBuilder():
 
         # Floor Details:-
         # - name
-        # - player start layer
+        # - team1 player start layer
         # - team1 start locations rect
+        # - team2 player start layer
         # - team2 start locations rect
         # - potions
         # - chests
+        # - Swap tiles
 
         new_floor_id = 0
         new_floor_details = ("The Trial", 1, (6, 1, 16, 3), 1, (5, 16, 14, 18), 4, 4, None)
@@ -1274,7 +1276,7 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 200
-        new_floor_details = ("TEST", 1, (6, 1, 13, 6), 1, (6, 15, 13, 19), 2, 2, None)
+        new_floor_details = ("TEST", 1, (13,1,18,8), 1, (1,1,5,17), 2, 2, None)
         self.floor_details[new_floor_id] = new_floor_details
 
 class FloorLayoutLoader():
@@ -1890,7 +1892,7 @@ class Game:
     def initialise(self):
 
         self.state = Game.READY
-        self.current_floor_id = 200
+        self.current_floor_id = 104
 
         self.load_characters("characters.csv")
         self.load_map("locations.csv", "maplinks.csv")
