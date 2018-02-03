@@ -707,6 +707,10 @@ ID,Name,Skin,Layer,Layout
 101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
 101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
 101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
+101,Floor101,red,0,~~~~~~~~llll~~~~~~~~
+101,Floor101,red,0,~~~~~~~~llll~~~~~~~~
+101,Floor101,red,0,~~~~~~~~llll~~~~~~~~
+101,Floor101,red,0,~~~~~~~~llll~~~~~~~~
 101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
 101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
 101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
@@ -715,30 +719,72 @@ ID,Name,Skin,Layer,Layout
 101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
 101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
 101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
-101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
-101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
-101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
-101,Floor101,red,0,~~~~~~~~~~~~~~~~~~~~
-101,Floor101,red,1,##     #NNNN#     ##
-101,Floor101,red,1,#      #    #      #
-101,Floor101,red,1,                    
-101,Floor101,red,1,                    
-101,Floor101,red,1,                    
-101,Floor101,red,1,                    
-101,Floor101,red,1,                    
-101,Floor101,red,1,##     ######     ##
-101,Floor101,red,1,W      #llll#      E
-101,Floor101,red,1,W      #llll#      E
-101,Floor101,red,1,W      #llll#      E
-101,Floor101,red,1,W      #llll#      E
-101,Floor101,red,1,##     ######     ##
-101,Floor101,red,1,                    
-101,Floor101,red,1,                    
-101,Floor101,red,1,                    
-101,Floor101,red,1,                    
-101,Floor101,red,1,                    
-101,Floor101,red,1,#      #    #      #
+101,Floor101,red,1,##****##NNNN##****##
+101,Floor101,red,1,#^    <#    #^    <#
+101,Floor101,red,1,*      /    /       
+101,Floor101,red,1,*                   
+101,Floor101,red,1,*        !!         
+101,Floor101,red,1,*                   
+101,Floor101,red,1,#>                  
+101,Floor101,red,1,##\    #****#     ##
+101,Floor101,red,1,W      *    *      E
+101,Floor101,red,1,W   !  *    *  !   E
+101,Floor101,red,1,W   !  *    *  !   E
+101,Floor101,red,1,W      *    *      E
+101,Floor101,red,1,##\    #****#     ##
+101,Floor101,red,1,#^                  
+101,Floor101,red,1,*                   
+101,Floor101,red,1,*        !!         
+101,Floor101,red,1,*                   
+101,Floor101,red,1,*                   
+101,Floor101,red,1,#>     #    #      #
 101,Floor101,red,1,##     #SSSS#     #^
+101,Floor101,red,2,##****##    ##****##
+101,Floor101,red,2,#^    <#    #^    <#
+101,Floor101,red,2,*                   
+101,Floor101,red,2,*                   
+101,Floor101,red,2,*                   
+101,Floor101,red,2,*                   
+101,Floor101,red,2,#>                  
+101,Floor101,red,2,##     P    P     (#
+101,Floor101,red,2,                    
+101,Floor101,red,2,                    
+101,Floor101,red,2,                    
+101,Floor101,red,2,                    
+101,Floor101,red,2,##     P    P     (#
+101,Floor101,red,2,#^                  
+101,Floor101,red,2,*                   
+101,Floor101,red,2,*                   
+101,Floor101,red,2,*                   
+101,Floor101,red,2,*                   
+101,Floor101,red,2,#>     )    )       
+101,Floor101,red,2,##     #    #       
+101,Floor101,red,3,p      P    P      p 
+101,Floor101,red,3,       X    X       
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,PX                 p
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,PX                 p
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,                    
+101,Floor101,red,3,p      p    p       
+102,Floor102,green,0,~~    ~~~~~~~~    ~~
+102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
+102,Floor102,green,0, ~~~~~~~~~~~~~~~~~~ 
+102,Floor102,green,0, ~~~~~~~~~~~~~~~~~~ 
+102,Floor102,green,0, ~~~~~~~~~~~~~~~~~~ 
+102,Floor102,green,0, ~~~~~~~~~~~~~~~~~~ 
 102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
 102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
 102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
@@ -747,18 +793,12 @@ ID,Name,Skin,Layer,Layout
 102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
 102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
 102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
+102,Floor102,green,0, ~~~~~~~~~~~~~~~~~~ 
+102,Floor102,green,0, ~~~~~~~~~~~~~~~~~~ 
+102,Floor102,green,0, ~~~~~~~~~~~~~~~~~~ 
+102,Floor102,green,0, ~~~~~~~~~~~~~~~~~~ 
 102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
-102,Floor102,green,0,~~~~~~~~~~~~~~~~~~~~
+102,Floor102,green,0,~~    ~~~~~~~~    ~~
 102,Floor102,green,1,##     #NNNN#     ##
 102,Floor102,green,1,#      #    #      #
 102,Floor102,green,1,                    
