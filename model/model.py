@@ -432,8 +432,11 @@ class Player(FloorObject):
             self.do_effect(Player.DEAD)
             self.is_solid = False
 
-    def do_heal(self, new_value):
-        self.character.increment_stat("Damage", new_value * -1)
+    def do_heal(self, new_value : int = -1):
+        if new_value is -1:
+            self.character.update_stat("Damage", 0)
+        else:
+            self.character.increment_stat("Damage", new_value * -1)
 
     @property
     def kills(self):
@@ -714,7 +717,7 @@ class Floor:
         self.monsters.append(new_player)
 
         if is_bot is True:
-            ai = AIBot2(player=new_player, floor=self)
+            ai = AIBotExplore(player=new_player, floor=self)
             ai.set_path(((min_x, min_y, start_layer), (max_x, min_y, start_layer), (max_x, max_y, start_layer),
                          (min_x, max_y, start_layer)))
 
@@ -797,6 +800,14 @@ class Floor:
                     self.teleports[floor_object.name].append(
                         (floor_object.rect.x, floor_object.rect.y, floor_object.layer))
 
+    def reset(self):
+        monsters = list(self.monsters)
+        self.bots = []
+        self.monsters = []
+        for enemy in monsters:
+            enemy.do_heal()
+            self.add_enemy(enemy, auto_position=True,is_bot=True)
+
     def get_camera_position(self):
         return (self.rect.width, self.rect.height, len(self.layers.keys()))
 
@@ -831,10 +842,6 @@ class Floor:
             self.switch_on = setting
 
         return self.switch_on
-
-    def add_monster(self, new_object: Monster):
-
-        self.monsters.append(new_object)
 
     def get_layer(self, layer_id):
 
@@ -1733,7 +1740,7 @@ class Battle:
 
             # If no Bot exists for the current player then create one
             if self.get_current_player() not in self.bots.keys():
-                new_bot = AIBot(self.get_current_player(), self)
+                new_bot = AIBotBattle(self.get_current_player(), self)
                 x, y, z = self.get_current_player().xyz
                 new_bot.set_path(((10, 10, z), (10, 1, z)))
                 self.bots[self.get_current_player()] = new_bot
@@ -1744,7 +1751,7 @@ class Battle:
             ai.do_tick()
 
             # If the Bot can't do anything else then reset it and move to the next player
-            if ai.current_state == AIBot.FINISHED:
+            if ai.current_state == AIBotBattle.FINISHED:
                 self.next_player()
                 ai.reset()
 
@@ -1759,6 +1766,86 @@ class Battle:
                 winning_team = self.teams[0]
 
         return winning_team
+
+class CharacterFactory:
+
+    def __init__(self):
+        self._npcs = None
+        self._attacks = None
+        self._stats = None
+
+    def initialise(self):
+
+        character_file_name = "characters.csv"
+        attacks_file_name = "attacks.csv"
+
+        print("Loading characters..")
+        self._npcs = trpg.RPGCharacterFactory(Game.GAME_DATA_DIR + character_file_name, self._stats)
+        self._npcs.load()
+        self._npcs.print()
+
+        rpg_classes = trpg.RPGCSVFactory("Classes", Game.GAME_DATA_DIR + "classes.csv")
+        rpg_classes.load()
+
+        rpg_races = trpg.RPGCSVFactory("Races", Game.GAME_DATA_DIR + "races.csv")
+        rpg_races.load()
+
+        character_names = self._npcs.get_character_names()
+
+        for character_name in character_names:
+            character = self._npcs.get_character_by_name(character_name)
+            # character.roll()
+            character.load_stats(rpg_classes.get_stats_by_name(character.rpg_class), overwrite=False)
+            character.load_stats(rpg_races.get_stats_by_name(character.race), overwrite=False)
+            character.load_attributes(rpg_races.get_attributes_by_name(character.race))
+            add_core_stats(character)
+            add_derived_stats(character)
+            # character.examine()
+
+        print("Characters loaded")
+
+        print("Loading Attacks...")
+        self._attacks = {}
+
+        attack_data = trpg.RPGCSVFactory(name="Attacks", file_name=Game.GAME_DATA_DIR + attacks_file_name,
+                                         stat_category="Attacks")
+        attack_data.load()
+
+        attacks = attack_data.get_rpg_object_names()
+
+        for attack in attacks:
+
+            attributes = attack_data.get_attributes_by_name(attack)
+            # print("Attributes for attack {0}:".format(attack))
+            for attribute, value in attributes.items():
+                # print("\t{0}={1}".format(attribute, value))
+
+                new_attack = Attack(name=attack,
+                                    description=attributes["Description"],
+                                    type=attributes["Type"],
+                                    attack_attribute=attributes["Attack Attribute"],
+                                    defence_attribute=attributes["Defence Attribute"],
+                                    effect=attributes["Effect"],
+                                    image=attributes["Image"])
+
+            stats = attack_data.get_stats_by_name(attack)
+
+            for stat in stats:
+                new_attack.add_stat(stat)
+
+            self._attacks[attack] = new_attack
+
+        print("Loading Attacks Loaded.")
+
+    def get_character_names(self):
+        return self._npcs.keys()
+
+    def get_character(self, name : str):
+        if name not in self._npcs.keys():
+            raise Exception("Character {0} not available in the factory!".format(name))
+
+
+
 
 
 class Game:
@@ -1788,6 +1875,7 @@ class Game:
         self._npcs = None
         self._attacks = None
         self.floor_factory = None
+        self.character_factory = None
         self.battle = None
         self._battle_floor_id = None
 
@@ -1893,6 +1981,9 @@ class Game:
 
         self.state = Game.READY
         self.current_floor_id = 104
+
+        self.character_factory = CharacterFactory()
+        self.character_factory.initialise()
 
         self.load_characters("characters.csv")
         self.load_map("locations.csv", "maplinks.csv")
@@ -2128,6 +2219,7 @@ class Game:
 
             self.current_floor_id = link.to_id
             self.get_current_floor().add_player_at_entrance(self.player, Floor.REVERSE_DIRECTION[direction])
+            self.get_current_floor().reset()
 
         else:
             raise (Exception("You can't go {0} from here!".format(direction)))
@@ -2353,7 +2445,7 @@ class Navigator:
         return finished
 
 
-class AIBot:
+class AIBotBattle:
     HUNTING = "Hunting"
     TRACKING = "Tracking"
     ATTACKING = "Attacking"
@@ -2372,13 +2464,13 @@ class AIBot:
         self.view_range = 4
         self._path = None
         self._path_target = None
-        self.current_state = AIBot.HUNTING
+        self.current_state = AIBotBattle.HUNTING
         self._actions = {}
 
         self.initialise()
 
     def reset(self):
-        self.current_state = AIBot.HUNTING
+        self.current_state = AIBotBattle.HUNTING
 
     def set_path(self, path: list, start_pos: int = 0):
         self._path = list(path)
@@ -2393,13 +2485,13 @@ class AIBot:
 
     def do_tick(self):
 
-        if self.current_state == AIBot.FINISHED:
+        if self.current_state == AIBotBattle.FINISHED:
             return
 
         self.tick_count += 1
 
         if self.player.AP <= 0:
-            self.current_state = AIBot.FINISHED
+            self.current_state = AIBotBattle.FINISHED
 
         result = self._actions[self.current_state]()
 
@@ -2439,7 +2531,7 @@ class AIBot:
         # If we can see a target then switch to Tracking mode
         if is_visible is True:
             print("Target spotted")
-            self.current_state = AIBot.TRACKING
+            self.current_state = AIBotBattle.TRACKING
 
         # Else try to move around
         else:
@@ -2454,7 +2546,7 @@ class AIBot:
 
             # Otherwise give-up
             if self.player.has_moved() is False:
-                self.current_state = AIBot.FINISHED
+                self.current_state = AIBotBattle.FINISHED
 
         return action
 
@@ -2468,7 +2560,7 @@ class AIBot:
 
         # If we are tracking but have lost visibility of a target then switch to hunting
         if is_visible is False:
-            self.current_state = AIBot.HUNTING
+            self.current_state = AIBotBattle.HUNTING
 
         # Else...
         else:
@@ -2481,13 +2573,13 @@ class AIBot:
 
             if target.layer != self.player.layer:
                 print("No opponents on this level")
-                self.current_state = AIBot.TELEPORTING
+                self.current_state = AIBotBattle.TELEPORTING
                 return False
 
             # If they are close enough to attack then switch to attacking mode
             if distance <= self.player.get_attack().get_stat(Attack.RANGE).value:
                 print("In range for attack!")
-                self.current_state = AIBot.ATTACKING
+                self.current_state = AIBotBattle.ATTACKING
 
 
             # Else navigate towards the target
@@ -2523,7 +2615,7 @@ class AIBot:
 
                     # If we failed to move after several attempts then give up
                     if self.player.has_moved() is False:
-                        self.current_state = AIBot.FINISHED
+                        self.current_state = AIBotBattle.FINISHED
 
         return action
 
@@ -2537,7 +2629,7 @@ class AIBot:
         teleports = self.battle.battle_floor.get_matching_objects((Objects.TELEPORT, Objects.TELEPORT2), z)
 
         if len(teleports) == 0:
-            self.current_state = AIBot.HUNTING
+            self.current_state = AIBotBattle.HUNTING
             return
 
         print(str(teleports))
@@ -2558,14 +2650,14 @@ class AIBot:
                 print("from {0} to {1}".format(self.player.xyz, next_xyz))
                 self.battle.battle_floor.move_player(self.player, newx - x, newy - y)
                 if self.player.has_moved() is True:
-                    self.current_state = AIBot.HUNTING
+                    self.current_state = AIBotBattle.HUNTING
                     action = True
                     break
             else:
                 print("Can't find a route to the teleporter!")
 
         if self.player.has_moved() is False:
-            self.current_state = AIBot.FINISHED
+            self.current_state = AIBotBattle.FINISHED
 
         return action
 
@@ -2578,7 +2670,7 @@ class AIBot:
 
         # If we have lost visibility of a target then switch to hunting
         if is_visible is False:
-            self.current_state = AIBot.HUNTING
+            self.current_state = AIBotBattle.HUNTING
 
         # Else
         else:
@@ -2599,11 +2691,11 @@ class AIBot:
 
                 # Otherwise we have run out of options
                 else:
-                    self.current_state = AIBot.FINISHED
+                    self.current_state = AIBotBattle.FINISHED
 
             # Else switch to tracking mode
             else:
-                self.current_state = AIBot.TRACKING
+                self.current_state = AIBotBattle.TRACKING
 
         return action
 
@@ -2676,12 +2768,12 @@ class AIBot:
         return action
 
     def initialise(self):
-        self._actions[AIBot.HUNTING] = self.do_hunting
-        self._actions[AIBot.TRACKING] = self.do_tracking
-        self._actions[AIBot.TELEPORTING] = self.do_teleporting
-        self._actions[AIBot.ATTACKING] = self.do_attacking
-        self._actions[AIBot.FLEEING] = self.do_fleeing
-        self._actions[AIBot.FINISHED] = self.do_finish
+        self._actions[AIBotBattle.HUNTING] = self.do_hunting
+        self._actions[AIBotBattle.TRACKING] = self.do_tracking
+        self._actions[AIBotBattle.TELEPORTING] = self.do_teleporting
+        self._actions[AIBotBattle.ATTACKING] = self.do_attacking
+        self._actions[AIBotBattle.FLEEING] = self.do_fleeing
+        self._actions[AIBotBattle.FINISHED] = self.do_finish
 
     def print(self):
         print("AIBot for player {0} on team {1} vs team {2}: State={3}".format(self.player.character.name,
@@ -2690,7 +2782,7 @@ class AIBot:
                                                                                self.current_state))
 
 
-class AIBot2:
+class AIBotExplore:
     HUNTING = "Hunting"
     TRACKING = "Tracking"
     ATTACKING = "Attacking"
@@ -2707,12 +2799,12 @@ class AIBot2:
         self.view_range = 6
         self._path = None
         self._path_target = None
-        self.current_state = AIBot.HUNTING
+        self.current_state = AIBotBattle.HUNTING
         self._actions = {}
         self.initialise()
 
     def reset(self):
-        self.current_state = AIBot.HUNTING
+        self.current_state = AIBotBattle.HUNTING
 
     def set_path(self, path: list, start_pos: int = 0):
         self._path = list(path)
@@ -2727,13 +2819,13 @@ class AIBot2:
 
     def do_tick(self):
 
-        if self.current_state == AIBot.FINISHED or self.player.is_dead() is True:
+        if self.current_state == AIBotBattle.FINISHED or self.player.is_dead() is True:
             return
 
         self.tick_count += 1
 
         if self.player.AP <= 0:
-            self.current_state = AIBot.FINISHED
+            self.current_state = AIBotBattle.FINISHED
 
         result = self._actions[self.current_state]()
 
@@ -2774,7 +2866,7 @@ class AIBot2:
         # If we can see a target then switch to Tracking mode
         if is_visible is True:
             # print("Target spotted")
-            self.current_state = AIBot.TRACKING
+            self.current_state = AIBotBattle.TRACKING
 
         # Else try to move around
         else:
@@ -2789,7 +2881,7 @@ class AIBot2:
 
             # Otherwise give-up
             if self.player.has_moved() is False:
-                self.current_state = AIBot.FINISHED
+                self.current_state = AIBotBattle.FINISHED
 
         return action
 
@@ -2803,7 +2895,7 @@ class AIBot2:
 
         # If we are tracking but have lost visibility of a target then switch to hunting
         if is_visible is False:
-            self.current_state = AIBot.HUNTING
+            self.current_state = AIBotBattle.HUNTING
 
         # Else...
         else:
@@ -2815,13 +2907,13 @@ class AIBot2:
 
             if target.layer != self.player.layer:
                 print("No opponents on this level")
-                self.current_state = AIBot.TELEPORTING
+                self.current_state = AIBotBattle.TELEPORTING
                 return False
 
             # If they are close enough to attack then switch to attacking mode
             if distance <= self.player.get_attack().get_stat(Attack.RANGE).value:
                 print("In range for attack!")
-                self.current_state = AIBot.ATTACKING
+                self.current_state = AIBotBattle.ATTACKING
 
 
             # Else navigate towards the target
@@ -2857,7 +2949,7 @@ class AIBot2:
 
                     # If we failed to move after several attempts then give up
                     if self.player.has_moved() is False:
-                        self.current_state = AIBot.FINISHED
+                        self.current_state = AIBotBattle.FINISHED
 
         return action
 
@@ -2872,7 +2964,7 @@ class AIBot2:
         teleports = self.floor.get_matching_objects((Objects.TELEPORT, Objects.TELEPORT2), z)
 
         if len(teleports) == 0:
-            self.current_state = AIBot.HUNTING
+            self.current_state = AIBotBattle.HUNTING
             return
 
         for teleport in teleports:
@@ -2891,14 +2983,14 @@ class AIBot2:
                 print("Moving from {0} to {1}".format(self.player.xyz, next_xyz))
                 self.floor.move_player(self.player, newx - x, newy - y)
                 if self.player.has_moved() is True:
-                    self.current_state = AIBot.HUNTING
+                    self.current_state = AIBotBattle.HUNTING
                     action = True
                     break
             else:
                 print("Can't find a route to the teleporter!")
 
         if self.player.has_moved() is False:
-            self.current_state = AIBot.FINISHED
+            self.current_state = AIBotBattle.FINISHED
 
         return action
 
@@ -2911,7 +3003,7 @@ class AIBot2:
 
         # If we have lost visibility of a target then switch to hunting
         if is_visible is False:
-            self.current_state = AIBot.HUNTING
+            self.current_state = AIBotBattle.HUNTING
 
         # Else
         else:
@@ -2935,11 +3027,11 @@ class AIBot2:
 
                 # Otherwise we have run out of options
                 else:
-                    self.current_state = AIBot.FINISHED
+                    self.current_state = AIBotBattle.FINISHED
 
             # Else switch to tracking mode
             else:
-                self.current_state = AIBot.TRACKING
+                self.current_state = AIBotBattle.TRACKING
 
         return action
 
@@ -3012,12 +3104,12 @@ class AIBot2:
         return action
 
     def initialise(self):
-        self._actions[AIBot.HUNTING] = self.do_hunting
-        self._actions[AIBot.TRACKING] = self.do_tracking
-        self._actions[AIBot.TELEPORTING] = self.do_teleporting
-        self._actions[AIBot.ATTACKING] = self.do_attacking
-        self._actions[AIBot.FLEEING] = self.do_fleeing
-        self._actions[AIBot.FINISHED] = self.do_finish
+        self._actions[AIBotBattle.HUNTING] = self.do_hunting
+        self._actions[AIBotBattle.TRACKING] = self.do_tracking
+        self._actions[AIBotBattle.TELEPORTING] = self.do_teleporting
+        self._actions[AIBotBattle.ATTACKING] = self.do_attacking
+        self._actions[AIBotBattle.FLEEING] = self.do_fleeing
+        self._actions[AIBotBattle.FINISHED] = self.do_finish
 
     def print(self):
         print("AIBot for player {0} : State={1}".format(self.player.character.name, self.current_state))

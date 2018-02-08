@@ -1230,7 +1230,7 @@ class BattleView(View):
                                 # # Trying different transparency based on distance to view camera
                                 # surface.blit(image, (view_x - x_offset, view_y - y_offset))
 
-                                if layer_id > 1:
+                                if layer_id > current_player.layer:
                                     d = self.game.battle.battle_floor.distance_to_camera(view_object.xyz)
                                     image.set_alpha(100 + (d * 7))
                                 else:
