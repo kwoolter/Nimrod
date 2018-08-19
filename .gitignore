@@ -1,0 +1,27 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+.idea/
+Nimrod.hst
+SQUOIDS.hst
+audio/__pycache__/
+controller/__pycache__/
+model/Squoids_data/Squoids floor builder 20180101.xlsx
+model/Squoids_data/default_floor_layouts - Copy.csv
+model/Squoids_data/default_floor_layouts.csv___jb_old___
+model/Squoids_data/default_floor_layouts.csv___jb_tmp___
+model/__pycache__/
+model/data/floor builder 20171112 (Autosaved).xlsx
+model/data/floor builder 20171112.xlsx
+utils/__pycache__/
+utils/trpg/__pycache__/
+view/__pycache__/
+view/resources/Gal/
+view/resources/blocks_sheet_blue - Copy.png
+view/resources/old/

@@ -244,7 +244,7 @@ ID,Name,Skin,Layer,Layout
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#                   
 2,Floor2,default,3,#                   
-2,Floor2,default,3,+        p    p
+2,Floor2,default,3,=+        p    p
 2,Floor2,default,3,                    
 2,Floor2,default,3,           !        
 2,Floor2,default,3,         p    p     
@@ -307,7 +307,7 @@ ID,Name,Skin,Layer,Layout
 3,Floor3,default,2,         p    p   H 
 3,Floor3,default,2, p   p              
 3,Floor3,default,2,                    
-3,Floor3,default,2,         p    0   p 
+3,Floor3,default,2,         p    O   p 
 3,Floor3,default,2, +   p              
 3,Floor3,default,2,         X    p   p 
 3,Floor3,default,2, p   p              
@@ -315,7 +315,7 @@ ID,Name,Skin,Layer,Layout
 3,Floor3,default,2,         p    p   + 
 3,Floor3,default,2, p   p              
 3,Floor3,default,2,         p    p   p 
-3,Floor3,default,2, p   0              
+3,Floor3,default,2, p   O              
 3,Floor3,default,2,                    
 3,Floor3,default,2,                    
 3,Floor3,default,2,           b        

@@ -485,7 +485,7 @@ class MainFrame(View):
         super(MainFrame, self).initialise()
 
         self.surface = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF|pygame.HWACCEL)
-        #self.surface = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        self.surface = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
 
         os.environ["SDL_VIDEO_CENTERED"] = "1"
         pygame.init()
@@ -849,8 +849,9 @@ class GameReadyView(View):
 
         x = pane_rect.centerx - int(image_width / 2)
         y += 40
+        y_offset = 20*math.sin(self.tick_count/3)
         image = pygame.transform.scale(image, (image_width, image_height))
-        self.surface.blit(image, (x, y))
+        self.surface.blit(image, (x, y + y_offset))
 
         x = 0
         y = pane_rect.bottom - self.hst.surface.get_height()

@@ -83,11 +83,12 @@ class Attack:
         return self.stats[stat_name]
 
     def print(self):
-        print("{0}:{1} - type({2}) - {3} vs. {4}".format(self.name,
-                                                         self.description,
-                                                         self.type,
-                                                         self.attack_attribute,
-                                                         self.defence_attribute))
+        print("{0}:{1} - type({2}) - {3} vs. {4}.  Image({5})".format(self.name,
+                                                                      self.description,
+                                                                      self.type,
+                                                                      self.attack_attribute,
+                                                                      self.defence_attribute,
+                                                                      self.image))
         for stat in self.stats.values():
             print("\t{0}={1}".format(stat.name, stat.value))
 
@@ -370,7 +371,8 @@ class Player(FloorObject):
                  layer=1,
                  height: int = 40,
                  character: Character = None):
-        super(Player, self).__init__(name=name, rect=rect, height=height, solid=True, visible=True, interactable=False, shadow=True)
+        super(Player, self).__init__(name=name, rect=rect, height=height, solid=True, visible=True, interactable=False,
+                                     shadow=True)
 
         self.treasure = 0
         self.keys = 0
@@ -384,11 +386,12 @@ class Player(FloorObject):
         self.effects = {}
 
     def __str__(self):
-        return ("Player {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}, Effects={7}".format(self.name, self.HP, self.AP,
-                                                                                       self.rect.x, self.rect.y,
-                                                                                       self.layer,
-                                                                                       self.is_dead(),
-                                                                                       len(self.effects)))
+        return ("Player {8} {0}: HP={1},AP={2},({3},{4},{5}),Dead={6}, Effects={7}".format(self.name, self.HP, self.AP,
+                                                                                           self.rect.x, self.rect.y,
+                                                                                           self.layer,
+                                                                                           self.is_dead(),
+                                                                                           len(self.effects),
+                                                                                           self.character.name))
 
     @property
     def name(self):
@@ -432,7 +435,7 @@ class Player(FloorObject):
             self.do_effect(Player.DEAD)
             self.is_solid = False
 
-    def do_heal(self, new_value : int = -1):
+    def do_heal(self, new_value: int = -1):
         if new_value is -1:
             self.character.update_stat("Damage", 0)
         else:
@@ -806,7 +809,7 @@ class Floor:
         self.monsters = []
         for enemy in monsters:
             enemy.do_heal()
-            self.add_enemy(enemy, auto_position=True,is_bot=True)
+            self.add_enemy(enemy, auto_position=True, is_bot=True)
 
     def get_camera_position(self):
         return (self.rect.width, self.rect.height, len(self.layers.keys()))
@@ -945,7 +948,7 @@ class Floor:
             base_tile = self.get_floor_tile(x, y, z - 1)
 
             # Is the base tile dangerous?
-            if base_tile is not None and base_tile.name in (Objects.LAVA, Objects.ICE ):
+            if base_tile is not None and base_tile.name in (Objects.LAVA, Objects.ICE):
                 result = True
 
         return result
@@ -1138,8 +1141,6 @@ class Floor:
                                                  description="{0} stood on {1}".format(selected_player.character.name,
                                                                                        base_tile.name)))
 
-
-
             if selected_player.has_moved() is True:
                 selected_player.AP -= 1
 
@@ -1214,9 +1215,9 @@ class FloorBuilder():
                 new_floor.set_details(self.floor_details[floor_id])
             self.floors[floor_id] = new_floor
 
-        # for floor in self.floors.values():
-        #     floor.build_floor_plan()
-        #     print(str(floor))
+            # for floor in self.floors.values():
+            #     floor.build_floor_plan()
+            #     print(str(floor))
 
     def load_floor_details(self):
 
@@ -1283,8 +1284,9 @@ class FloorBuilder():
         self.floor_details[new_floor_id] = new_floor_details
 
         new_floor_id = 200
-        new_floor_details = ("TEST", 1, (13,1,18,8), 1, (1,1,5,17), 2, 2, None)
+        new_floor_details = ("TEST", 1, (13, 1, 18, 8), 1, (1, 1, 5, 17), 2, 2, None)
         self.floor_details[new_floor_id] = new_floor_details
+
 
 class FloorLayoutLoader():
     floor_layouts = {}
@@ -1541,6 +1543,8 @@ class Battle:
             return self.teams[1]
         else:
             print("Player {0} is not in a team!".format(selected_player.character.name))
+            self.print()
+            print(selected_player)
             return None
 
     def do_attack(self):
@@ -1767,8 +1771,8 @@ class Battle:
 
         return winning_team
 
-class CharacterFactory:
 
+class CharacterFactory:
     def __init__(self):
         self._npcs = None
         self._attacks = None
@@ -1840,12 +1844,9 @@ class CharacterFactory:
     def get_character_names(self):
         return self._npcs.keys()
 
-    def get_character(self, name : str):
+    def get_character(self, name: str):
         if name not in self._npcs.keys():
             raise Exception("Character {0} not available in the factory!".format(name))
-
-
-
 
 
 class Game:
@@ -1919,7 +1920,7 @@ class Game:
 
     def start_battle(self):
         self.state = Game.BATTLE
-        self._battle_floor_id = random.choice((0, 2, 3, 4, 5, 100, 101, 102))
+        self._battle_floor_id = random.choice((0, 2, 3, 4, 5))
 
         # self._battle_floor_id = 101
 
@@ -1930,29 +1931,40 @@ class Game:
         team1 = Team("Blue", BLUE, type=Team.PLAYER)
         team2 = Team("Red", RED, type=Team.PLAYER)
 
-        team1 = Team("Blue", BLUE, type=Team.COMPUTER)
-        team2 = Team("Red", RED, type=Team.COMPUTER)
+        # team1 = Team("Blue", BLUE, type=Team.COMPUTER)
+        # team2 = Team("Red", RED, type=Team.COMPUTER)
 
         characters = list(self._npcs.get_characters())
 
         for i in range(0, 5):
-            char = random.choice(characters)
-            new_char = copy.deepcopy(char)
-            new_char_type = new_char.get_attribute("Image") + "_blue"
-            new_player = Player(name=new_char_type, rect=(i * 2 + 8, 2, 32, 32), layer=3, character=new_char)
-            attack_name = new_char.get_attribute("Attack")
-            new_player.add_attack(self._attacks[attack_name])
-            team1.add_player(new_player)
-            characters.remove(char)
 
-            char = random.choice(characters)
-            new_char = copy.deepcopy(char)
-            new_char_type = new_char.get_attribute("Image") + "_red"
-            new_player = Player(name=new_char_type, rect=(i * 2 + 8, 17, 32, 32), layer=3, character=new_char)
-            attack_name = new_char.get_attribute("Attack")
-            new_player.add_attack(self._attacks[attack_name])
-            team2.add_player(new_player)
-            characters.remove(char)
+            try:
+                char = random.choice(characters)
+                new_char = copy.deepcopy(char)
+                new_char_type = new_char.get_attribute("Image") + "_blue"
+                new_player = Player(name=new_char_type, rect=(0, 0, 32, 32), layer=3, character=new_char)
+                attack_name = new_char.get_attribute("Attack")
+                new_player.add_attack(self._attacks[attack_name])
+                new_player.do_heal()
+                team1.add_player(new_player)
+                characters.remove(char)
+
+                char = random.choice(characters)
+                new_char = copy.deepcopy(char)
+                new_char_type = new_char.get_attribute("Image") + "_red"
+                new_player = Player(name=new_char_type, rect=(0, 0, 32, 32), layer=3, character=new_char)
+                attack_name = new_char.get_attribute("Attack")
+                new_player.add_attack(self._attacks[attack_name])
+                new_player.do_heal()
+                team2.add_player(new_player)
+                characters.remove(char)
+
+                team1.print()
+                team2.print()
+
+            except Exception as err:
+                print("Arghhh")
+                print(str(err))
 
         battle_floor = self.floor_factory.floors[self._battle_floor_id]
 
@@ -1987,10 +1999,10 @@ class Game:
 
         self.load_characters("characters.csv")
         self.load_map("locations.csv", "maplinks.csv")
-        #self.load_items("items.csv")
+        # self.load_items("items.csv")
         self.load_attacks("attacks.csv")
 
-        # self._stats.pr        int()
+        # self._stats.print()
         print("Loading Floors")
         self.floor_factory = FloorBuilder(Game.GAME_DATA_DIR)
         self.floor_factory.initialise()
@@ -2024,16 +2036,16 @@ class Game:
         #     characters.remove(char)
 
         for floor in self.floor_factory.floors.values():
-            characters = list(self._npcs.get_characters())
-            for i in range(0, 4):
-                char = random.choice(characters)
-                new_char = copy.deepcopy(char)
-                new_char_type = new_char.get_attribute("Image") + "_blue"
-                new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
-                new_player.add_attack(self._attacks["Basic Attack"])
-                floor.add_enemy(new_player, auto_position=True)
-                characters.remove(char)
-
+            if floor.id >= 100:
+                characters = list(self._npcs.get_characters())
+                for i in range(0, 4):
+                    char = random.choice(characters)
+                    new_char = copy.deepcopy(char)
+                    new_char_type = new_char.get_attribute("Image") + "_blue"
+                    new_player = Player(name=new_char_type, rect=(0, 10, 32, 32), layer=1, character=new_char)
+                    new_player.add_attack(self._attacks["Basic Attack"])
+                    floor.add_enemy(new_player, auto_position=True)
+                    characters.remove(char)
 
         self.current_map = self._maps.get_map(1)
         # self.current_map.print()
@@ -2092,16 +2104,16 @@ class Game:
 
             attributes = attack_data.get_attributes_by_name(attack)
             # print("Attributes for attack {0}:".format(attack))
-            for attribute, value in attributes.items():
-                # print("\t{0}={1}".format(attribute, value))
+            # for attribute, value in attributes.items():
+            # print("\t{0}={1}".format(attribute, value))
 
-                new_attack = Attack(name=attack,
-                                    description=attributes["Description"],
-                                    type=attributes["Type"],
-                                    attack_attribute=attributes["Attack Attribute"],
-                                    defence_attribute=attributes["Defence Attribute"],
-                                    effect=attributes["Effect"],
-                                    image=attributes["Image"])
+            new_attack = Attack(name=attack,
+                                description=attributes["Description"],
+                                type=attributes["Type"],
+                                attack_attribute=attributes["Attack Attribute"],
+                                defence_attribute=attributes["Defence Attribute"],
+                                effect=attributes["Effect"],
+                                image=attributes["Image"])
 
             stats = attack_data.get_stats_by_name(attack)
 
@@ -2110,7 +2122,7 @@ class Game:
 
             self._attacks[attack] = new_attack
 
-            # new_attack.print()
+            new_attack.print()
 
     def start(self):
 
